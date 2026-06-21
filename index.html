@@ -529,12 +529,63 @@
   .ls-row .lr-st.s-cur  { background: rgba(230,57,70,.25); color: #ff9aa3; }
   .ls-row .lr-st.s-lock { background: rgba(100,116,139,.2); color: #9aa6ba; }
 
+  /* ── My page sheet (profile / achievements / weekly summary) ── */
+  .avatar-btn { background: none; border: none; cursor: pointer; line-height: 1; padding: 0; }
+  .mypage-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 22px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.5); max-height: 82%;
+    display: flex; flex-direction: column;
+  }
+  .mypage-sheet.open { transform: translateY(0); }
+  .mypage-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3a55; margin: 0 auto 12px; flex-shrink:0; }
+  .mp-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-shrink:0; }
+  .mp-hd b { font-size: 16px; font-weight: 800; }
+  .mp-hd .mp-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .mp-body { overflow-y: auto; flex: 1; }
+  .mp-body::-webkit-scrollbar { width: 0; }
+  .mp-sec { font-size: 12px; font-weight: 800; color: #aab4c8; margin: 6px 0 8px; }
+  .mp-avgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 12px; }
+  .mp-av {
+    aspect-ratio: 1; border-radius: 12px; font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--night2); border: 1px solid var(--line);
+  }
+  .mp-av.sel { background: rgba(230,57,70,.2); border-color: var(--red); }
+  .mp-name {
+    width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 15px; font-family: inherit;
+    background: var(--night2); border: 1px solid var(--line); color: #fff; margin-bottom: 16px;
+  }
+  .mp-name:focus { outline: none; border-color: var(--red); }
+  .mp-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .mp-scell { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .mp-scell b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); line-height: 1.1; }
+  .mp-scell span { font-size: 11px; color: var(--gray); }
+  .mp-achgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .mp-ach { display: flex; gap: 10px; align-items: center; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 11px; }
+  .mp-ach.locked { opacity: .42; }
+  .mp-ach .ach-ic { font-size: 24px; flex-shrink:0; }
+  .mp-ach .ach-tx b { font-size: 12px; display: block; }
+  .mp-ach .ach-tx span { font-size: 10px; color: var(--gray); line-height: 1.4; }
+  .mp-reset { width: 100%; padding: 13px; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--gray); font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; }
+
+  /* ── Book search/filter ── */
+  .book-search {
+    width: 100%; padding: 11px 14px; border-radius: 12px; font-size: 14px; font-family: inherit;
+    background: var(--night2); border: 1px solid var(--line); color: #fff; margin-bottom: 10px;
+  }
+  .book-search:focus { outline: none; border-color: var(--red); }
+  .book-filter { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
+
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -564,7 +615,7 @@
       padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
     .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
-    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet {
+    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet {
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
   }
@@ -605,13 +656,13 @@
     <section class="view active" id="view-home">
       <div class="hdr">
         <div><h2>こんにちは、探偵</h2><div class="sub">今日も街の安全を守ろう</div></div>
-        <div style="font-size:28px">🕵️</div>
+        <button class="avatar-btn" id="profile-btn" style="font-size:28px" title="マイページ">🕵️</button>
       </div>
 
       <div class="hero" id="home-hero">
         <div class="glasswm">🔍</div>
         <div class="role" id="home-role">特級探偵 / Lv.7</div>
-        <div class="name">ユウキ さん</div>
+        <div class="name" id="home-name">ユウキ さん</div>
         <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl">捜査ポイント</span></div>
         <div class="lvbar"><i id="lvbar"></i></div>
         <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint">特典を見る ›</span></div>
@@ -660,7 +711,14 @@
     <!-- BOOK -->
     <section class="view" id="view-book">
       <div class="hdr"><div><h2>探偵手帳</h2><div class="sub">マーキング図鑑</div></div><div style="font-size:26px">📖</div></div>
-      <p style="font-size:12px;color:var(--gray);margin-bottom:16px;line-height:1.6">侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。</p>
+      <p style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.6">侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。</p>
+      <input class="book-search" id="book-search" type="text" placeholder="🔎 記号名・意味で検索…" />
+      <div class="book-filter" id="book-filter">
+        <button class="ff-chip active" data-bfilter="all">すべて</button>
+        <button class="ff-chip" data-bfilter="danger">要注意</button>
+        <button class="ff-chip" data-bfilter="warn">要確認</button>
+        <button class="ff-chip" data-bfilter="safe">偶然</button>
+      </div>
       <div id="book-list"></div>
     </section>
 
@@ -695,6 +753,7 @@
   <div class="notif-sheet" id="notif-sheet"></div>
   <div class="rank-sheet" id="rank-sheet"></div>
   <div class="level-sheet" id="level-sheet"></div>
+  <div class="mypage-sheet" id="mypage-sheet"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -724,7 +783,36 @@
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
-const STATE = { points: 2480, posts: 38, missions: [false, false], unread: 0, streak: 5 };
+const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
+  myPosts: 0, dangerFound: 0, shares: 0, earned: 0 };
+
+const PROFILE = { name: 'ユウキ', avatar: '🕵️' };
+const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','🐶','🐹','🦝','🐲'];
+
+// 実績バッジ
+const ACHIEVEMENTS = [
+  { id:'first',  icon:'🎉', title:'初投稿',          desc:'はじめて投稿した',         cond:()=>STATE.myPosts>=1 },
+  { id:'patrol', icon:'📸', title:'パトロール開始',   desc:'5件投稿した',             cond:()=>STATE.myPosts>=5 },
+  { id:'vet',    icon:'🏅', title:'ベテラン探偵',     desc:'15件投稿した',            cond:()=>STATE.myPosts>=15 },
+  { id:'hunter', icon:'⚡', title:'危険ハンター',     desc:'危険を5件発見した',       cond:()=>STATE.dangerFound>=5 },
+  { id:'streak', icon:'🔥', title:'継続は力なり',     desc:'連続記録10を達成',        cond:()=>STATE.streak>=10 },
+  { id:'share',  icon:'📤', title:'街に拡散',         desc:'結果をシェアした',         cond:()=>STATE.shares>=1 },
+  { id:'ace',    icon:'👑', title:'エース昇格',       desc:'Lv.8 に到達した',         cond:()=>STATE.points>=3000 },
+  { id:'master', icon:'💎', title:'ポイントマスター', desc:'5,000pt に到達した',      cond:()=>STATE.points>=5000 },
+];
+let ACH_UNLOCKED = [];
+
+// デイリーミッション
+const DAILY_POOL = [
+  { id:'post2',   icon:'🔍', title:'2件調査する',     desc:'今日2件投稿する',       reward:50, goal:2, metric:'posts'  },
+  { id:'post3',   icon:'🎯', title:'3件パトロール',   desc:'今日3件投稿する',       reward:90, goal:3, metric:'posts'  },
+  { id:'danger1', icon:'⚡', title:'危険を1件発見',   desc:'濃厚判定を1件出す',     reward:80, goal:1, metric:'danger' },
+  { id:'map',     icon:'🗺️', title:'防犯マップを確認', desc:'マップタブを開く',       reward:30, goal:1, metric:'map'    },
+  { id:'share',   icon:'📤', title:'結果をシェア',     desc:'判定結果を1回シェア',   reward:40, goal:1, metric:'share'  },
+  { id:'safe1',   icon:'🟢', title:'安全を確認',       desc:'偶然判定を1件記録',     reward:30, goal:1, metric:'safe'   },
+];
+const DAILY = { date:'', picks:[], progress:{}, done:{} };
+let ONBOARDED = false;
 
 const MARKINGS = [
   { lat: 35.6595, lng: 139.7005, type: 'danger', label: 'インターホン側面の傷', mark: '⚡', user: 'タカシ', ago: '12分前', verdict: 'マーキング濃厚' },
@@ -815,11 +903,6 @@ const LEVELS = [
   { lv:9, title:'伝説の探偵', min:4000, icon:'🏆', perk:'殿堂入り・全特典開放とプレミアム称号' },
 ];
 
-const MISSION_DEFS = [
-  { id:0, icon:'🔍', title:'マーキングを1件調査', desc:'通勤・通学路をチェック', reward:50,  triggerPosts:39 },
-  { id:1, icon:'🗺️', title:'新エリアを1つ解放',   desc:'未踏エリアで投稿',       reward:120, triggerPosts:41 },
-];
-
 // 撮影結果のパターン（毎回ランダムに抽選）
 const CAM_OUTCOMES = [
   { weight:3, type:'danger', mark:'⚡', title:'マーキング濃厚！', conf:[88,96], pts:50,
@@ -851,23 +934,95 @@ function getLevelInfo(pts){
   return { cur, next, pct, rem };
 }
 
+// ── 永続化（localStorage）──
+const SAVE_KEY = 'goto-tanteidan-save-v1';
+function saveState(){
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      v:1, state:STATE, profile:PROFILE, feed:FEED, markings:MARKINGS,
+      ach:ACH_UNLOCKED, daily:DAILY, ranks:RANKS, onboarded:ONBOARDED
+    }));
+  } catch(e){ /* localStorage 不可環境は無視 */ }
+}
+function loadState(){
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    if(d.state) Object.assign(STATE, d.state);
+    if(d.profile) Object.assign(PROFILE, d.profile);
+    if(Array.isArray(d.feed)){ FEED.length=0; FEED.push(...d.feed); }
+    if(Array.isArray(d.markings)){ MARKINGS.length=0; MARKINGS.push(...d.markings); }
+    if(Array.isArray(d.ach)) ACH_UNLOCKED = d.ach.slice();
+    if(d.daily) Object.assign(DAILY, d.daily);
+    if(d.ranks){ ['week','month','all'].forEach(k=>{ if(d.ranks[k]) RANKS[k] = d.ranks[k]; }); }
+    ONBOARDED = !!d.onboarded;
+    return true;
+  } catch(e){ return false; }
+}
+function resetAll(){
+  try { localStorage.removeItem(SAVE_KEY); } catch(e){}
+  location.reload();
+}
+
+// プロフィール名をランキングの自分の行に反映
+function syncProfileToRanks(){
+  Object.values(RANKS).forEach(seg=>{
+    const me = seg.find(r=>r.me);
+    if(me){ me.name = `${PROFILE.name}（あなた）`; me.av = PROFILE.avatar; }
+  });
+}
+
+// ── デイリーミッション ──
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function ensureDaily(){
+  const t = todayStr();
+  if(DAILY.date === t && DAILY.picks.length) return;
+  DAILY.date = t;
+  const pool = DAILY_POOL.slice();
+  const picks = [];
+  while(picks.length < 2 && pool.length){
+    picks.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0].id);
+  }
+  DAILY.picks = picks;
+  DAILY.progress = {}; DAILY.done = {};
+  picks.forEach(id=>{ DAILY.progress[id]=0; DAILY.done[id]=false; });
+  saveState();
+}
 function renderMissions(){
-  document.getElementById('missions').innerHTML = MISSION_DEFS.map(m=>{
-    const done = STATE.missions[m.id];
+  document.getElementById('missions').innerHTML = DAILY.picks.map(id=>{
+    const m = DAILY_POOL.find(x=>x.id===id);
+    if(!m) return '';
+    const done = DAILY.done[id];
+    const prog = Math.min(DAILY.progress[id]||0, m.goal);
+    const progTxt = m.goal>1 ? ` <span style="color:var(--gray);font-weight:600">(${prog}/${m.goal})</span>` : '';
     return `<div class="card mission${done?' done':''}">
       <div class="mi">${done?'✅':m.icon}</div>
-      <div class="mt"><b>${m.title}</b><span>${m.desc}</span></div>
+      <div class="mt"><b>${m.title}${progTxt}</b><span>${m.desc}</span></div>
       ${done?`<span class="done-badge">完了！</span>`:`<div class="mr">+${m.reward}pt</div>`}
     </div>`;
   }).join('');
 }
+function bumpDaily(metric){
+  DAILY.picks.forEach(id=>{
+    const m = DAILY_POOL.find(x=>x.id===id);
+    if(!m || m.metric!==metric || DAILY.done[id]) return;
+    DAILY.progress[id] = (DAILY.progress[id]||0) + 1;
+    if(DAILY.progress[id] >= m.goal){
+      DAILY.done[id] = true;
+      STATE.points += m.reward; STATE.earned += m.reward;
+      setTimeout(()=>showToast(`🎯 デイリー達成！${m.title} +${m.reward}pt`), 2300);
+    }
+  });
+  renderMissions();
+}
 
-function checkMissions(){
-  MISSION_DEFS.forEach(m=>{
-    if(!STATE.missions[m.id] && STATE.posts >= m.triggerPosts){
-      STATE.missions[m.id] = true;
-      STATE.points += m.reward;
-      setTimeout(()=>showToast(`🎯 ミッション達成！+${m.reward}pt`), 2500);
+// ── 実績バッジ ──
+function checkAchievements(){
+  ACHIEVEMENTS.forEach(a=>{
+    if(!ACH_UNLOCKED.includes(a.id) && a.cond()){
+      ACH_UNLOCKED.push(a.id);
+      setTimeout(()=>showToast(`🏆 実績解除！${a.title}`), 1500);
     }
   });
 }
@@ -894,6 +1049,8 @@ function updateRankData(gained){
 function renderHome(){
   const info = getLevelInfo(STATE.points);
   document.getElementById('home-role').textContent = `${info.cur.title} / Lv.${info.cur.lv}`;
+  document.getElementById('home-name').textContent = `${PROFILE.name} さん`;
+  document.getElementById('profile-btn').textContent = PROFILE.avatar;
   document.getElementById('home-pt').textContent = fmt(STATE.points);
   document.getElementById('stat-posts').textContent = STATE.posts;
   document.getElementById('stat-streak').textContent = STATE.streak;
@@ -954,6 +1111,65 @@ function openLevelSheet(){
   sheet.classList.add('open');
 }
 
+// ── マイページ（プロフィール / 週間まとめ / 実績）──
+function openMyPage(){
+  const sheet = document.getElementById('mypage-sheet');
+  const weekMe = RANKS.week.find(r=>r.me);
+  const weekRank = RANKS.week.indexOf(weekMe) + 1;
+
+  const avHtml = AVATARS.map(a=>
+    `<div class="mp-av ${a===PROFILE.avatar?'sel':''}" data-av="${a}">${a}</div>`).join('');
+
+  const achHtml = ACHIEVEMENTS.map(a=>{
+    const got = ACH_UNLOCKED.includes(a.id);
+    return `<div class="mp-ach ${got?'':'locked'}">
+      <div class="ach-ic">${got?a.icon:'🔒'}</div>
+      <div class="ach-tx"><b>${a.title}</b><span>${a.desc}</span></div>
+    </div>`;
+  }).join('');
+  const gotCount = ACH_UNLOCKED.length;
+
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="mp-hd"><b>👤 マイページ</b><button class="mp-close" id="mp-close">×</button></div>
+    <div class="mp-body">
+      <div class="mp-sec">アバター</div>
+      <div class="mp-avgrid" id="mp-avgrid">${avHtml}</div>
+      <div class="mp-sec">探偵名</div>
+      <input class="mp-name" id="mp-name" type="text" maxlength="12" value="${PROFILE.name.replace(/"/g,'&quot;')}" />
+      <div class="mp-sec">📊 今週のまとめ</div>
+      <div class="mp-summary">
+        <div class="mp-scell"><b>${STATE.myPosts}</b><span>今週の投稿</span></div>
+        <div class="mp-scell"><b>${fmt(STATE.earned)}</b><span>獲得ポイント</span></div>
+        <div class="mp-scell"><b>${weekRank}位</b><span>週間ランキング</span></div>
+        <div class="mp-scell"><b>${STATE.streak}</b><span>連続記録</span></div>
+      </div>
+      <div class="mp-sec">🏆 実績バッジ（${gotCount}/${ACHIEVEMENTS.length}）</div>
+      <div class="mp-achgrid">${achHtml}</div>
+      <button class="mp-reset" id="mp-reset">🗑 データをリセット</button>
+    </div>`;
+
+  document.getElementById('mp-close').onclick = ()=>sheet.classList.remove('open');
+  document.getElementById('mp-avgrid').querySelectorAll('.mp-av').forEach(el=>{
+    el.onclick = () => {
+      PROFILE.avatar = el.dataset.av;
+      document.getElementById('mp-avgrid').querySelectorAll('.mp-av').forEach(x=>x.classList.remove('sel'));
+      el.classList.add('sel');
+      syncProfileToRanks(); renderHome(); saveState();
+    };
+  });
+  const nameInput = document.getElementById('mp-name');
+  nameInput.oninput = () => {
+    const v = nameInput.value.trim() || '探偵';
+    PROFILE.name = v;
+    syncProfileToRanks(); renderHome(); saveState();
+  };
+  document.getElementById('mp-reset').onclick = () => {
+    if (confirm('すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？')) resetAll();
+  };
+  sheet.classList.add('open');
+}
+
 function openDetail(idx){
   const f = FEED[idx];
   const color = f.chip[0]==='ok'?'#E63946':f.chip[0]==='warn'?'#F4A261':'#64748B';
@@ -986,8 +1202,16 @@ function openDetail(idx){
   modal.classList.add('open');
 }
 
+let bookQuery = '', bookFilter = 'all';
 function renderBook(){
-  document.getElementById('book-list').innerHTML = MARK_CATALOG.map(m=>{
+  const q = bookQuery.trim().toLowerCase();
+  const list = MARK_CATALOG.filter(m=>{
+    if(bookFilter !== 'all' && m.color !== bookFilter) return false;
+    if(!q) return true;
+    const hay = (m.name + ' ' + m.meaning + ' ' + m.examples.join(' ')).toLowerCase();
+    return hay.includes(q);
+  });
+  document.getElementById('book-list').innerHTML = list.length ? list.map(m=>{
     const chipCls = m.color==='danger'?'ok':m.color==='warn'?'warn':'ng';
     const chipLbl = m.color==='danger'?'要注意':m.color==='warn'?'要確認':'偶然多め';
     const bg = m.color==='danger'?'rgba(230,57,70,.18)':m.color==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
@@ -999,7 +1223,7 @@ function renderBook(){
         <div class="book-freq">出現頻度: ${m.frequency}　例: ${m.examples.join('、')}</div>
       </div>
     </div>`;
-  }).join('');
+  }).join('') : `<div class="book-empty">該当する記号が見つかりません</div>`;
 }
 
 let currentSeg = 'week';
@@ -1168,6 +1392,8 @@ function camResult(){
   document.getElementById('cam-done').onclick = () => {
     const oldLv = getLevelInfo(STATE.points).cur.lv;
     STATE.points += gained; STATE.posts += 1; STATE.streak += 1;
+    STATE.myPosts += 1; STATE.earned += gained;
+    if(o.type==='danger') STATE.dangerFound += 1;
     // フィードに先頭追加
     const bgMap = { danger:'rgba(230,57,70,.2)', warn:'rgba(244,162,97,.2)', safe:'rgba(100,116,139,.2)' };
     const chipMap = { danger:['ok','濃厚'], warn:['warn','要確認'], safe:['ng','偶然'] };
@@ -1176,11 +1402,12 @@ function camResult(){
       warn:'マーキングの可能性が確認されましたが確定には至りません。周辺の類似報告と合わせて判断することを推奨します。',
       safe:'自然な経年劣化またはチョーク等による偶然の記号と判定。マーキングの特徴的なパターンは検出されませんでした。'
     };
-    FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:'ユウキ', act:o.label+'を投稿', ago:'たった今', chip:chipMap[o.type],
+    FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:PROFILE.name, act:o.label+'を投稿', ago:'たった今', chip:chipMap[o.type],
       label:o.label, verdict:o.verdict, conf:conf, aiComment:aiCommentMap[o.type] });
     STATE.unread++; renderBadge();
-    // ミッション達成チェック・ランキング更新
-    checkMissions();
+    // デイリーミッション・実績・ランキング更新
+    bumpDaily('posts'); bumpDaily(o.type);
+    checkAchievements();
     updateRankData(gained);
     renderHome();
     // レベルアップ判定
@@ -1188,7 +1415,7 @@ function camResult(){
     if(newLv.lv > oldLv) setTimeout(()=>showLevelUp(newLv.title, newLv.lv), 800);
     // add a fresh marking near center
     const m = { lat:35.6595+(Math.random()-.5)*.004, lng:139.7010+(Math.random()-.5)*.004,
-      type:o.type, mark:o.mark, verdict:o.verdict, user:'ユウキ', label:'あなたの新規投稿（'+o.label+'）', ago:'たった今' };
+      type:o.type, mark:o.mark, verdict:o.verdict, user:PROFILE.name, label:'あなたの新規投稿（'+o.label+'）', ago:'たった今' };
     MARKINGS.push(m);
     if (map && markerLayer){
       const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};animation:none"><span>${o.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
@@ -1196,6 +1423,7 @@ function camResult(){
     }
     renderMapOverlay();
     refreshHeat();
+    saveState();
     switchView('map');
     showToast('✅ 投稿完了！+'+gained+'pt 獲得');
     setTimeout(camIdle, 400);
@@ -1203,8 +1431,9 @@ function camResult(){
   document.getElementById('cam-again').onclick = camIdle;
   document.getElementById('cam-share').onclick = () => {
     const text = `🔍 GO-TO探偵団\n${o.title}（AI信頼度 ${conf}%）\n投稿が防犯マップに追加されました！\nhttps://b-w-hiroki.github.io/goto-tanteidan/`;
-    if (navigator.share) { navigator.share({ title: 'GO-TO探偵団', text }); }
+    if (navigator.share) { navigator.share({ title: 'GO-TO探偵団', text }).catch(()=>{}); }
     else { navigator.clipboard?.writeText(text).then(() => showToast('📋 クリップボードにコピーしました')); }
+    STATE.shares += 1; bumpDaily('share'); checkAchievements(); saveState();
   };
 }
 
@@ -1266,6 +1495,7 @@ document.getElementById('ob-next').onclick = () => {
     const ob = document.getElementById('onboard');
     ob.classList.add('gone');
     setTimeout(() => ob.remove(), 450);
+    ONBOARDED = true; saveState();
   }
 };
 
@@ -1275,13 +1505,13 @@ function switchView(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelector(`.tab[data-view="${name}"]`).classList.add('active');
-  if (name==='map') initMap();
+  if (name==='map') { initMap(); bumpDaily('map'); saveState(); }
   if (name==='cam') camIdle();
   if (name==='book') renderBook();
   if (name==='home') { STATE.unread = 0; renderBadge(); }
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet','level-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
@@ -1385,6 +1615,9 @@ document.getElementById('home-badge').addEventListener('click', e => {
 // hero tap → open level perks sheet
 document.getElementById('home-hero').addEventListener('click', openLevelSheet);
 
+// profile (avatar) tap → open my page
+document.getElementById('profile-btn').addEventListener('click', openMyPage);
+
 // feed filter chips
 document.querySelectorAll('#feed-filter .ff-chip').forEach(b=>{
   b.onclick = () => {
@@ -1395,6 +1628,19 @@ document.querySelectorAll('#feed-filter .ff-chip').forEach(b=>{
   };
 });
 
+// book search + filter
+document.getElementById('book-search').addEventListener('input', e => {
+  bookQuery = e.target.value; renderBook();
+});
+document.querySelectorAll('#book-filter .ff-chip').forEach(b=>{
+  b.onclick = () => {
+    document.querySelectorAll('#book-filter .ff-chip').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    bookFilter = b.dataset.bfilter;
+    renderBook();
+  };
+});
+
 // PWA service worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -1402,7 +1648,14 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// init
+// init: 保存データの復元 → デイリー更新 → 初回はオンボーディング
+loadState();
+ensureDaily();
+syncProfileToRanks();
+if (ONBOARDED) {
+  const ob = document.getElementById('onboard');
+  if (ob) ob.remove();
+}
 renderHome();
 renderRank('week');
 </script>
