@@ -669,22 +669,22 @@
 <div class="pitch">
   <span class="badge">PROTOTYPE · 2026</span>
   <h1><span class="glass">🔍</span> GO-TO 探偵団</h1>
-  <p class="lead">市民が「探偵」となり、街のマーキングを発見・投稿。AIが判定し、防犯マップがリアルタイムに育つ。</p>
+  <p class="lead" data-i18n="pitch_lead">市民が「探偵」となり、街のマーキングを発見・投稿。AIが判定し、防犯マップがリアルタイムに育つ。</p>
 
   <div class="feat">
     <div class="ic">📸</div>
-    <div class="tx"><b>撮って投稿</b><span>通勤・通学路の不審な記号を撮影しGPS付きで投稿</span></div>
+    <div class="tx"><b data-i18n="pitch_f1t">撮って投稿</b><span data-i18n="pitch_f1d">通勤・通学路の不審な記号を撮影しGPS付きで投稿</span></div>
   </div>
   <div class="feat">
     <div class="ic">🤖</div>
-    <div class="tx"><b>AIが自動判定</b><span>マーキングか偶然かをAIが判別しマップへ反映</span></div>
+    <div class="tx"><b data-i18n="pitch_f2t">AIが自動判定</b><span data-i18n="pitch_f2d">マーキングか偶然かをAIが判別しマップへ反映</span></div>
   </div>
   <div class="feat">
     <div class="ic">⭐</div>
-    <div class="tx"><b>ポイント＆ランキング</b><span>貢献に応じて捜査ポイント・特典・地域ランク</span></div>
+    <div class="tx"><b data-i18n="pitch_f3t">ポイント＆ランキング</b><span data-i18n="pitch_f3d">貢献に応じて捜査ポイント・特典・地域ランク</span></div>
   </div>
 
-  <p class="note">※ これは概念実証用のプロトタイプです。地図・投稿・AI判定・ポイントはすべてダミーデータで動作します。実際のタブを操作してみてください →</p>
+  <p class="note" data-i18n="pitch_note">※ これは概念実証用のプロトタイプです。地図・投稿・AI判定・ポイントはすべてダミーデータで動作します。実際のタブを操作してみてください →</p>
 </div>
 
 <!-- ── Phone ── -->
@@ -697,7 +697,7 @@
     <!-- HOME -->
     <section class="view active" id="view-home">
       <div class="hdr">
-        <div><h2>こんにちは、探偵</h2><div class="sub">今日も街の安全を守ろう</div></div>
+        <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
         <button class="avatar-btn" id="profile-btn" style="font-size:28px" title="マイページ">🕵️</button>
       </div>
 
@@ -705,26 +705,26 @@
         <div class="glasswm">🔍</div>
         <div class="role" id="home-role">特級探偵 / Lv.7</div>
         <div class="name" id="home-name">ユウキ さん</div>
-        <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl">捜査ポイント</span></div>
+        <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
         <div class="lvbar"><i id="lvbar"></i></div>
-        <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint">特典を見る ›</span></div>
+        <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint" data-i18n="perk_hint">特典を見る ›</span></div>
       </div>
 
       <div class="statgrid">
-        <div class="stat"><b id="stat-posts">38</b><span>投稿数</span></div>
-        <div class="stat"><b>12</b><span>解放エリア</span></div>
-        <div class="stat"><b id="stat-streak">5</b><span>連続記録</span></div>
+        <div class="stat"><b id="stat-posts">38</b><span data-i18n="stat_posts">投稿数</span></div>
+        <div class="stat"><b>12</b><span data-i18n="stat_areas">解放エリア</span></div>
+        <div class="stat"><b id="stat-streak">5</b><span data-i18n="stat_streak">連続記録</span></div>
       </div>
 
-      <div class="sec-title">📋 今日のミッション</div>
+      <div class="sec-title" data-i18n="sec_missions">📋 今日のミッション</div>
       <div id="missions"></div>
 
-      <div class="sec-title">🕐 みんなの捜査ログ</div>
+      <div class="sec-title" data-i18n="sec_feed">🕐 みんなの捜査ログ</div>
       <div class="feed-filter" id="feed-filter">
-        <button class="ff-chip active" data-filter="all">すべて</button>
-        <button class="ff-chip" data-filter="ok">濃厚</button>
-        <button class="ff-chip" data-filter="warn">要確認</button>
-        <button class="ff-chip" data-filter="ng">偶然</button>
+        <button class="ff-chip active" data-filter="all" data-i18n="ff_all">すべて</button>
+        <button class="ff-chip" data-filter="ok" data-i18n="ff_ok">濃厚</button>
+        <button class="ff-chip" data-filter="warn" data-i18n="ff_warn">要確認</button>
+        <button class="ff-chip" data-filter="ng" data-i18n="ff_ng">偶然</button>
       </div>
       <div class="card" id="feed"></div>
     </section>
@@ -741,36 +741,36 @@
 
     <!-- RANKING -->
     <section class="view" id="view-rank">
-      <div class="hdr"><div><h2>ランキング</h2><div class="sub">渋谷区エリア</div></div><div style="font-size:26px">🏆</div></div>
+      <div class="hdr"><div><h2 data-i18n="rank_title">ランキング</h2><div class="sub" data-i18n="rank_sub">渋谷区エリア</div></div><div style="font-size:26px">🏆</div></div>
       <div class="rank-tabs" id="rank-tabs">
-        <button class="rt active" data-rtab="solo">👤 個人</button>
-        <button class="rt" data-rtab="team">🛡 探偵団</button>
+        <button class="rt active" data-rtab="solo" data-i18n="rt_solo">👤 個人</button>
+        <button class="rt" data-rtab="team" data-i18n="rt_team">🛡 探偵団</button>
       </div>
       <div id="rank-solo">
         <div class="seg">
-          <button class="active" data-seg="week">今週</button>
-          <button data-seg="month">今月</button>
-          <button data-seg="all">総合</button>
+          <button class="active" data-seg="week" data-i18n="seg_week">今週</button>
+          <button data-seg="month" data-i18n="seg_month">今月</button>
+          <button data-seg="all" data-i18n="seg_all">総合</button>
         </div>
         <div class="card" id="rank-list"></div>
       </div>
       <div id="rank-team" style="display:none">
         <div id="myteam-card"></div>
-        <div class="sec-title" style="margin-top:14px">🛡 探偵団ランキング</div>
+        <div class="sec-title" style="margin-top:14px" data-i18n="team_rank_title">🛡 探偵団ランキング</div>
         <div class="card" id="team-list"></div>
       </div>
     </section>
 
     <!-- BOOK -->
     <section class="view" id="view-book">
-      <div class="hdr"><div><h2>探偵手帳</h2><div class="sub">マーキング図鑑</div></div><div style="font-size:26px">📖</div></div>
-      <p style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.6">侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。</p>
-      <input class="book-search" id="book-search" type="text" placeholder="🔎 記号名・意味で検索…" />
+      <div class="hdr"><div><h2 data-i18n="book_title">探偵手帳</h2><div class="sub" data-i18n="book_sub">マーキング図鑑</div></div><div style="font-size:26px">📖</div></div>
+      <p style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.6" data-i18n="book_desc">侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。</p>
+      <input class="book-search" id="book-search" type="text" data-i18n-ph="book_search_ph" placeholder="🔎 記号名・意味で検索…" />
       <div class="book-filter" id="book-filter">
-        <button class="ff-chip active" data-bfilter="all">すべて</button>
-        <button class="ff-chip" data-bfilter="danger">要注意</button>
-        <button class="ff-chip" data-bfilter="warn">要確認</button>
-        <button class="ff-chip" data-bfilter="safe">偶然</button>
+        <button class="ff-chip active" data-bfilter="all" data-i18n="bf_all">すべて</button>
+        <button class="ff-chip" data-bfilter="danger" data-i18n="bf_danger">要注意</button>
+        <button class="ff-chip" data-bfilter="warn" data-i18n="bf_warn">要確認</button>
+        <button class="ff-chip" data-bfilter="safe" data-i18n="bf_safe">偶然</button>
       </div>
       <div id="book-list"></div>
     </section>
@@ -781,18 +781,18 @@
     <div class="ob-wrap">
       <div class="ob-slide" style="transform:translateX(0%)">
         <div class="ob-icon">🔍</div>
-        <div class="ob-title">GO-TO 探偵団へ<br>ようこそ</div>
-        <div class="ob-desc">市民が「探偵」となり、街の不審なマーキングを発見・投稿。AIが判定し、防犯マップをリアルタイムに育てるアプリです。</div>
+        <div class="ob-title" data-i18n="ob1t">GO-TO 探偵団へ<br>ようこそ</div>
+        <div class="ob-desc" data-i18n="ob1d">市民が「探偵」となり、街の不審なマーキングを発見・投稿。AIが判定し、防犯マップをリアルタイムに育てるアプリです。</div>
       </div>
       <div class="ob-slide" style="transform:translateX(100%)">
         <div class="ob-icon">📸</div>
-        <div class="ob-title">撮影して投稿しよう</div>
-        <div class="ob-desc">中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。</div>
+        <div class="ob-title" data-i18n="ob2t">撮影して投稿しよう</div>
+        <div class="ob-desc" data-i18n="ob2d">中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。</div>
       </div>
       <div class="ob-slide" style="transform:translateX(200%)">
         <div class="ob-icon">🗺️</div>
-        <div class="ob-title">地図で街を守ろう</div>
-        <div class="ob-desc">投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。</div>
+        <div class="ob-title" data-i18n="ob3t">地図で街を守ろう</div>
+        <div class="ob-desc" data-i18n="ob3d">投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。</div>
       </div>
     </div>
     <div class="ob-dots" id="ob-dots">
@@ -814,19 +814,19 @@
   <nav class="tabbar">
     <button class="tab active" data-view="home">
       <span class="tab-badge" id="home-badge" style="display:none">0</span>
-      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9v11h14V9"/></svg>ホーム
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9v11h14V9"/></svg><span data-i18n="tab_home">ホーム</span>
     </button>
     <button class="tab" data-view="map">
-      <svg viewBox="0 0 24 24"><path d="M9 3L4 5v16l5-2 6 2 5-2V3l-5 2-6-2z"/><path d="M9 3v16M15 5v16"/></svg>マップ
+      <svg viewBox="0 0 24 24"><path d="M9 3L4 5v16l5-2 6 2 5-2V3l-5 2-6-2z"/><path d="M9 3v16M15 5v16"/></svg><span data-i18n="tab_map">マップ</span>
     </button>
     <button class="tab cam" data-view="cam">
       <div class="cambtn"><svg viewBox="0 0 24 24"><path d="M3 7h4l2-2h6l2 2h4v12H3z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
     </button>
     <button class="tab" data-view="rank">
-      <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6a6 6 0 01-12 0zM6 5H3v2a3 3 0 003 3M18 5h3v2a3 3 0 01-3 3M9 21h6M12 15v6"/></svg>ランク
+      <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6a6 6 0 01-12 0zM6 5H3v2a3 3 0 003 3M18 5h3v2a3 3 0 01-3 3M9 21h6M12 15v6"/></svg><span data-i18n="tab_rank">ランク</span>
     </button>
     <button class="tab" data-view="book">
-      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>手帳
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><span data-i18n="tab_book">手帳</span>
     </button>
   </nav>
 </div>
@@ -835,6 +835,137 @@
 <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
+// ───────────────────────────── i18n ─────────────────────────────
+let LANG = 'ja';
+const I18N = {
+  ja: {
+    pitch_lead:'市民が「探偵」となり、街のマーキングを発見・投稿。AIが判定し、防犯マップがリアルタイムに育つ。',
+    pitch_f1t:'撮って投稿', pitch_f1d:'通勤・通学路の不審な記号を撮影しGPS付きで投稿',
+    pitch_f2t:'AIが自動判定', pitch_f2d:'マーキングか偶然かをAIが判別しマップへ反映',
+    pitch_f3t:'ポイント＆ランキング', pitch_f3d:'貢献に応じて捜査ポイント・特典・地域ランク',
+    pitch_note:'※ これは概念実証用のプロトタイプです。地図・投稿・AI判定・ポイントはすべてダミーデータで動作します。実際のタブを操作してみてください →',
+    home_greet:'こんにちは、探偵', home_sub:'今日も街の安全を守ろう',
+    pts_label:'捜査ポイント', perk_hint:'特典を見る ›', name_suffix:' さん',
+    stat_posts:'投稿数', stat_areas:'解放エリア', stat_streak:'連続記録',
+    sec_missions:'📋 今日のミッション', sec_feed:'🕐 みんなの捜査ログ',
+    ff_all:'すべて', ff_ok:'濃厚', ff_warn:'要確認', ff_ng:'偶然',
+    feed_empty:'該当する投稿はありません',
+    rank_title:'ランキング', rank_sub:'渋谷区エリア',
+    rt_solo:'👤 個人', rt_team:'🛡 探偵団',
+    seg_week:'今週', seg_month:'今月', seg_all:'総合',
+    team_rank_title:'🛡 探偵団ランキング',
+    book_title:'探偵手帳', book_sub:'マーキング図鑑',
+    book_desc:'侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。',
+    book_search_ph:'🔎 記号名・意味で検索…', book_empty:'該当する記号が見つかりません',
+    bf_all:'すべて', bf_danger:'要注意', bf_warn:'要確認', bf_safe:'偶然',
+    chip_danger:'要注意', chip_warn:'要確認', chip_safe:'偶然多め',
+    book_freq:'出現頻度', book_ex:'例',
+    tab_home:'ホーム', tab_map:'マップ', tab_rank:'ランク', tab_book:'手帳',
+    ob1t:'GO-TO 探偵団へ<br>ようこそ', ob1d:'市民が「探偵」となり、街の不審なマーキングを発見・投稿。AIが判定し、防犯マップをリアルタイムに育てるアプリです。',
+    ob2t:'撮影して投稿しよう', ob2d:'中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。',
+    ob3t:'地図で街を守ろう', ob3d:'投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。',
+    ob_next:'次へ', ob_start:'はじめる',
+    next_rank:'次のランク', to_next:'まで あと', pt:'pt', max_rank:'最高ランク到達！',
+    perks_title:'🎖 ランク特典', now_lv:'現在', next_is:'次は', promote_in:'で昇格', reach_max:'最高ランクに到達！', all_unlocked:'すべての特典が解放されています',
+    st_done:'達成済み', st_cur:'現在', st_left:'あと',
+    mypage:'👤 マイページ', mp_avatar:'アバター', mp_name:'探偵名', mp_team:'🛡 所属探偵団',
+    mp_summary:'📊 今週のまとめ', mp_week_posts:'今週の投稿', mp_earned:'獲得ポイント', mp_week_rank:'週間ランキング', mp_streak:'連続記録',
+    mp_badges:'🏆 実績バッジ', mp_reset:'🗑 データをリセット', mp_reset_confirm:'すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？',
+    mp_lang:'🌐 言語 / Language', rank_suffix:'位',
+    notif_title:'🔔 新着通知',
+    recent_posts:'📌 最近の投稿', detected_danger:'濃厚 検出', detected_warn:'要確認',
+    my_team_sub:'あなたの所属する探偵団', team_total:'団の総ポイント', team_members:'団員数', your_contrib:'あなたの貢献',
+    teams_suffix:'団', members_unit:'名', your_team:'あなたの団',
+    ov_danger:'危険', ov_warn:'要確認', ov_recent:'24h以内', ov_count:'件', ov_heat:'🔥 ヒートマップ', ov_stats:'📊 エリア統計',
+    lg_danger:'マーキング濃厚', lg_warn:'要確認', lg_safe:'偶然・誤検知',
+    as_title:'📊 渋谷区宇田川町 今週の危険度', as_alert:'警戒', as_caution:'やや注意', as_safe:'比較的安全',
+    as_danger:'マーキング濃厚', as_warn:'要確認', as_safe2:'偶然・誤検知', as_total:'累計投稿', as_24h:'24時間以内',
+    cam_hint:'怪しい記号にカメラを向けて撮影', cam_r1:'画像をアップロード中…', cam_r2:'AIがマーキングを解析中…', cam_r3:'位置情報とマップを照合中…',
+    cam_conf:'AI信頼度', cam_added:'防犯マップに追加されます。', cam_got:'捜査ポイント獲得！', cam_bonus:' 初回ボーナス込み',
+    cam_reflect:'マップに反映する', cam_again:'もう一度撮影', cam_share:'📤 結果をシェア',
+    toast_posted:'✅ 投稿完了！+', toast_pt_got:'pt 獲得', toast_daily:'🎯 デイリー達成！', toast_ach:'🏆 実績解除！', toast_copy:'📋 クリップボードにコピーしました', toast_heat_err:'⚠️ ヒートマップを読み込めませんでした',
+    dm_title:'投稿詳細', dm_posted_by:'投稿:', dm_catalog:'探偵手帳で詳しく見る →',
+    lvup_title:'レベルアップ！', lvup_to:'に昇進しました',
+    just_now:'たった今', posted_suffix:'を投稿', your_new_post:'あなたの新規投稿',
+    map_fail:'地図の読み込みに失敗しました。<br>通信環境を確認して再読み込みしてください。',
+  },
+  en: {
+    pitch_lead:'Citizens become "detectives," spotting and reporting street markings. AI judges them and the crime-prevention map grows in real time.',
+    pitch_f1t:'Snap & Post', pitch_f1d:'Photograph suspicious marks on your commute and post with GPS',
+    pitch_f2t:'AI Auto-Judges', pitch_f2d:'AI tells markings from coincidence and reflects them on the map',
+    pitch_f3t:'Points & Ranking', pitch_f3d:'Earn investigation points, perks and area ranks for contributing',
+    pitch_note:'* This is a proof-of-concept prototype. The map, posts, AI judgments and points all run on dummy data. Try operating the tabs →',
+    home_greet:'Hello, Detective', home_sub:"Let's keep the town safe today",
+    pts_label:'investigation pts', perk_hint:'See perks ›', name_suffix:'',
+    stat_posts:'Posts', stat_areas:'Areas', stat_streak:'Streak',
+    sec_missions:'📋 Today\'s Missions', sec_feed:'🕐 Community Log',
+    ff_all:'All', ff_ok:'Likely', ff_warn:'Check', ff_ng:'Coincidence',
+    feed_empty:'No matching posts',
+    rank_title:'Ranking', rank_sub:'Shibuya area',
+    rt_solo:'👤 Solo', rt_team:'🛡 Squad',
+    seg_week:'Week', seg_month:'Month', seg_all:'All-time',
+    team_rank_title:'🛡 Squad Ranking',
+    book_title:'Detective Handbook', book_sub:'Marking Encyclopedia',
+    book_desc:'A list of marking symbols said to be used in break-in crimes. If you spot one, post it from the camera.',
+    book_search_ph:'🔎 Search by name or meaning…', book_empty:'No matching symbols found',
+    bf_all:'All', bf_danger:'Caution', bf_warn:'Check', bf_safe:'Coincidence',
+    chip_danger:'Caution', chip_warn:'Check', chip_safe:'Often false',
+    book_freq:'Frequency', book_ex:'e.g.',
+    tab_home:'Home', tab_map:'Map', tab_rank:'Rank', tab_book:'Book',
+    ob1t:'Welcome to<br>GO-TO Detectives', ob1d:'Citizens become "detectives" who find and post suspicious street markings. AI judges them and grows the crime-prevention map in real time.',
+    ob2t:'Shoot and Post', ob2d:'Tap the center camera button to shoot. AI auto-judges the marking and you earn investigation points.',
+    ob3t:'Protect the Town on the Map', ob3d:'The more posts, the richer the map. Grasp danger spots via the heatmap and stats.',
+    ob_next:'Next', ob_start:'Start',
+    next_rank:'Next rank', to_next:'— left:', pt:'pt', max_rank:'Max rank reached!',
+    perks_title:'🎖 Rank Perks', now_lv:'Now', next_is:'Next:', promote_in:'to promote', reach_max:'Max rank reached!', all_unlocked:'All perks are unlocked',
+    st_done:'Achieved', st_cur:'Current', st_left:'left:',
+    mypage:'👤 My Page', mp_avatar:'Avatar', mp_name:'Detective name', mp_team:'🛡 Your squad',
+    mp_summary:'📊 This week', mp_week_posts:'Posts this week', mp_earned:'Points earned', mp_week_rank:'Weekly rank', mp_streak:'Streak',
+    mp_badges:'🏆 Achievements', mp_reset:'🗑 Reset data', mp_reset_confirm:'This will reset all records (points, posts, achievements). Are you sure?',
+    mp_lang:'🌐 言語 / Language', rank_suffix:'',
+    notif_title:'🔔 New notifications',
+    recent_posts:'📌 Recent posts', detected_danger:'Likely found', detected_warn:'To check',
+    my_team_sub:'The squad you belong to', team_total:'Squad total pts', team_members:'Members', your_contrib:'Your contribution',
+    teams_suffix:' squads', members_unit:'', your_team:'Your squad',
+    ov_danger:'Danger', ov_warn:'Check', ov_recent:'<24h', ov_count:'', ov_heat:'🔥 Heatmap', ov_stats:'📊 Area stats',
+    lg_danger:'Marking likely', lg_warn:'Needs check', lg_safe:'Coincidence',
+    as_title:'📊 Udagawa-cho, Shibuya — danger this week', as_alert:'Alert', as_caution:'Caution', as_safe:'Relatively safe',
+    as_danger:'Marking likely', as_warn:'Needs check', as_safe2:'Coincidence', as_total:'Total posts', as_24h:'Within 24h',
+    cam_hint:'Point the camera at a suspicious symbol', cam_r1:'Uploading image…', cam_r2:'AI analyzing marking…', cam_r3:'Matching location with map…',
+    cam_conf:'AI confidence', cam_added:'It will be added to the map.', cam_got:'Investigation points earned!', cam_bonus:' incl. first-time bonus',
+    cam_reflect:'Add to map', cam_again:'Shoot again', cam_share:'📤 Share result',
+    toast_posted:'✅ Posted! +', toast_pt_got:' pts', toast_daily:'🎯 Daily done! ', toast_ach:'🏆 Unlocked! ', toast_copy:'📋 Copied to clipboard', toast_heat_err:'⚠️ Could not load the heatmap',
+    dm_title:'Post detail', dm_posted_by:'By:', dm_catalog:'See details in the handbook →',
+    lvup_title:'Level up!', lvup_to:'',
+    just_now:'just now', posted_suffix:'', your_new_post:'Your new post',
+    map_fail:'Failed to load the map.<br>Check your connection and reload.',
+  }
+};
+function t(k){ return (I18N[LANG] && I18N[LANG][k]!=null) ? I18N[LANG][k] : (I18N.ja[k]!=null ? I18N.ja[k] : k); }
+function tx(o, f){ return (LANG==='en' && o[f+'_en']!=null) ? o[f+'_en'] : o[f]; }
+
+// よく使う固有表現の対訳（中央辞書）
+const LABELS = {
+  'インターホン側面の傷':'Scratch on intercom side', '郵便受け裏の記号':'Mark behind the mailbox',
+  '表札周りのシール':'Sticker near the nameplate', 'メーターボックスの矢印':'Arrow on the meter box',
+  '玄関枠の小さな点':'Small dot on the door frame', '誤検知（落書き）':'False positive (graffiti)',
+  'ベランダ柵のテープ':'Tape on the balcony rail', 'ガスメーターの数字':'Number on the gas meter',
+  '分電盤近くの線刻':'Scoring near the breaker', '塀の上の引っかき傷':'Scratch atop the wall',
+  '郵便受けの点':'Dot on the mailbox', 'ドア枠の傷':'Scratch on the door frame',
+  '玄関枠の点':'Dot on the door frame', 'ポストの角':'Corner of the postbox', '壁面の記号':'Symbol on the wall',
+  '経年劣化の汚れ':'Age-related stains', 'チョークの落書き':'Chalk graffiti', '落書き・自然な汚れ':'Graffiti / natural stains',
+  'メーターの矢印':'Meter arrow', 'ガスメーターの数字':'Number on the gas meter', '玄関枠の小さな点':'Small dot on the door frame',
+};
+const NAMES = { 'タカシ':'Takashi','ミク':'Miku','ソウタ':'Sota','ケン':'Ken','アヤ':'Aya','リナ':'Rina','ハナ':'Hana','ユウキ':'Yuki' };
+function txLabel(s){ return LANG==='en' ? (LABELS[s]||s) : s; }
+function txName(s){ if(LANG!=='en') return s; for(const k in NAMES) s = s.split(k).join(NAMES[k]); return s.replace('（あなた）',' (You)'); }
+function txVerdict(v){ if(LANG!=='en') return v; return v==='マーキング濃厚'?'Marking likely':v==='要確認'?'Needs check':v==='偶然と判定'?'Coincidence':v; }
+function txAgo(a){ if(LANG!=='en') return a; if(a==='たった今') return 'just now'; if(a==='昨日') return 'yesterday';
+  let m=a.match(/^(\d+)分前$/); if(m) return m[1]+' min ago'; m=a.match(/^(\d+)時間前$/); if(m) return m[1]+' hr ago'; return a; }
+function txChip(c0){ return c0==='ok'?t('ff_ok'):c0==='warn'?t('ff_warn'):t('ff_ng'); }
+function txArea(s){ if(LANG!=='en') return s; return s.replace('渋谷','Shibuya').replace('・',' · ').replace(/(\d+)件/,'$1 posts'); }
+function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f==='中頻度'?'Medium':f==='低頻度'?'Low':f; }
+
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
   myPosts: 0, dangerFound: 0, shares: 0, earned: 0 };
@@ -844,11 +975,11 @@ const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','�
 
 // 探偵団（チーム）。pt は基礎値で、自分の所属チームには自分の貢献(STATE.earned)を加算して表示
 const TEAMS = [
-  { id:'shinjuku', name:'新宿パトロール隊',   emoji:'🦉', members:156, pt:52100 },
-  { id:'shibuya',  name:'渋谷探偵団',         emoji:'🦊', members:128, pt:46200 },
-  { id:'setagaya', name:'世田谷見守り隊',     emoji:'🐻', members:142, pt:45300 },
-  { id:'minato',   name:'港区ガーディアン',   emoji:'🐯', members:87,  pt:41900 },
-  { id:'meguro',   name:'目黒セーフティ',     emoji:'🐱', members:98,  pt:38400 },
+  { id:'shinjuku', name:'新宿パトロール隊',   name_en:'Shinjuku Patrol',     emoji:'🦉', members:156, pt:52100 },
+  { id:'shibuya',  name:'渋谷探偵団',         name_en:'Shibuya Detectives',  emoji:'🦊', members:128, pt:46200 },
+  { id:'setagaya', name:'世田谷見守り隊',     name_en:'Setagaya Watch',      emoji:'🐻', members:142, pt:45300 },
+  { id:'minato',   name:'港区ガーディアン',   name_en:'Minato Guardians',    emoji:'🐯', members:87,  pt:41900 },
+  { id:'meguro',   name:'目黒セーフティ',     name_en:'Meguro Safety',       emoji:'🐱', members:98,  pt:38400 },
 ];
 function teamDisplayPt(t){ return t.pt + (t.id===PROFILE.team ? STATE.earned : 0); }
 function myTeam(){ return TEAMS.find(t=>t.id===PROFILE.team) || TEAMS[1]; }
@@ -856,25 +987,25 @@ function teamsSorted(){ return TEAMS.slice().sort((a,b)=>teamDisplayPt(b)-teamDi
 
 // 実績バッジ
 const ACHIEVEMENTS = [
-  { id:'first',  icon:'🎉', title:'初投稿',          desc:'はじめて投稿した',         cond:()=>STATE.myPosts>=1 },
-  { id:'patrol', icon:'📸', title:'パトロール開始',   desc:'5件投稿した',             cond:()=>STATE.myPosts>=5 },
-  { id:'vet',    icon:'🏅', title:'ベテラン探偵',     desc:'15件投稿した',            cond:()=>STATE.myPosts>=15 },
-  { id:'hunter', icon:'⚡', title:'危険ハンター',     desc:'危険を5件発見した',       cond:()=>STATE.dangerFound>=5 },
-  { id:'streak', icon:'🔥', title:'継続は力なり',     desc:'連続記録10を達成',        cond:()=>STATE.streak>=10 },
-  { id:'share',  icon:'📤', title:'街に拡散',         desc:'結果をシェアした',         cond:()=>STATE.shares>=1 },
-  { id:'ace',    icon:'👑', title:'エース昇格',       desc:'Lv.8 に到達した',         cond:()=>STATE.points>=3000 },
-  { id:'master', icon:'💎', title:'ポイントマスター', desc:'5,000pt に到達した',      cond:()=>STATE.points>=5000 },
+  { id:'first',  icon:'🎉', title:'初投稿',          desc:'はじめて投稿した',         title_en:'First Post',      desc_en:'Made your first post',     cond:()=>STATE.myPosts>=1 },
+  { id:'patrol', icon:'📸', title:'パトロール開始',   desc:'5件投稿した',             title_en:'On Patrol',       desc_en:'Posted 5 times',           cond:()=>STATE.myPosts>=5 },
+  { id:'vet',    icon:'🏅', title:'ベテラン探偵',     desc:'15件投稿した',            title_en:'Veteran',         desc_en:'Posted 15 times',          cond:()=>STATE.myPosts>=15 },
+  { id:'hunter', icon:'⚡', title:'危険ハンター',     desc:'危険を5件発見した',       title_en:'Danger Hunter',   desc_en:'Found 5 dangers',          cond:()=>STATE.dangerFound>=5 },
+  { id:'streak', icon:'🔥', title:'継続は力なり',     desc:'連続記録10を達成',        title_en:'Persistence',     desc_en:'Reached a 10-day streak',  cond:()=>STATE.streak>=10 },
+  { id:'share',  icon:'📤', title:'街に拡散',         desc:'結果をシェアした',         title_en:'Spread the Word', desc_en:'Shared a result',          cond:()=>STATE.shares>=1 },
+  { id:'ace',    icon:'👑', title:'エース昇格',       desc:'Lv.8 に到達した',         title_en:'Ace Promotion',   desc_en:'Reached Lv.8',             cond:()=>STATE.points>=3000 },
+  { id:'master', icon:'💎', title:'ポイントマスター', desc:'5,000pt に到達した',      title_en:'Point Master',    desc_en:'Reached 5,000 pts',        cond:()=>STATE.points>=5000 },
 ];
 let ACH_UNLOCKED = [];
 
 // デイリーミッション
 const DAILY_POOL = [
-  { id:'post2',   icon:'🔍', title:'2件調査する',     desc:'今日2件投稿する',       reward:50, goal:2, metric:'posts'  },
-  { id:'post3',   icon:'🎯', title:'3件パトロール',   desc:'今日3件投稿する',       reward:90, goal:3, metric:'posts'  },
-  { id:'danger1', icon:'⚡', title:'危険を1件発見',   desc:'濃厚判定を1件出す',     reward:80, goal:1, metric:'danger' },
-  { id:'map',     icon:'🗺️', title:'防犯マップを確認', desc:'マップタブを開く',       reward:30, goal:1, metric:'map'    },
-  { id:'share',   icon:'📤', title:'結果をシェア',     desc:'判定結果を1回シェア',   reward:40, goal:1, metric:'share'  },
-  { id:'safe1',   icon:'🟢', title:'安全を確認',       desc:'偶然判定を1件記録',     reward:30, goal:1, metric:'safe'   },
+  { id:'post2',   icon:'🔍', title:'2件調査する',     desc:'今日2件投稿する',       title_en:'Investigate 2',    desc_en:'Post 2 times today',      reward:50, goal:2, metric:'posts'  },
+  { id:'post3',   icon:'🎯', title:'3件パトロール',   desc:'今日3件投稿する',       title_en:'Patrol 3',         desc_en:'Post 3 times today',      reward:90, goal:3, metric:'posts'  },
+  { id:'danger1', icon:'⚡', title:'危険を1件発見',   desc:'濃厚判定を1件出す',     title_en:'Find 1 danger',    desc_en:'Get one "likely" result', reward:80, goal:1, metric:'danger' },
+  { id:'map',     icon:'🗺️', title:'防犯マップを確認', desc:'マップタブを開く',       title_en:'Check the map',    desc_en:'Open the map tab',        reward:30, goal:1, metric:'map'    },
+  { id:'share',   icon:'📤', title:'結果をシェア',     desc:'判定結果を1回シェア',   title_en:'Share a result',   desc_en:'Share a result once',     reward:40, goal:1, metric:'share'  },
+  { id:'safe1',   icon:'🟢', title:'安全を確認',       desc:'偶然判定を1件記録',     title_en:'Confirm safety',   desc_en:'Log one coincidence',     reward:30, goal:1, metric:'safe'   },
 ];
 const DAILY = { date:'', picks:[], progress:{}, done:{} };
 let ONBOARDED = false;
@@ -891,41 +1022,59 @@ const MARKINGS = [
 ];
 
 const FEED = [
-  { mark:'⚡', bg:'rgba(230,57,70,.2)', who:'タカシ', act:'インターホン側面を投稿', ago:'12分前', chip:['ok','濃厚'],
+  { mark:'⚡', bg:'rgba(230,57,70,.2)', who:'タカシ', act:'インターホン側面を投稿', act_en:'posted a scratch on intercom side', ago:'12分前', chip:['ok','濃厚'],
     label:'インターホン側面の傷', verdict:'マーキング濃厚', conf:92,
-    aiComment:'表面の細い線刻は空き巣グループが住居の特徴を記録する「ターゲットマーク」と判定。電源系への干渉を示唆する可能性があります。' },
-  { mark:'→', bg:'rgba(230,57,70,.2)', who:'アヤ', act:'メーターの矢印を投稿', ago:'2時間前', chip:['ok','濃厚'],
+    aiComment:'表面の細い線刻は空き巣グループが住居の特徴を記録する「ターゲットマーク」と判定。電源系への干渉を示唆する可能性があります。',
+    aiComment_en:'The thin scoring is judged a "target mark" used by burglary groups to record a home\'s features. It may suggest tampering with the power system.' },
+  { mark:'→', bg:'rgba(230,57,70,.2)', who:'アヤ', act:'メーターの矢印を投稿', act_en:'posted an arrow on the meter', ago:'2時間前', chip:['ok','濃厚'],
     label:'メーターボックスの矢印', verdict:'マーキング濃厚', conf:89,
-    aiComment:'侵入経路または逃走ルートを示す矢印と判定。近隣に類似記号がないか広域調査を推奨します。' },
-  { mark:'●', bg:'rgba(244,162,97,.2)', who:'ケン', act:'表札のシールを投稿', ago:'1時間前', chip:['warn','要確認'],
+    aiComment:'侵入経路または逃走ルートを示す矢印と判定。近隣に類似記号がないか広域調査を推奨します。',
+    aiComment_en:'Judged an arrow indicating an entry or escape route. A wider survey for similar nearby symbols is recommended.' },
+  { mark:'●', bg:'rgba(244,162,97,.2)', who:'ケン', act:'表札のシールを投稿', act_en:'posted a sticker by the nameplate', ago:'1時間前', chip:['warn','要確認'],
     label:'表札周りのシール', verdict:'要確認', conf:64,
-    aiComment:'ターゲットを示すドット状記号の可能性があります。単体では確定できないため経過観察を推奨。' },
-  { mark:'○', bg:'rgba(100,116,139,.2)', who:'リナ', act:'落書きを投稿', ago:'昨日', chip:['ng','偶然'],
+    aiComment:'ターゲットを示すドット状記号の可能性があります。単体では確定できないため経過観察を推奨。',
+    aiComment_en:'Possibly a dot-style symbol marking a target. It cannot be confirmed alone, so monitoring is advised.' },
+  { mark:'○', bg:'rgba(100,116,139,.2)', who:'リナ', act:'落書きを投稿', act_en:'posted graffiti', ago:'昨日', chip:['ng','偶然'],
     label:'誤検知（落書き）', verdict:'偶然と判定', conf:83,
-    aiComment:'経年劣化によるシミまたはチョークの落書きと判定。マーキングの特徴的なパターンは検出されませんでした。' },
+    aiComment:'経年劣化によるシミまたはチョークの落書きと判定。マーキングの特徴的なパターンは検出されませんでした。',
+    aiComment_en:'Judged as age-related stains or chalk graffiti. No characteristic marking pattern was detected.' },
 ];
 
 const MARK_CATALOG = [
   { mark:'⚡', name:'電気系マーク', color:'danger', frequency:'高頻度',
+    name_en:'Electrical mark',
     meaning:'配電盤・インターホンの位置を示すとされる記号。電源を切って警報を無効化する意図がある場合も。',
+    meaning_en:'A symbol said to mark the breaker or intercom. It may aim to cut power and disable alarms.',
     examples:['インターホン側面の傷','分電盤近くの線刻'] },
   { mark:'→', name:'方向指示マーク', color:'danger', frequency:'高頻度',
+    name_en:'Direction mark',
     meaning:'侵入経路・逃走ルートを示す矢印。複数の記号が連なる場合は特に要注意。',
+    meaning_en:'An arrow showing an entry or escape route. Several in a row are especially concerning.',
     examples:['メーターボックスの矢印','塀の上の引っかき傷'] },
   { mark:'●', name:'ターゲットドット', color:'warn', frequency:'中頻度',
+    name_en:'Target dot',
     meaning:'対象住居をマークする記号。単体では確定できないが複数あれば要警戒。',
+    meaning_en:'A symbol marking a target home. Not conclusive alone, but multiple warrant caution.',
     examples:['表札周りのシール','郵便受けの点'] },
   { mark:'✕', name:'除外マーク', color:'warn', frequency:'中頻度',
+    name_en:'Exclusion mark',
     meaning:'「犯行済みまたは対象外」を示す可能性。グループ内の情報共有に使用されるとされる。',
+    meaning_en:'May indicate "already done or not a target," said to be used for sharing info within a group.',
     examples:['郵便受け裏の記号','ドア枠の傷'] },
   { mark:'∴', name:'三点マーク', color:'warn', frequency:'低頻度',
+    name_en:'Three-dot mark',
     meaning:'在否・生活習慣などを記録した可能性のある複合記号。海外での報告事例あり。',
+    meaning_en:'A compound symbol possibly recording presence or routines. Reported overseas.',
     examples:['玄関枠の点','ポストの角'] },
   { mark:'M', name:'アルファベット記号', color:'danger', frequency:'中頻度',
+    name_en:'Alphabet symbol',
     meaning:'チームや物件のコード番号を示すとされる。海外でも同様の事例が報告されている。',
+    meaning_en:'Said to indicate a team or property code. Similar cases reported overseas.',
     examples:['ベランダ柵のテープ','壁面の記号'] },
   { mark:'○', name:'偶然・誤検知', color:'safe', frequency:'—',
+    name_en:'Coincidence / false positive',
     meaning:'マーキングに見えるが実際は落書きや自然な汚れ。AIが偶然と判定したケース。',
+    meaning_en:'Looks like a marking but is actually graffiti or natural staining. Cases AI judged coincidental.',
     examples:['経年劣化の汚れ','チョークの落書き'] },
 ];
 
@@ -957,27 +1106,27 @@ const RANKS = {
 const TYPE_COLOR = { danger:'#E63946', warn:'#F4A261', safe:'#64748B' };
 
 const LEVELS = [
-  { lv:1, title:'見習い探偵', min:0,    icon:'🔰', perk:'撮影・投稿・防犯マップ閲覧の基本機能' },
-  { lv:2, title:'初級探偵',   min:200,  icon:'🧭', perk:'投稿履歴の閲覧と探偵バッジの獲得' },
-  { lv:3, title:'中級探偵',   min:500,  icon:'🔥', perk:'ヒートマップ表示とエリア統計が解放' },
-  { lv:4, title:'上級探偵',   min:900,  icon:'📊', perk:'週間活動レポートと優先通知が届く' },
-  { lv:5, title:'熟練探偵',   min:1400, icon:'⭐', perk:'カスタムエリア監視・限定アバター' },
-  { lv:6, title:'特上探偵',   min:2000, icon:'🎖️', perk:'地域ランキング表彰と特別ミッション' },
-  { lv:7, title:'特級探偵',   min:2480, icon:'🏅', perk:'自治体連携データ閲覧・探偵団リーダー権限' },
-  { lv:8, title:'エース探偵', min:3000, icon:'👑', perk:'AI判定の詳細レポートと新機能の先行利用' },
-  { lv:9, title:'伝説の探偵', min:4000, icon:'🏆', perk:'殿堂入り・全特典開放とプレミアム称号' },
+  { lv:1, title:'見習い探偵', min:0,    icon:'🔰', perk:'撮影・投稿・防犯マップ閲覧の基本機能',          title_en:'Trainee Detective',  perk_en:'Basics: shoot, post, view the map' },
+  { lv:2, title:'初級探偵',   min:200,  icon:'🧭', perk:'投稿履歴の閲覧と探偵バッジの獲得',              title_en:'Junior Detective',   perk_en:'View post history and earn badges' },
+  { lv:3, title:'中級探偵',   min:500,  icon:'🔥', perk:'ヒートマップ表示とエリア統計が解放',            title_en:'Detective',          perk_en:'Unlock heatmap and area stats' },
+  { lv:4, title:'上級探偵',   min:900,  icon:'📊', perk:'週間活動レポートと優先通知が届く',              title_en:'Senior Detective',   perk_en:'Weekly reports and priority alerts' },
+  { lv:5, title:'熟練探偵',   min:1400, icon:'⭐', perk:'カスタムエリア監視・限定アバター',              title_en:'Expert Detective',   perk_en:'Custom area watch and exclusive avatars' },
+  { lv:6, title:'特上探偵',   min:2000, icon:'🎖️', perk:'地域ランキング表彰と特別ミッション',            title_en:'Elite Detective',    perk_en:'Area-ranking honors and special missions' },
+  { lv:7, title:'特級探偵',   min:2480, icon:'🏅', perk:'自治体連携データ閲覧・探偵団リーダー権限',      title_en:'Special-Class',      perk_en:'Civic data access and squad-leader rights' },
+  { lv:8, title:'エース探偵', min:3000, icon:'👑', perk:'AI判定の詳細レポートと新機能の先行利用',        title_en:'Ace Detective',      perk_en:'Detailed AI reports and early feature access' },
+  { lv:9, title:'伝説の探偵', min:4000, icon:'🏆', perk:'殿堂入り・全特典開放とプレミアム称号',          title_en:'Legendary Detective',perk_en:'Hall of fame, all perks and premium title' },
 ];
 
 // 撮影結果のパターン（毎回ランダムに抽選）
 const CAM_OUTCOMES = [
-  { weight:3, type:'danger', mark:'⚡', title:'マーキング濃厚！', conf:[88,96], pts:50,
-    label:'インターホン側面の傷', desc:'「侵入経路の目印」と判定されました。', verdict:'マーキング濃厚' },
-  { weight:2, type:'danger', mark:'→', title:'マーキング濃厚！', conf:[85,94], pts:50,
-    label:'メーターボックスの矢印', desc:'「方向を示す記号」と判定されました。', verdict:'マーキング濃厚' },
-  { weight:3, type:'warn', mark:'●', title:'要確認', conf:[58,74], pts:30,
-    label:'表札周りのシール', desc:'マーキングの可能性あり。再調査を推奨します。', verdict:'要確認' },
-  { weight:2, type:'safe', mark:'○', title:'偶然と判定', conf:[76,90], pts:10,
-    label:'落書き・自然な汚れ', desc:'マーキングではないとAIが判断しました。', verdict:'偶然と判定' },
+  { weight:3, type:'danger', mark:'⚡', title:'マーキング濃厚！', title_en:'Marking likely!', conf:[88,96], pts:50,
+    label:'インターホン側面の傷', desc:'「侵入経路の目印」と判定されました。', desc_en:'Judged a "marker for an entry route."', verdict:'マーキング濃厚' },
+  { weight:2, type:'danger', mark:'→', title:'マーキング濃厚！', title_en:'Marking likely!', conf:[85,94], pts:50,
+    label:'メーターボックスの矢印', desc:'「方向を示す記号」と判定されました。', desc_en:'Judged a "symbol indicating direction."', verdict:'マーキング濃厚' },
+  { weight:3, type:'warn', mark:'●', title:'要確認', title_en:'Needs check', conf:[58,74], pts:30,
+    label:'表札周りのシール', desc:'マーキングの可能性あり。再調査を推奨します。', desc_en:'Possibly a marking. Re-investigation is advised.', verdict:'要確認' },
+  { weight:2, type:'safe', mark:'○', title:'偶然と判定', title_en:'Judged coincidence', conf:[76,90], pts:10,
+    label:'落書き・自然な汚れ', desc:'マーキングではないとAIが判断しました。', desc_en:'AI judged this is not a marking.', verdict:'偶然と判定' },
 ];
 function pickOutcome(){
   const total = CAM_OUTCOMES.reduce((s,o)=>s+o.weight,0);
@@ -1005,7 +1154,7 @@ function saveState(){
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify({
       v:1, state:STATE, profile:PROFILE, feed:FEED, markings:MARKINGS,
-      ach:ACH_UNLOCKED, daily:DAILY, ranks:RANKS, onboarded:ONBOARDED
+      ach:ACH_UNLOCKED, daily:DAILY, ranks:RANKS, onboarded:ONBOARDED, lang:LANG
     }));
   } catch(e){ /* localStorage 不可環境は無視 */ }
 }
@@ -1022,6 +1171,7 @@ function loadState(){
     if(d.daily) Object.assign(DAILY, d.daily);
     if(d.ranks){ ['week','month','all'].forEach(k=>{ if(d.ranks[k]) RANKS[k] = d.ranks[k]; }); }
     ONBOARDED = !!d.onboarded;
+    if(d.lang) LANG = d.lang;
     return true;
   } catch(e){ return false; }
 }
@@ -1030,11 +1180,38 @@ function resetAll(){
   location.reload();
 }
 
+// ── 言語切替 ──
+function applyStaticI18n(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.getAttribute('data-i18n');
+    el.innerHTML = t(k);
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-ph')));
+  });
+  const ob = document.getElementById('ob-next');
+  if(ob) ob.textContent = (typeof obStep!=='undefined' && obStep>=2) ? t('ob_start') : t('ob_next');
+}
+function setLang(lang){
+  if(lang===LANG) return;
+  LANG = lang;
+  syncProfileToRanks();
+  applyStaticI18n();
+  renderHome();
+  if(typeof currentSeg!=='undefined') renderRank(currentSeg);
+  renderBook();
+  if(typeof rankTab!=='undefined' && rankTab==='team') renderTeam();
+  renderMapOverlay();
+  saveState();
+}
+
 // プロフィール名をランキングの自分の行に反映
 function syncProfileToRanks(){
+  const suffix = LANG==='en' ? ' (You)' : '（あなた）';
   Object.values(RANKS).forEach(seg=>{
     const me = seg.find(r=>r.me);
-    if(me){ me.name = `${PROFILE.name}（あなた）`; me.av = PROFILE.avatar; }
+    if(me){ me.name = `${PROFILE.name}${suffix}`; me.av = PROFILE.avatar; }
   });
 }
 
@@ -1063,8 +1240,8 @@ function renderMissions(){
     const progTxt = m.goal>1 ? ` <span style="color:var(--gray);font-weight:600">(${prog}/${m.goal})</span>` : '';
     return `<div class="card mission${done?' done':''}">
       <div class="mi">${done?'✅':m.icon}</div>
-      <div class="mt"><b>${m.title}${progTxt}</b><span>${m.desc}</span></div>
-      ${done?`<span class="done-badge">完了！</span>`:`<div class="mr">+${m.reward}pt</div>`}
+      <div class="mt"><b>${tx(m,'title')}${progTxt}</b><span>${tx(m,'desc')}</span></div>
+      ${done?`<span class="done-badge">${LANG==='en'?'Done!':'完了！'}</span>`:`<div class="mr">+${m.reward}${t('pt')}</div>`}
     </div>`;
   }).join('');
 }
@@ -1076,7 +1253,7 @@ function bumpDaily(metric){
     if(DAILY.progress[id] >= m.goal){
       DAILY.done[id] = true;
       STATE.points += m.reward; STATE.earned += m.reward;
-      setTimeout(()=>showToast(`🎯 デイリー達成！${m.title} +${m.reward}pt`), 2300);
+      setTimeout(()=>showToast(`${t('toast_daily')}${tx(m,'title')} +${m.reward}${t('pt')}`), 2300);
     }
   });
   renderMissions();
@@ -1087,15 +1264,18 @@ function checkAchievements(){
   ACHIEVEMENTS.forEach(a=>{
     if(!ACH_UNLOCKED.includes(a.id) && a.cond()){
       ACH_UNLOCKED.push(a.id);
-      setTimeout(()=>showToast(`🏆 実績解除！${a.title}`), 1500);
+      setTimeout(()=>showToast(`${t('toast_ach')}${tx(a,'title')}`), 1500);
     }
   });
 }
 
-function showLevelUp(title, lv){
+function showLevelUp(lvObj){
   const el = document.createElement('div');
   el.className = 'levelup';
-  el.innerHTML = `<div class="lv-big">⭐</div><h3>レベルアップ！</h3><div class="lv-sub">Lv.${lv}<br><b>${title}</b> に昇進しました</div>`;
+  const body = LANG==='en'
+    ? `Lv.${lvObj.lv}<br>Promoted to <b>${tx(lvObj,'title')}</b>`
+    : `Lv.${lvObj.lv}<br><b>${tx(lvObj,'title')}</b> に昇進しました`;
+  el.innerHTML = `<div class="lv-big">⭐</div><h3>${t('lvup_title')}</h3><div class="lv-sub">${body}</div>`;
   document.querySelector('.phone').appendChild(el);
   setTimeout(()=>el.remove(), 3300);
 }
@@ -1113,25 +1293,27 @@ function updateRankData(gained){
 
 function renderHome(){
   const info = getLevelInfo(STATE.points);
-  document.getElementById('home-role').textContent = `${info.cur.title} / Lv.${info.cur.lv}`;
-  document.getElementById('home-name').textContent = `${PROFILE.name} さん`;
+  document.getElementById('home-role').textContent = `${tx(info.cur,'title')} / Lv.${info.cur.lv}`;
+  document.getElementById('home-name').textContent = `${txName(PROFILE.name)}${t('name_suffix')}`;
   document.getElementById('profile-btn').textContent = PROFILE.avatar;
   document.getElementById('home-pt').textContent = fmt(STATE.points);
   document.getElementById('stat-posts').textContent = STATE.posts;
   document.getElementById('stat-streak').textContent = STATE.streak;
   document.getElementById('lvbar').style.width = info.pct + '%';
   document.getElementById('home-lvtx').textContent = info.next
-    ? `次のランク「${info.next.title}」まで あと ${fmt(info.rem)} pt`
-    : '最高ランク到達！';
+    ? (LANG==='en'
+        ? `${t('next_rank')} "${tx(info.next,'title')}" ${t('to_next')} ${fmt(info.rem)} ${t('pt')}`
+        : `${t('next_rank')}「${tx(info.next,'title')}」${t('to_next')} ${fmt(info.rem)} ${t('pt')}`)
+    : t('max_rank');
   const items = FEED.map((f,i)=>({f,i})).filter(o => feedFilter==='all' || o.f.chip[0]===feedFilter);
   document.getElementById('feed').innerHTML = items.length
     ? items.map(({f,i}) => `
       <div class="feed-item" onclick="openDetail(${i})">
         <div class="thumb" style="background:${f.bg}">${f.mark}</div>
-        <div class="ft"><b>${f.who}</b> <span>${f.act} · ${f.ago}</span></div>
-        <span class="chip ${f.chip[0]}">${f.chip[1]}</span>
+        <div class="ft"><b>${txName(f.who)}</b> <span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
+        <span class="chip ${f.chip[0]}">${txChip(f.chip[0])}</span>
       </div>`).join('')
-    : `<div class="feed-empty">該当する投稿はありません</div>`;
+    : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
 }
 
@@ -1143,33 +1325,34 @@ function openLevelSheet(){
   const cur = info.cur, next = info.next;
   const sheet = document.getElementById('level-sheet');
 
+  const q = LANG==='en' ? ['"','"'] : ['「','」'];
   const nextBlock = next ? `
     <div class="ls-next">
       <div class="lsn-top">
         <div class="lsn-ic">${next.icon}</div>
-        <div class="lsn-tt"><b>次は Lv.${next.lv}「${next.title}」</b><span>あと ${fmt(info.rem)} pt で昇格</span></div>
+        <div class="lsn-tt"><b>${t('next_is')} Lv.${next.lv}${q[0]}${tx(next,'title')}${q[1]}</b><span>${t('st_left')} ${fmt(info.rem)} ${t('pt')} ${t('promote_in')}</span></div>
       </div>
-      <div class="lsn-perk">🎁 ${next.perk}</div>
+      <div class="lsn-perk">🎁 ${tx(next,'perk')}</div>
       <div class="lsn-bar"><i style="width:${info.pct}%"></i></div>
     </div>`
     : `<div class="ls-next"><div class="lsn-top"><div class="lsn-ic">🏆</div>
-        <div class="lsn-tt"><b>最高ランクに到達！</b><span>すべての特典が解放されています</span></div></div></div>`;
+        <div class="lsn-tt"><b>${t('reach_max')}</b><span>${t('all_unlocked')}</span></div></div></div>`;
 
   const rows = LEVELS.map(l=>{
     const status = l.lv < cur.lv ? 'done' : l.lv === cur.lv ? 'cur' : 'locked';
-    const stLabel = status==='done' ? '達成済み' : status==='cur' ? '現在' : `あと ${fmt(Math.max(0, l.min - STATE.points))} pt`;
+    const stLabel = status==='done' ? t('st_done') : status==='cur' ? t('st_cur') : `${t('st_left')} ${fmt(Math.max(0, l.min - STATE.points))} ${t('pt')}`;
     const stCls = status==='done' ? 's-done' : status==='cur' ? 's-cur' : 's-lock';
     return `<div class="ls-row ${status}">
       <div class="lr-ic">${l.icon}</div>
-      <div class="lr-tx"><b>Lv.${l.lv} ${l.title}</b><span class="lr-perk">${l.perk}</span></div>
+      <div class="lr-tx"><b>Lv.${l.lv} ${tx(l,'title')}</b><span class="lr-perk">${tx(l,'perk')}</span></div>
       <div class="lr-st ${stCls}">${stLabel}</div>
     </div>`;
   }).join('');
 
   sheet.innerHTML = `
     <div class="grab"></div>
-    <div class="ls-hd"><b>🎖 ランク特典</b><button class="ls-close" id="ls-close">×</button></div>
-    <div class="ls-now">現在 Lv.${cur.lv}「${cur.title}」· ${fmt(STATE.points)} pt</div>
+    <div class="ls-hd"><b>${t('perks_title')}</b><button class="ls-close" id="ls-close">×</button></div>
+    <div class="ls-now">${t('now_lv')} Lv.${cur.lv}${q[0]}${tx(cur,'title')}${q[1]} · ${fmt(STATE.points)} ${t('pt')}</div>
     ${nextBlock}
     <div class="ls-list">${rows}</div>`;
   document.getElementById('ls-close').onclick = ()=>sheet.classList.remove('open');
@@ -1189,37 +1372,47 @@ function openMyPage(){
     const got = ACH_UNLOCKED.includes(a.id);
     return `<div class="mp-ach ${got?'':'locked'}">
       <div class="ach-ic">${got?a.icon:'🔒'}</div>
-      <div class="ach-tx"><b>${a.title}</b><span>${a.desc}</span></div>
+      <div class="ach-tx"><b>${tx(a,'title')}</b><span>${tx(a,'desc')}</span></div>
     </div>`;
   }).join('');
   const gotCount = ACH_UNLOCKED.length;
 
-  const teamHtml = TEAMS.map(t=>
-    `<div class="ts-opt ${t.id===PROFILE.team?'sel':''}" data-team="${t.id}">${t.emoji} ${t.name}</div>`).join('');
+  const teamHtml = TEAMS.map(tm=>
+    `<div class="ts-opt ${tm.id===PROFILE.team?'sel':''}" data-team="${tm.id}">${tm.emoji} ${tx(tm,'name')}</div>`).join('');
+
+  const langHtml = `
+    <div class="ts-opt ${LANG==='ja'?'sel':''}" data-lang="ja">🇯🇵 日本語</div>
+    <div class="ts-opt ${LANG==='en'?'sel':''}" data-lang="en">🇬🇧 English</div>`;
 
   sheet.innerHTML = `
     <div class="grab"></div>
-    <div class="mp-hd"><b>👤 マイページ</b><button class="mp-close" id="mp-close">×</button></div>
+    <div class="mp-hd"><b>${t('mypage')}</b><button class="mp-close" id="mp-close">×</button></div>
     <div class="mp-body">
-      <div class="mp-sec">アバター</div>
+      <div class="mp-sec">${t('mp_lang')}</div>
+      <div class="team-switch" id="mp-langs">${langHtml}</div>
+      <div style="height:14px"></div>
+      <div class="mp-sec">${t('mp_avatar')}</div>
       <div class="mp-avgrid" id="mp-avgrid">${avHtml}</div>
-      <div class="mp-sec">探偵名</div>
+      <div class="mp-sec">${t('mp_name')}</div>
       <input class="mp-name" id="mp-name" type="text" maxlength="12" value="${PROFILE.name.replace(/"/g,'&quot;')}" />
-      <div class="mp-sec">🛡 所属探偵団</div>
+      <div class="mp-sec">${t('mp_team')}</div>
       <div class="team-switch" id="mp-teams">${teamHtml}</div>
       <div style="height:14px"></div>
-      <div class="mp-sec">📊 今週のまとめ</div>
+      <div class="mp-sec">${t('mp_summary')}</div>
       <div class="mp-summary">
-        <div class="mp-scell"><b>${STATE.myPosts}</b><span>今週の投稿</span></div>
-        <div class="mp-scell"><b>${fmt(STATE.earned)}</b><span>獲得ポイント</span></div>
-        <div class="mp-scell"><b>${weekRank}位</b><span>週間ランキング</span></div>
-        <div class="mp-scell"><b>${STATE.streak}</b><span>連続記録</span></div>
+        <div class="mp-scell"><b>${STATE.myPosts}</b><span>${t('mp_week_posts')}</span></div>
+        <div class="mp-scell"><b>${fmt(STATE.earned)}</b><span>${t('mp_earned')}</span></div>
+        <div class="mp-scell"><b>${weekRank}${t('rank_suffix')}</b><span>${t('mp_week_rank')}</span></div>
+        <div class="mp-scell"><b>${STATE.streak}</b><span>${t('mp_streak')}</span></div>
       </div>
-      <div class="mp-sec">🏆 実績バッジ（${gotCount}/${ACHIEVEMENTS.length}）</div>
+      <div class="mp-sec">${t('mp_badges')}（${gotCount}/${ACHIEVEMENTS.length}）</div>
       <div class="mp-achgrid">${achHtml}</div>
-      <button class="mp-reset" id="mp-reset">🗑 データをリセット</button>
+      <button class="mp-reset" id="mp-reset">${t('mp_reset')}</button>
     </div>`;
 
+  document.getElementById('mp-langs').querySelectorAll('.ts-opt').forEach(el=>{
+    el.onclick = () => { setLang(el.dataset.lang); openMyPage(); };
+  });
   document.getElementById('mp-close').onclick = ()=>sheet.classList.remove('open');
   document.getElementById('mp-avgrid').querySelectorAll('.mp-av').forEach(el=>{
     el.onclick = () => {
@@ -1231,7 +1424,7 @@ function openMyPage(){
   });
   const nameInput = document.getElementById('mp-name');
   nameInput.oninput = () => {
-    const v = nameInput.value.trim() || '探偵';
+    const v = nameInput.value.trim() || (LANG==='en'?'Detective':'探偵');
     PROFILE.name = v;
     syncProfileToRanks(); renderHome(); saveState();
   };
@@ -1244,7 +1437,7 @@ function openMyPage(){
     };
   });
   document.getElementById('mp-reset').onclick = () => {
-    if (confirm('すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？')) resetAll();
+    if (confirm(t('mp_reset_confirm'))) resetAll();
   };
   sheet.classList.add('open');
 }
@@ -1258,24 +1451,24 @@ function openDetail(idx){
   modal.innerHTML = `
     <div class="dm-head">
       <button class="dm-back" onclick="document.getElementById('detail-modal').classList.remove('open')">←</button>
-      <span style="font-size:16px;font-weight:800">投稿詳細</span>
+      <span style="font-size:16px;font-weight:800">${t('dm_title')}</span>
     </div>
     <div style="padding:0 18px 24px">
       <div class="dm-mark">${f.mark}</div>
-      <div class="dm-label">${f.label||f.act}</div>
+      <div class="dm-label">${txLabel(f.label)||tx(f,'act')}</div>
       <div class="dm-meta">
-        <span class="dm-badge" style="background:${badgeBg};color:${color}">${f.verdict||f.chip[1]}</span>
-        <span style="font-size:11px;color:var(--gray);margin-left:8px">投稿: ${f.who} · ${f.ago}</span>
+        <span class="dm-badge" style="background:${badgeBg};color:${color}">${txVerdict(f.verdict)||txChip(f.chip[0])}</span>
+        <span style="font-size:11px;color:var(--gray);margin-left:8px">${t('dm_posted_by')} ${txName(f.who)} · ${txAgo(f.ago)}</span>
       </div>
       <div class="conf-row">
-        <span class="conf-lbl">AI信頼度</span>
+        <span class="conf-lbl">${t('cam_conf')}</span>
         <div class="conf-bar"><i style="width:${f.conf}%;background:${color}"></i></div>
         <span class="conf-val" style="color:${color}">${f.conf}%</span>
       </div>
-      <div class="ai-comment">🤖 ${f.aiComment}</div>
+      <div class="ai-comment">🤖 ${tx(f,'aiComment')}</div>
       ${cat ? `<div class="catalog-link" onclick="document.getElementById('detail-modal').classList.remove('open');switchView('book')">
         <div class="cl-icon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(230,57,70,.15)">${cat.mark}</div>
-        <div class="cl-info"><b>${cat.name}</b><span>探偵手帳で詳しく見る →</span></div>
+        <div class="cl-info"><b>${tx(cat,'name')}</b><span>${t('dm_catalog')}</span></div>
       </div>` : ''}
     </div>`;
   modal.classList.add('open');
@@ -1287,22 +1480,24 @@ function renderBook(){
   const list = MARK_CATALOG.filter(m=>{
     if(bookFilter !== 'all' && m.color !== bookFilter) return false;
     if(!q) return true;
-    const hay = (m.name + ' ' + m.meaning + ' ' + m.examples.join(' ')).toLowerCase();
+    const hay = (m.name + ' ' + m.meaning + ' ' + m.examples.join(' ') + ' ' +
+      (m.name_en||'') + ' ' + (m.meaning_en||'') + ' ' + m.examples.map(txLabel).join(' ')).toLowerCase();
     return hay.includes(q);
   });
+  const sep = LANG==='en' ? ', ' : '、';
   document.getElementById('book-list').innerHTML = list.length ? list.map(m=>{
     const chipCls = m.color==='danger'?'ok':m.color==='warn'?'warn':'ng';
-    const chipLbl = m.color==='danger'?'要注意':m.color==='warn'?'要確認':'偶然多め';
+    const chipLbl = m.color==='danger'?t('chip_danger'):m.color==='warn'?t('chip_warn'):t('chip_safe');
     const bg = m.color==='danger'?'rgba(230,57,70,.18)':m.color==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
     return `<div class="book-card">
       <div class="book-mark" style="background:${bg}">${m.mark}</div>
       <div class="book-info">
-        <b>${m.name} <span class="chip ${chipCls}" style="font-size:9px">${chipLbl}</span></b>
-        <p>${m.meaning}</p>
-        <div class="book-freq">出現頻度: ${m.frequency}　例: ${m.examples.join('、')}</div>
+        <b>${tx(m,'name')} <span class="chip ${chipCls}" style="font-size:9px">${chipLbl}</span></b>
+        <p>${tx(m,'meaning')}</p>
+        <div class="book-freq">${t('book_freq')}: ${txFreq(m.frequency)}　${t('book_ex')}: ${m.examples.map(txLabel).join(sep)}</div>
       </div>
     </div>`;
-  }).join('') : `<div class="book-empty">該当する記号が見つかりません</div>`;
+  }).join('') : `<div class="book-empty">${t('book_empty')}</div>`;
 }
 
 let currentSeg = 'week';
@@ -1315,7 +1510,7 @@ function renderRank(seg){
     return `<div class="rank-row ${r.me?'me':''}" onclick="openRankSheet(${i})" style="cursor:pointer">
       <div class="pos ${cls}">${medal}</div>
       <div class="av" style="background:${r.bg}">${r.av}</div>
-      <div class="rn"><b>${r.name}</b><span>${r.area}</span></div>
+      <div class="rn"><b>${txName(r.name)}</b><span>${txArea(r.area)}</span></div>
       <div class="rp">${fmt(r.pt)}</div>
     </div>`;
   }).join('');
@@ -1326,27 +1521,29 @@ function renderTeam(){
   const sorted = teamsSorted();
   const mine = myTeam();
   const myRank = sorted.findIndex(t=>t.id===mine.id) + 1;
+  const memUnit = LANG==='en' ? '' : '名';
   document.getElementById('myteam-card').innerHTML = `
     <div class="myteam">
       <div class="mt-top">
         <div class="mt-emoji">${mine.emoji}</div>
-        <div class="mt-name"><b>${mine.name}</b><span>あなたの所属する探偵団</span></div>
-        <div class="mt-rankbadge">${myRank}位 / ${TEAMS.length}団</div>
+        <div class="mt-name"><b>${tx(mine,'name')}</b><span>${t('my_team_sub')}</span></div>
+        <div class="mt-rankbadge">${myRank}${t('rank_suffix')} / ${TEAMS.length}${t('teams_suffix')}</div>
       </div>
       <div class="mt-stats">
-        <div class="mt-cell"><b>${fmt(teamDisplayPt(mine))}</b><span>団の総ポイント</span></div>
-        <div class="mt-cell"><b>${mine.members}</b><span>団員数</span></div>
-        <div class="mt-cell"><b style="color:var(--gold)">${fmt(STATE.earned)}</b><span>あなたの貢献</span></div>
+        <div class="mt-cell"><b>${fmt(teamDisplayPt(mine))}</b><span>${t('team_total')}</span></div>
+        <div class="mt-cell"><b>${mine.members}</b><span>${t('team_members')}</span></div>
+        <div class="mt-cell"><b style="color:var(--gold)">${fmt(STATE.earned)}</b><span>${t('your_contrib')}</span></div>
       </div>
     </div>`;
-  document.getElementById('team-list').innerHTML = sorted.map((t,i)=>{
+  document.getElementById('team-list').innerHTML = sorted.map((tm,i)=>{
     const cls = i===0?'g':i===1?'s':i===2?'b':'';
     const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-    return `<div class="team-row ${t.id===mine.id?'mine':''}">
+    const memLabel = LANG==='en' ? `${tm.members} members` : `${tm.members}名`;
+    return `<div class="team-row ${tm.id===mine.id?'mine':''}">
       <div class="tr-pos ${cls}">${medal}</div>
-      <div class="tr-emoji">${t.emoji}</div>
-      <div class="tr-info"><b>${t.name}</b><span>${t.members}名${t.id===mine.id?' · あなたの団':''}</span></div>
-      <div class="tr-pt">${fmt(teamDisplayPt(t))}</div>
+      <div class="tr-emoji">${tm.emoji}</div>
+      <div class="tr-info"><b>${tx(tm,'name')}</b><span>${memLabel}${tm.id===mine.id?' · '+t('your_team'):''}</span></div>
+      <div class="tr-pt">${fmt(teamDisplayPt(tm))}</div>
     </div>`;
   }).join('');
 }
@@ -1376,31 +1573,32 @@ function openRankSheet(idx){
   const show = Math.min(6, Math.max(3, posts % 6 + 3));
   const start = idx % RS_SAMPLE_MARKS.length;
   let html = '';
+  const vMap = { '濃厚':t('ff_ok'), '要確認':t('ff_warn'), '偶然':t('ff_ng') };
   for (let k=0; k<show; k++){
     const p = RS_SAMPLE_MARKS[(start+k)%RS_SAMPLE_MARKS.length];
-    const ago = RS_AGOS[k%RS_AGOS.length];
+    const ago = txAgo(RS_AGOS[k%RS_AGOS.length]);
     html += `<div class="rs-post">
       <div class="rp-mark" style="background:${p.bg}">${p.mark}</div>
-      <div class="rp-tx"><b>${p.label}</b><span>${p.v} · ${ago}</span></div>
+      <div class="rp-tx"><b>${txLabel(p.label)}</b><span>${vMap[p.v]||p.v} · ${ago}</span></div>
     </div>`;
   }
   const danger = Math.round(posts * 0.45);
   const warn = Math.round(posts * 0.35);
-  const segLabel = currentSeg==='week'?'今週':currentSeg==='month'?'今月':'総合';
+  const segLabel = currentSeg==='week'?t('seg_week'):currentSeg==='month'?t('seg_month'):t('seg_all');
   const sheet = document.getElementById('rank-sheet');
   sheet.innerHTML = `
     <div class="grab"></div>
     <div class="rs-prof">
       <div class="rs-av" style="background:${r.bg}">${r.av}</div>
-      <div class="rs-name"><b>${r.name}</b><span>${r.area}</span></div>
+      <div class="rs-name"><b>${txName(r.name)}</b><span>${txArea(r.area)}</span></div>
       <button class="rs-close" id="rs-close">×</button>
     </div>
     <div class="rs-stats">
-      <div class="rs-stat"><b>${fmt(r.pt)}</b><span>${segLabel}ポイント</span></div>
-      <div class="rs-stat"><b style="color:#E63946">${danger}</b><span>濃厚 検出</span></div>
-      <div class="rs-stat"><b style="color:#F4A261">${warn}</b><span>要確認</span></div>
+      <div class="rs-stat"><b>${fmt(r.pt)}</b><span>${segLabel} ${t('pts_label')}</span></div>
+      <div class="rs-stat"><b style="color:#E63946">${danger}</b><span>${t('detected_danger')}</span></div>
+      <div class="rs-stat"><b style="color:#F4A261">${warn}</b><span>${t('detected_warn')}</span></div>
     </div>
-    <div class="rs-sub">📌 最近の投稿</div>
+    <div class="rs-sub">${t('recent_posts')}</div>
     <div class="rs-posts">${html}</div>`;
   document.getElementById('rs-close').onclick = ()=>sheet.classList.remove('open');
   sheet.classList.add('open');
@@ -1416,7 +1614,7 @@ function initMap(){
       const el = document.getElementById('map');
       if (el) el.innerHTML = `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:30px;text-align:center;color:var(--gray)">
         <div style="font-size:42px">🗺️</div>
-        <div style="font-size:13px;line-height:1.7">地図の読み込みに失敗しました。<br>通信環境を確認して再読み込みしてください。</div></div>`;
+        <div style="font-size:13px;line-height:1.7">${t('map_fail')}</div></div>`;
     }
     return;
   }
@@ -1428,7 +1626,7 @@ function initMap(){
     const color = TYPE_COLOR[m.type];
     const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color}"><span>${m.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
     L.marker([m.lat,m.lng], { icon }).addTo(markerLayer)
-      .bindPopup(`<b>${m.label}</b><br>判定: <span style="color:${color}">●</span> ${m.verdict}<br>投稿: ${m.user} · ${m.ago}`);
+      .bindPopup(`<b>${txLabel(m.label)}</b><br>${LANG==='en'?'Verdict':'判定'}: <span style="color:${color}">●</span> ${txVerdict(m.verdict)}<br>${t('dm_posted_by')} ${txName(m.user)} · ${txAgo(m.ago)}`);
   });
   markerLayer.addTo(map);
   setTimeout(()=>map.invalidateSize(), 200);
@@ -1437,12 +1635,12 @@ function initMap(){
 // ── Camera flow ──
 // 撮影対象（毎回ランダムでリプレイ感を出す）
 const CAM_SUBJECTS = [
-  { target:'📮', place:'渋谷区宇田川町付近' },
-  { target:'🚪', place:'渋谷区桜丘町付近' },
-  { target:'📦', place:'渋谷区道玄坂付近' },
-  { target:'🅿️', place:'渋谷区神南付近' },
-  { target:'🏠', place:'渋谷区松濤付近' },
-  { target:'🔌', place:'渋谷区円山町付近' },
+  { target:'📮', place:'渋谷区宇田川町付近', place_en:'near Udagawa-cho, Shibuya' },
+  { target:'🚪', place:'渋谷区桜丘町付近', place_en:'near Sakuragaoka-cho, Shibuya' },
+  { target:'📦', place:'渋谷区道玄坂付近', place_en:'near Dogenzaka, Shibuya' },
+  { target:'🅿️', place:'渋谷区神南付近', place_en:'near Jinnan, Shibuya' },
+  { target:'🏠', place:'渋谷区松濤付近', place_en:'near Shoto, Shibuya' },
+  { target:'🔌', place:'渋谷区円山町付近', place_en:'near Maruyama-cho, Shibuya' },
 ];
 function camIdle(){
   const s = CAM_SUBJECTS[Math.floor(Math.random()*CAM_SUBJECTS.length)];
@@ -1452,7 +1650,7 @@ function camIdle(){
       <div class="scan"></div>
       <div class="target" id="vtarget">${s.target}</div>
     </div>
-    <div class="cam-hint">📍 ${s.place}<br>怪しい記号にカメラを向けて撮影</div>
+    <div class="cam-hint">📍 ${tx(s,'place')}<br>${t('cam_hint')}</div>
     <div class="shutter" id="shutter"></div>`;
   document.getElementById('shutter').onclick = camAnalyze;
 }
@@ -1466,9 +1664,9 @@ function camAnalyze(){
       <div class="target">🔍</div>
     </div>
     <div class="ai-box">
-      <div class="ai-row" id="r1"><div class="spin"></div><span>画像をアップロード中…</span></div>
-      <div class="ai-row" id="r2"><div class="spin"></div><span>AIがマーキングを解析中…</span></div>
-      <div class="ai-row" id="r3"><div class="spin"></div><span>位置情報とマップを照合中…</span></div>
+      <div class="ai-row" id="r1"><div class="spin"></div><span>${t('cam_r1')}</span></div>
+      <div class="ai-row" id="r2"><div class="spin"></div><span>${t('cam_r2')}</span></div>
+      <div class="ai-row" id="r3"><div class="spin"></div><span>${t('cam_r3')}</span></div>
     </div>`;
   const steps = ['r1','r2','r3'];
   let i = 0;
@@ -1495,23 +1693,23 @@ function camResult(){
   const gained = o.pts;
   const conf = randInt(o.conf[0], o.conf[1]);
   const color = TYPE_COLOR[o.type];
-  const bonus = STATE.posts === 38 ? ' 初回ボーナス込み' : '';
+  const bonus = STATE.posts === 38 ? t('cam_bonus') : '';
   document.getElementById('cam-stage').innerHTML = `
     <div class="result-card">
       <div class="big">${o.mark}</div>
-      <h3 style="color:${color}">${o.title}</h3>
-      <div class="desc">AI信頼度 <b>${conf}%</b><br>${o.desc}<br>防犯マップに追加されます。</div>
-      <div class="pt-pop"><div class="n">+${gained} pt</div><div class="l">捜査ポイント獲得！${bonus}</div></div>
-      <button class="btn primary" id="cam-done">マップに反映する</button>
-      <button class="btn ghost" id="cam-again">もう一度撮影</button>
-      <button class="btn ghost" id="cam-share">📤 結果をシェア</button>
+      <h3 style="color:${color}">${tx(o,'title')}</h3>
+      <div class="desc">${t('cam_conf')} <b>${conf}%</b><br>${tx(o,'desc')}<br>${t('cam_added')}</div>
+      <div class="pt-pop"><div class="n">+${gained} ${t('pt')}</div><div class="l">${t('cam_got')}${bonus}</div></div>
+      <button class="btn primary" id="cam-done">${t('cam_reflect')}</button>
+      <button class="btn ghost" id="cam-again">${LANG==='en'?'Shoot again':'もう一度撮影'}</button>
+      <button class="btn ghost" id="cam-share">${t('cam_share')}</button>
     </div>`;
   document.getElementById('cam-done').onclick = () => {
     const oldLv = getLevelInfo(STATE.points).cur.lv;
     STATE.points += gained; STATE.posts += 1; STATE.streak += 1;
     STATE.myPosts += 1; STATE.earned += gained;
     if(o.type==='danger') STATE.dangerFound += 1;
-    // フィードに先頭追加
+    // フィードに先頭追加（日英両方を保存して言語切替に対応）
     const bgMap = { danger:'rgba(230,57,70,.2)', warn:'rgba(244,162,97,.2)', safe:'rgba(100,116,139,.2)' };
     const chipMap = { danger:['ok','濃厚'], warn:['warn','要確認'], safe:['ng','偶然'] };
     const aiCommentMap = {
@@ -1519,8 +1717,16 @@ function camResult(){
       warn:'マーキングの可能性が確認されましたが確定には至りません。周辺の類似報告と合わせて判断することを推奨します。',
       safe:'自然な経年劣化またはチョーク等による偶然の記号と判定。マーキングの特徴的なパターンは検出されませんでした。'
     };
-    FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:PROFILE.name, act:o.label+'を投稿', ago:'たった今', chip:chipMap[o.type],
-      label:o.label, verdict:o.verdict, conf:conf, aiComment:aiCommentMap[o.type] });
+    const aiCommentMapEn = {
+      danger:'Judged a marking with high confidence. Cross-checking similar nearby cases, it matches the traits of a break-in warning symbol.',
+      warn:'A possible marking was confirmed but not conclusive. Judging together with similar nearby reports is recommended.',
+      safe:'Judged a coincidental symbol from natural aging or chalk. No characteristic marking pattern was detected.'
+    };
+    const enLabel = LABELS[o.label] || o.label;
+    FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:PROFILE.name,
+      act:o.label+'を投稿', act_en:'posted '+enLabel, ago:'たった今', chip:chipMap[o.type],
+      label:o.label, label_en:enLabel, verdict:o.verdict, conf:conf,
+      aiComment:aiCommentMap[o.type], aiComment_en:aiCommentMapEn[o.type] });
     STATE.unread++; renderBadge();
     // デイリーミッション・実績・ランキング更新
     bumpDaily('posts'); bumpDaily(o.type);
@@ -1529,27 +1735,30 @@ function camResult(){
     renderHome();
     // レベルアップ判定
     const newLv = getLevelInfo(STATE.points).cur;
-    if(newLv.lv > oldLv) setTimeout(()=>showLevelUp(newLv.title, newLv.lv), 800);
+    if(newLv.lv > oldLv) setTimeout(()=>showLevelUp(newLv), 800);
     // add a fresh marking near center
+    const compLabel = LANG==='en' ? `${t('your_new_post')} (${enLabel})` : 'あなたの新規投稿（'+o.label+'）';
     const m = { lat:35.6595+(Math.random()-.5)*.004, lng:139.7010+(Math.random()-.5)*.004,
-      type:o.type, mark:o.mark, verdict:o.verdict, user:PROFILE.name, label:'あなたの新規投稿（'+o.label+'）', ago:'たった今' };
+      type:o.type, mark:o.mark, verdict:o.verdict, user:PROFILE.name, label:compLabel, ago:'たった今' };
     MARKINGS.push(m);
     if (map && markerLayer){
       const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};animation:none"><span>${o.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
-      L.marker([m.lat,m.lng],{icon}).addTo(markerLayer).bindPopup(`<b>${m.label}</b><br>判定: <span style="color:${color}">●</span> ${m.verdict}<br>投稿: あなた · たった今`);
+      L.marker([m.lat,m.lng],{icon}).addTo(markerLayer).bindPopup(`<b>${m.label}</b><br>${LANG==='en'?'Verdict':'判定'}: <span style="color:${color}">●</span> ${txVerdict(m.verdict)}<br>${t('dm_posted_by')} ${txName(PROFILE.name)} · ${t('just_now')}`);
     }
     renderMapOverlay();
     refreshHeat();
     saveState();
     switchView('map');
-    showToast('✅ 投稿完了！+'+gained+'pt 獲得');
+    showToast(t('toast_posted')+gained+t('toast_pt_got'));
     setTimeout(camIdle, 400);
   };
   document.getElementById('cam-again').onclick = camIdle;
   document.getElementById('cam-share').onclick = () => {
-    const text = `🔍 GO-TO探偵団\n${o.title}（AI信頼度 ${conf}%）\n投稿が防犯マップに追加されました！\nhttps://b-w-hiroki.github.io/goto-tanteidan/`;
+    const text = LANG==='en'
+      ? `🔍 GO-TO Detectives\n${tx(o,'title')} (AI confidence ${conf}%)\nMy post was added to the crime-prevention map!\nhttps://b-w-hiroki.github.io/goto-tanteidan/`
+      : `🔍 GO-TO探偵団\n${tx(o,'title')}（AI信頼度 ${conf}%）\n投稿が防犯マップに追加されました！\nhttps://b-w-hiroki.github.io/goto-tanteidan/`;
     if (navigator.share) { navigator.share({ title: 'GO-TO探偵団', text }).catch(()=>{}); }
-    else { navigator.clipboard?.writeText(text).then(() => showToast('📋 クリップボードにコピーしました')); }
+    else { navigator.clipboard?.writeText(text).then(() => showToast(t('toast_copy'))); }
     STATE.shares += 1; bumpDaily('share'); checkAchievements(); saveState();
   };
 }
@@ -1575,15 +1784,15 @@ function openNotifSheet(){
   sheet.innerHTML = `
     <div class="grab"></div>
     <div class="ns-hd">
-      <b>🔔 新着通知 ${STATE.unread > 0 ? `<span style="font-size:12px;background:var(--red);color:#fff;border-radius:10px;padding:1px 7px;margin-left:6px">${STATE.unread}</span>` : ''}</b>
+      <b>${t('notif_title')} ${STATE.unread > 0 ? `<span style="font-size:12px;background:var(--red);color:#fff;border-radius:10px;padding:1px 7px;margin-left:6px">${STATE.unread}</span>` : ''}</b>
       <button class="ns-close" id="ns-close">×</button>
     </div>
     <div class="notif-list">
       ${items.map(f=>`
         <div class="notif-item">
           <div class="ni-icon" style="background:${f.bg}">${f.mark}</div>
-          <div class="ni-tx"><b>${f.who}</b><span>${f.act} · ${f.ago}</span></div>
-          <span class="chip ${f.chip[0]}">${f.chip[1]}</span>
+          <div class="ni-tx"><b>${txName(f.who)}</b><span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
+          <span class="chip ${f.chip[0]}">${txChip(f.chip[0])}</span>
         </div>`).join('')}
     </div>`;
   document.getElementById('ns-close').onclick = closeNotifSheet;
@@ -1602,7 +1811,7 @@ function obGo(step){
   slides.forEach((s, i) => { s.style.transform = `translateX(${(i - step) * 100}%)`; });
   dots.forEach((d, i) => { d.className = 'ob-dot' + (i === step ? ' on' : ''); });
   obStep = step;
-  document.getElementById('ob-next').textContent = step < slides.length - 1 ? '次へ' : 'はじめる';
+  document.getElementById('ob-next').textContent = step < slides.length - 1 ? t('ob_next') : t('ob_start');
 }
 document.getElementById('ob-next').onclick = () => {
   const slides = document.querySelectorAll('.ob-slide');
@@ -1639,11 +1848,7 @@ function switchView(name){
 document.getElementById('view-map').innerHTML = `
   <div id="map"></div>
   <div class="map-overlay" id="map-overlay"></div>
-  <div class="map-legend" id="map-legend">
-    <div><span class="dot" style="background:#E63946"></span>マーキング濃厚</div>
-    <div><span class="dot" style="background:#F4A261"></span>要確認</div>
-    <div><span class="dot" style="background:#64748B"></span>偶然・誤検知</div>
-  </div>
+  <div class="map-legend" id="map-legend"></div>
   <div class="area-sheet" id="area-sheet"></div>`;
 
 function isRecent(ago){ return /分前|時間前|たった今/.test(ago); }
@@ -1651,14 +1856,24 @@ function renderMapOverlay(){
   const danger = MARKINGS.filter(m=>m.type==='danger').length;
   const warn   = MARKINGS.filter(m=>m.type==='warn').length;
   const recent = MARKINGS.filter(m=>isRecent(m.ago)).length;
-  document.getElementById('map-overlay').innerHTML = `
-    <div class="map-pill"><span class="dot" style="background:#E63946"></span>危険 ${danger}</div>
-    <div class="map-pill"><span class="dot" style="background:#F4A261"></span>要確認 ${warn}</div>
-    <div class="map-pill">🔄 24h以内 ${recent}件</div>
-    <div class="map-pill${heatOn?' active':''}" id="pill-heat">🔥 ヒートマップ</div>
-    <div class="map-pill" id="pill-stats">📊 エリア統計</div>`;
-  document.getElementById('pill-heat').onclick = toggleHeat;
-  document.getElementById('pill-stats').onclick = openAreaSheet;
+  const ov = document.getElementById('map-overlay');
+  if(ov){
+    ov.innerHTML = `
+      <div class="map-pill"><span class="dot" style="background:#E63946"></span>${t('ov_danger')} ${danger}</div>
+      <div class="map-pill"><span class="dot" style="background:#F4A261"></span>${t('ov_warn')} ${warn}</div>
+      <div class="map-pill">🔄 ${t('ov_recent')} ${recent}${t('ov_count')}</div>
+      <div class="map-pill${heatOn?' active':''}" id="pill-heat">${t('ov_heat')}</div>
+      <div class="map-pill" id="pill-stats">${t('ov_stats')}</div>`;
+    document.getElementById('pill-heat').onclick = toggleHeat;
+    document.getElementById('pill-stats').onclick = openAreaSheet;
+  }
+  const lg = document.getElementById('map-legend');
+  if(lg){
+    lg.innerHTML = `
+      <div><span class="dot" style="background:#E63946"></span>${t('lg_danger')}</div>
+      <div><span class="dot" style="background:#F4A261"></span>${t('lg_warn')}</div>
+      <div><span class="dot" style="background:#64748B"></span>${t('lg_safe')}</div>`;
+  }
 }
 
 // ── ヒートマップ ──
@@ -1671,7 +1886,7 @@ function buildHeat(){
 }
 function toggleHeat(){
   if(!map) return;
-  if(typeof L.heatLayer !== 'function'){ showToast('⚠️ ヒートマップを読み込めませんでした'); return; }
+  if(typeof L.heatLayer !== 'function'){ showToast(t('toast_heat_err')); return; }
   heatOn = !heatOn;
   if(heatOn){ heatLayer = buildHeat(); heatLayer.addTo(map); }
   else if(heatLayer){ map.removeLayer(heatLayer); heatLayer = null; }
@@ -1692,21 +1907,21 @@ function openAreaSheet(){
   const total  = MARKINGS.length;
   // 危険度スコア（0-100）: 危険=満点、要確認=半分の重み
   const score = Math.min(100, Math.round((danger*12 + warn*6)));
-  const lvl = score>=70 ? {t:'警戒', c:'#E63946'} : score>=40 ? {t:'やや注意', c:'#F4A261'} : {t:'比較的安全', c:'#2D6A4F'};
+  const lvl = score>=70 ? {label:t('as_alert'), c:'#E63946'} : score>=40 ? {label:t('as_caution'), c:'#F4A261'} : {label:t('as_safe'), c:'#2D6A4F'};
   const sheet = document.getElementById('area-sheet');
   sheet.innerHTML = `
     <div class="grab"></div>
-    <div class="as-hd"><b>📊 渋谷区宇田川町 今週の危険度</b><button class="as-close" id="as-close">×</button></div>
-    <div class="as-score"><b style="color:${lvl.c}">${score}</b><span>/100 · ${lvl.t}</span></div>
+    <div class="as-hd"><b>${t('as_title')}</b><button class="as-close" id="as-close">×</button></div>
+    <div class="as-score"><b style="color:${lvl.c}">${score}</b><span>/100 · ${lvl.label}</span></div>
     <div class="danger-meter"><i style="width:${score}%;background:${lvl.c}"></i></div>
     <div class="as-grid">
-      <div class="as-cell"><b style="color:#E63946">${danger}</b><span>マーキング濃厚</span></div>
-      <div class="as-cell"><b style="color:#F4A261">${warn}</b><span>要確認</span></div>
-      <div class="as-cell"><b style="color:#64748B">${safe}</b><span>偶然・誤検知</span></div>
+      <div class="as-cell"><b style="color:#E63946">${danger}</b><span>${t('as_danger')}</span></div>
+      <div class="as-cell"><b style="color:#F4A261">${warn}</b><span>${t('as_warn')}</span></div>
+      <div class="as-cell"><b style="color:#64748B">${safe}</b><span>${t('as_safe2')}</span></div>
     </div>
     <div class="as-grid" style="grid-template-columns:1fr 1fr">
-      <div class="as-cell"><b>${total}</b><span>累計投稿</span></div>
-      <div class="as-cell"><b>${MARKINGS.filter(m=>isRecent(m.ago)).length}</b><span>24時間以内</span></div>
+      <div class="as-cell"><b>${total}</b><span>${t('as_total')}</span></div>
+      <div class="as-cell"><b>${MARKINGS.filter(m=>isRecent(m.ago)).length}</b><span>${t('as_24h')}</span></div>
     </div>`;
   document.getElementById('as-close').onclick = ()=>sheet.classList.remove('open');
   sheet.classList.add('open');
@@ -1771,16 +1986,18 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// init: 保存データの復元 → デイリー更新 → 初回はオンボーディング
+// init: 保存データの復元 → デイリー更新 → 言語適用 → 初回はオンボーディング
 loadState();
 ensureDaily();
 syncProfileToRanks();
+applyStaticI18n();
 if (ONBOARDED) {
   const ob = document.getElementById('onboard');
   if (ob) ob.remove();
 }
 renderHome();
 renderRank('week');
+renderMapOverlay();
 </script>
 </body>
 </html>
