@@ -207,6 +207,37 @@
   .levelup h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: var(--gold); }
   .levelup .lv-sub { font-size: 14px; color: #A8C4D4; line-height: 1.7; }
 
+  /* ── Tab notification badge ── */
+  .tab { position: relative; }
+  .tab-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--red); color: #fff; border-radius: 10px;
+    font-size: 9px; font-weight: 800; min-width: 16px; height: 16px;
+    display: flex; align-items: center; justify-content: center; padding: 0 3px;
+    pointer-events: none; line-height: 1;
+  }
+
+  /* ── Onboarding ── */
+  .onboard {
+    position: absolute; inset: 0; z-index: 300;
+    background: var(--night); display: flex; flex-direction: column;
+    transition: opacity .4s;
+  }
+  .onboard.gone { opacity: 0; pointer-events: none; }
+  .ob-wrap { flex: 1; position: relative; overflow: hidden; }
+  .ob-slide {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 40px 28px;
+    text-align: center; transition: transform .35s ease;
+  }
+  .ob-icon { font-size: 80px; margin-bottom: 22px; line-height: 1; }
+  .ob-title { font-size: 22px; font-weight: 800; line-height: 1.35; margin-bottom: 14px; }
+  .ob-desc { font-size: 14px; color: #A8C4D4; line-height: 1.75; }
+  .ob-dots { display: flex; gap: 8px; justify-content: center; padding: 18px 0 4px; }
+  .ob-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: all .25s; }
+  .ob-dot.on { background: var(--red); width: 22px; border-radius: 4px; }
+  .ob-foot { padding: 12px 24px 36px; }
+
   /* ── Detail modal ── */
   .detail-modal {
     position: absolute; inset: 0; z-index: 150;
@@ -495,12 +526,39 @@
 
   </div>
 
+  <div class="onboard" id="onboard">
+    <div class="ob-wrap">
+      <div class="ob-slide" style="transform:translateX(0%)">
+        <div class="ob-icon">🔍</div>
+        <div class="ob-title">GO-TO 探偵団へ<br>ようこそ</div>
+        <div class="ob-desc">市民が「探偵」となり、街の不審なマーキングを発見・投稿。AIが判定し、防犯マップをリアルタイムに育てるアプリです。</div>
+      </div>
+      <div class="ob-slide" style="transform:translateX(100%)">
+        <div class="ob-icon">📸</div>
+        <div class="ob-title">撮影して投稿しよう</div>
+        <div class="ob-desc">中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。</div>
+      </div>
+      <div class="ob-slide" style="transform:translateX(200%)">
+        <div class="ob-icon">🗺️</div>
+        <div class="ob-title">地図で街を守ろう</div>
+        <div class="ob-desc">投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。</div>
+      </div>
+    </div>
+    <div class="ob-dots" id="ob-dots">
+      <div class="ob-dot on"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+    </div>
+    <div class="ob-foot">
+      <button class="btn primary" id="ob-next">次へ</button>
+    </div>
+  </div>
+
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
   <!-- Tab bar -->
   <nav class="tabbar">
     <button class="tab active" data-view="home">
+      <span class="tab-badge" id="home-badge" style="display:none">0</span>
       <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9v11h14V9"/></svg>ホーム
     </button>
     <button class="tab" data-view="map">
@@ -522,7 +580,7 @@
 <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script>
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
-const STATE = { points: 2480, posts: 38, missions: [false, false] };
+const STATE = { points: 2480, posts: 38, missions: [false, false], unread: 0 };
 
 const MARKINGS = [
   { lat: 35.6595, lng: 139.7005, type: 'danger', label: 'インターホン側面の傷', mark: '⚡', user: 'タカシ', ago: '12分前', verdict: 'マーキング濃厚' },
@@ -854,6 +912,7 @@ function camResult(){
       <div class="pt-pop"><div class="n">+${gained} pt</div><div class="l">捜査ポイント獲得！${bonus}</div></div>
       <button class="btn primary" id="cam-done">マップに反映する</button>
       <button class="btn ghost" id="cam-again">もう一度撮影</button>
+      <button class="btn ghost" id="cam-share">📤 結果をシェア</button>
     </div>`;
   document.getElementById('cam-done').onclick = () => {
     const oldLv = getLevelInfo(STATE.points).cur.lv;
@@ -868,6 +927,7 @@ function camResult(){
     };
     FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:'ユウキ', act:o.label+'を投稿', ago:'たった今', chip:chipMap[o.type],
       label:o.label, verdict:o.verdict, conf:conf, aiComment:aiCommentMap[o.type] });
+    STATE.unread++; renderBadge();
     // ミッション達成チェック・ランキング更新
     checkMissions();
     updateRankData(gained);
@@ -890,6 +950,11 @@ function camResult(){
     setTimeout(camIdle, 400);
   };
   document.getElementById('cam-again').onclick = camIdle;
+  document.getElementById('cam-share').onclick = () => {
+    const text = `🔍 GO-TO探偵団\n${o.title}（AI信頼度 ${conf}%）\n投稿が防犯マップに追加されました！\nhttps://b-w-hiroki.github.io/goto-tanteidan/`;
+    if (navigator.share) { navigator.share({ title: 'GO-TO探偵団', text }); }
+    else { navigator.clipboard?.writeText(text).then(() => showToast('📋 クリップボードにコピーしました')); }
+  };
 }
 
 // ── Toast ──
@@ -900,6 +965,35 @@ function showToast(msg){
   clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 2200);
 }
 
+// ── Notification badge ──
+function renderBadge(){
+  const el = document.getElementById('home-badge');
+  if (!el) return;
+  if (STATE.unread > 0) { el.textContent = STATE.unread; el.style.display = 'flex'; }
+  else { el.style.display = 'none'; }
+}
+
+// ── Onboarding ──
+let obStep = 0;
+function obGo(step){
+  const slides = document.querySelectorAll('.ob-slide');
+  const dots = document.querySelectorAll('.ob-dot');
+  slides.forEach((s, i) => { s.style.transform = `translateX(${(i - step) * 100}%)`; });
+  dots.forEach((d, i) => { d.className = 'ob-dot' + (i === step ? ' on' : ''); });
+  obStep = step;
+  document.getElementById('ob-next').textContent = step < slides.length - 1 ? '次へ' : 'はじめる';
+}
+document.getElementById('ob-next').onclick = () => {
+  const slides = document.querySelectorAll('.ob-slide');
+  if (obStep < slides.length - 1) {
+    obGo(obStep + 1);
+  } else {
+    const ob = document.getElementById('onboard');
+    ob.classList.add('gone');
+    setTimeout(() => ob.remove(), 450);
+  }
+};
+
 // ── Nav ──
 function switchView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -909,6 +1003,7 @@ function switchView(name){
   if (name==='map') initMap();
   if (name==='cam') camIdle();
   if (name==='book') renderBook();
+  if (name==='home') { STATE.unread = 0; renderBadge(); }
   // 詳細モーダルを閉じる
   document.getElementById('detail-modal').classList.remove('open');
 }
