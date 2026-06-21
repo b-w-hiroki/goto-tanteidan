@@ -144,46 +144,48 @@
   }
   .tab.cam .cambtn svg { width: 26px; height: 26px; stroke: #fff; }
 
-  .view { display: none; padding: 16px 18px 24px; animation: fade .25s; }
+  .view { display: none; padding: 12px 16px 20px; animation: fade .25s; }
   .view.active { display: block; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
 
   /* ── Common cards ── */
-  .hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .hdr h2 { font-size: 22px; font-weight: 800; }
+  .hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .hdr h2 { font-size: 21px; font-weight: 800; }
   .hdr .sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
   .card {
-    background: var(--night2); border-radius: 16px; padding: 16px; margin-bottom: 14px;
+    background: var(--night2); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px;
     border: 1px solid var(--line);
   }
 
   /* ── Home hero ── */
   .hero {
     background: linear-gradient(135deg, #E63946 0%, #b71f2b 100%);
-    border-radius: 18px; padding: 18px; margin-bottom: 14px; position: relative; overflow: hidden;
+    border-radius: 18px; padding: 15px 16px; margin-bottom: 12px; position: relative; overflow: hidden;
+    cursor: pointer;
   }
   .hero .glasswm { position: absolute; right: -10px; top: -16px; font-size: 110px; opacity: .14; }
   .hero .role { font-size: 12px; opacity: .85; }
-  .hero .name { font-size: 20px; font-weight: 800; margin: 2px 0 14px; }
+  .hero .name { font-size: 19px; font-weight: 800; margin: 2px 0 10px; }
   .hero .ptrow { display: flex; align-items: baseline; gap: 8px; }
-  .hero .pt { font-size: 40px; font-weight: 800; line-height: 1; }
+  .hero .pt { font-size: 38px; font-weight: 800; line-height: 1; }
   .hero .ptlbl { font-size: 13px; opacity: .9; }
-  .hero .lvbar { height: 7px; background: rgba(255,255,255,.25); border-radius: 5px; margin-top: 14px; overflow: hidden; }
+  .hero .lvbar { height: 7px; background: rgba(255,255,255,.25); border-radius: 5px; margin-top: 11px; overflow: hidden; }
   .hero .lvbar i { display: block; height: 100%; width: 68%; background: #fff; border-radius: 5px; }
-  .hero .lvtx { font-size: 11px; opacity: .9; margin-top: 6px; }
+  .hero .lvtx { font-size: 11px; opacity: .92; margin-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .hero .lvtx .perk-hint { font-weight: 700; opacity: .95; white-space: nowrap; }
 
-  .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-  .stat { background: var(--night2); border-radius: 14px; padding: 12px 8px; text-align: center; border: 1px solid var(--line); }
-  .stat b { display: block; font-size: 22px; font-weight: 800; color: var(--red); }
+  .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .stat { background: var(--night2); border-radius: 14px; padding: 10px 6px; text-align: center; border: 1px solid var(--line); }
+  .stat b { display: block; font-size: 21px; font-weight: 800; color: var(--red); }
   .stat span { font-size: 10px; color: var(--gray); }
 
-  .sec-title { font-size: 13px; font-weight: 700; color: #aab4c8; margin: 4px 0 10px; display: flex; align-items: center; gap: 6px; }
+  .sec-title { font-size: 13px; font-weight: 700; color: #aab4c8; margin: 2px 0 8px; display: flex; align-items: center; gap: 6px; }
 
-  .mission { display: flex; align-items: center; gap: 12px; }
-  .mission .mi { width: 42px; height: 42px; border-radius: 12px; background: rgba(69,123,157,.2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .mission { display: flex; align-items: center; gap: 11px; padding: 11px 14px; }
+  .mission .mi { width: 38px; height: 38px; border-radius: 11px; background: rgba(69,123,157,.2); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
   .mission .mt { flex: 1; }
-  .mission .mt b { font-size: 14px; }
-  .mission .mt span { font-size: 11px; color: var(--gray); display: block; margin-top: 2px; }
+  .mission .mt b { font-size: 13.5px; }
+  .mission .mt span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; }
   .mission .mr { font-size: 13px; font-weight: 800; color: var(--gold); white-space: nowrap; }
 
   .feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
@@ -482,12 +484,57 @@
   .rs-post .rp-tx b { font-size: 13px; display: block; }
   .rs-post .rp-tx span { font-size: 11px; color: var(--gray); }
 
+  /* ── Level perks sheet ── */
+  .level-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 22px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.5); max-height: 78%;
+    display: flex; flex-direction: column;
+  }
+  .level-sheet.open { transform: translateY(0); }
+  .level-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3a55; margin: 0 auto 12px; flex-shrink:0; }
+  .ls-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; flex-shrink:0; }
+  .ls-hd b { font-size: 16px; font-weight: 800; }
+  .ls-hd .ls-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .ls-now { font-size: 12px; color: var(--gray); margin-bottom: 12px; flex-shrink:0; }
+  .ls-next {
+    background: linear-gradient(135deg, rgba(244,162,97,.22), rgba(230,57,70,.18));
+    border: 1px solid rgba(244,162,97,.4); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; flex-shrink:0;
+  }
+  .ls-next .lsn-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .ls-next .lsn-ic { font-size: 26px; }
+  .ls-next .lsn-tt b { font-size: 14px; display: block; }
+  .ls-next .lsn-tt span { font-size: 11px; color: var(--gold); font-weight: 700; }
+  .ls-next .lsn-perk { font-size: 12.5px; color: #E9D5C0; line-height: 1.6; }
+  .ls-next .lsn-bar { height: 6px; background: rgba(0,0,0,.3); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+  .ls-next .lsn-bar i { display: block; height: 100%; background: var(--gold); border-radius: 4px; }
+  .ls-list { overflow-y: auto; flex: 1; }
+  .ls-list::-webkit-scrollbar { width: 0; }
+  .ls-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .ls-row:last-child { border: none; }
+  .ls-row .lr-ic {
+    width: 38px; height: 38px; border-radius: 11px; font-size: 19px; flex-shrink:0;
+    display: flex; align-items: center; justify-content: center; background: var(--night2); border: 1px solid var(--line);
+  }
+  .ls-row.done .lr-ic { background: rgba(45,106,79,.2); border-color: rgba(45,106,79,.5); }
+  .ls-row.cur .lr-ic { background: rgba(230,57,70,.2); border-color: var(--red); }
+  .ls-row.locked { opacity: .5; }
+  .ls-row .lr-tx { flex: 1; }
+  .ls-row .lr-tx b { font-size: 13px; }
+  .ls-row .lr-tx .lr-perk { font-size: 11.5px; color: var(--gray); display: block; margin-top: 2px; line-height: 1.5; }
+  .ls-row .lr-st { font-size: 10px; font-weight: 800; white-space: nowrap; padding: 3px 8px; border-radius: 10px; align-self: center; }
+  .ls-row .lr-st.s-done { background: rgba(45,106,79,.25); color: #6ee7a8; }
+  .ls-row .lr-st.s-cur  { background: rgba(230,57,70,.25); color: #ff9aa3; }
+  .ls-row .lr-st.s-lock { background: rgba(100,116,139,.2); color: #9aa6ba; }
+
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -517,7 +564,7 @@
       padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
     .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
-    .notif-sheet, .rank-sheet, .area-sheet {
+    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet {
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
   }
@@ -561,13 +608,13 @@
         <div style="font-size:28px">🕵️</div>
       </div>
 
-      <div class="hero">
+      <div class="hero" id="home-hero">
         <div class="glasswm">🔍</div>
         <div class="role" id="home-role">特級探偵 / Lv.7</div>
         <div class="name">ユウキ さん</div>
         <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl">捜査ポイント</span></div>
         <div class="lvbar"><i id="lvbar"></i></div>
-        <div class="lvtx" id="home-lvtx">次のランクまで あと 520 pt</div>
+        <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint">特典を見る ›</span></div>
       </div>
 
       <div class="statgrid">
@@ -647,6 +694,7 @@
 
   <div class="notif-sheet" id="notif-sheet"></div>
   <div class="rank-sheet" id="rank-sheet"></div>
+  <div class="level-sheet" id="level-sheet"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -756,15 +804,15 @@ const RANKS = {
 const TYPE_COLOR = { danger:'#E63946', warn:'#F4A261', safe:'#64748B' };
 
 const LEVELS = [
-  { lv:1, title:'見習い探偵', min:0    },
-  { lv:2, title:'初級探偵',   min:200  },
-  { lv:3, title:'中級探偵',   min:500  },
-  { lv:4, title:'上級探偵',   min:900  },
-  { lv:5, title:'熟練探偵',   min:1400 },
-  { lv:6, title:'特上探偵',   min:2000 },
-  { lv:7, title:'特級探偵',   min:2480 },
-  { lv:8, title:'エース探偵', min:3000 },
-  { lv:9, title:'伝説の探偵', min:4000 },
+  { lv:1, title:'見習い探偵', min:0,    icon:'🔰', perk:'撮影・投稿・防犯マップ閲覧の基本機能' },
+  { lv:2, title:'初級探偵',   min:200,  icon:'🧭', perk:'投稿履歴の閲覧と探偵バッジの獲得' },
+  { lv:3, title:'中級探偵',   min:500,  icon:'🔥', perk:'ヒートマップ表示とエリア統計が解放' },
+  { lv:4, title:'上級探偵',   min:900,  icon:'📊', perk:'週間活動レポートと優先通知が届く' },
+  { lv:5, title:'熟練探偵',   min:1400, icon:'⭐', perk:'カスタムエリア監視・限定アバター' },
+  { lv:6, title:'特上探偵',   min:2000, icon:'🎖️', perk:'地域ランキング表彰と特別ミッション' },
+  { lv:7, title:'特級探偵',   min:2480, icon:'🏅', perk:'自治体連携データ閲覧・探偵団リーダー権限' },
+  { lv:8, title:'エース探偵', min:3000, icon:'👑', perk:'AI判定の詳細レポートと新機能の先行利用' },
+  { lv:9, title:'伝説の探偵', min:4000, icon:'🏆', perk:'殿堂入り・全特典開放とプレミアム称号' },
 ];
 
 const MISSION_DEFS = [
@@ -850,8 +898,8 @@ function renderHome(){
   document.getElementById('stat-posts').textContent = STATE.posts;
   document.getElementById('stat-streak').textContent = STATE.streak;
   document.getElementById('lvbar').style.width = info.pct + '%';
-  document.getElementById('home-lvtx').textContent = info.rem > 0
-    ? `次のランクまで あと ${fmt(info.rem)} pt`
+  document.getElementById('home-lvtx').textContent = info.next
+    ? `次のランク「${info.next.title}」まで あと ${fmt(info.rem)} pt`
     : '最高ランク到達！';
   const items = FEED.map((f,i)=>({f,i})).filter(o => feedFilter==='all' || o.f.chip[0]===feedFilter);
   document.getElementById('feed').innerHTML = items.length
@@ -866,6 +914,45 @@ function renderHome(){
 }
 
 let feedFilter = 'all';
+
+// ── ランク特典シート ──
+function openLevelSheet(){
+  const info = getLevelInfo(STATE.points);
+  const cur = info.cur, next = info.next;
+  const sheet = document.getElementById('level-sheet');
+
+  const nextBlock = next ? `
+    <div class="ls-next">
+      <div class="lsn-top">
+        <div class="lsn-ic">${next.icon}</div>
+        <div class="lsn-tt"><b>次は Lv.${next.lv}「${next.title}」</b><span>あと ${fmt(info.rem)} pt で昇格</span></div>
+      </div>
+      <div class="lsn-perk">🎁 ${next.perk}</div>
+      <div class="lsn-bar"><i style="width:${info.pct}%"></i></div>
+    </div>`
+    : `<div class="ls-next"><div class="lsn-top"><div class="lsn-ic">🏆</div>
+        <div class="lsn-tt"><b>最高ランクに到達！</b><span>すべての特典が解放されています</span></div></div></div>`;
+
+  const rows = LEVELS.map(l=>{
+    const status = l.lv < cur.lv ? 'done' : l.lv === cur.lv ? 'cur' : 'locked';
+    const stLabel = status==='done' ? '達成済み' : status==='cur' ? '現在' : `あと ${fmt(Math.max(0, l.min - STATE.points))} pt`;
+    const stCls = status==='done' ? 's-done' : status==='cur' ? 's-cur' : 's-lock';
+    return `<div class="ls-row ${status}">
+      <div class="lr-ic">${l.icon}</div>
+      <div class="lr-tx"><b>Lv.${l.lv} ${l.title}</b><span class="lr-perk">${l.perk}</span></div>
+      <div class="lr-st ${stCls}">${stLabel}</div>
+    </div>`;
+  }).join('');
+
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="ls-hd"><b>🎖 ランク特典</b><button class="ls-close" id="ls-close">×</button></div>
+    <div class="ls-now">現在 Lv.${cur.lv}「${cur.title}」· ${fmt(STATE.points)} pt</div>
+    ${nextBlock}
+    <div class="ls-list">${rows}</div>`;
+  document.getElementById('ls-close').onclick = ()=>sheet.classList.remove('open');
+  sheet.classList.add('open');
+}
 
 function openDetail(idx){
   const f = FEED[idx];
@@ -1184,7 +1271,7 @@ function switchView(name){
   if (name==='home') { STATE.unread = 0; renderBadge(); }
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
@@ -1284,6 +1371,9 @@ document.getElementById('home-badge').addEventListener('click', e => {
   e.stopPropagation();
   openNotifSheet();
 });
+
+// hero tap → open level perks sheet
+document.getElementById('home-hero').addEventListener('click', openLevelSheet);
 
 // feed filter chips
 document.querySelectorAll('#feed-filter .ff-chip').forEach(b=>{
