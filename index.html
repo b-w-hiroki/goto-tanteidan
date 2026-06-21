@@ -188,6 +188,25 @@
   .chip.warn { background: rgba(244,162,97,.22); color: var(--gold); }
   .chip.ng { background: rgba(100,116,139,.25); color: #9aa6ba; }
 
+  /* ── Mission done state ── */
+  .mission.done { opacity: .55; }
+  .mission.done .mi { background: rgba(45,106,79,.25) !important; }
+  .done-badge { font-size: 12px; font-weight: 800; color: #6ee7a8; white-space: nowrap; }
+
+  /* ── Level up overlay ── */
+  .levelup {
+    position: absolute; inset: 0; z-index: 200;
+    background: rgba(12,12,28,.9); backdrop-filter: blur(6px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+    animation: lvshow 3.2s forwards; pointer-events: none;
+  }
+  @keyframes lvshow { 0%{opacity:0} 8%{opacity:1} 75%{opacity:1} 100%{opacity:0} }
+  .levelup .lv-big { font-size: 80px; animation: lvbounce .5s .25s ease-out both; margin-bottom: 8px; }
+  @keyframes lvbounce { from{transform:scale(0)} 80%{transform:scale(1.15)} to{transform:scale(1)} }
+  .levelup h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: var(--gold); }
+  .levelup .lv-sub { font-size: 14px; color: #A8C4D4; line-height: 1.7; }
+
   /* ── Map ── */
   #map { position: absolute; top: 44px; bottom: 78px; left: 0; right: 0; }
   .map-overlay {
@@ -370,11 +389,11 @@
 
       <div class="hero">
         <div class="glasswm">🔍</div>
-        <div class="role">特級探偵 / Lv.7</div>
+        <div class="role" id="home-role">特級探偵 / Lv.7</div>
         <div class="name">ユウキ さん</div>
         <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl">捜査ポイント</span></div>
         <div class="lvbar"><i id="lvbar"></i></div>
-        <div class="lvtx">次のランクまで あと 520 pt</div>
+        <div class="lvtx" id="home-lvtx">次のランクまで あと 520 pt</div>
       </div>
 
       <div class="statgrid">
@@ -384,16 +403,7 @@
       </div>
 
       <div class="sec-title">📋 今日のミッション</div>
-      <div class="card mission">
-        <div class="mi">🔍</div>
-        <div class="mt"><b>マーキングを1件調査</b><span>通勤・通学路をチェック</span></div>
-        <div class="mr">+50pt</div>
-      </div>
-      <div class="card mission">
-        <div class="mi">🗺️</div>
-        <div class="mt"><b>新エリアを1つ解放</b><span>未踏エリアで投稿</span></div>
-        <div class="mr">+120pt</div>
-      </div>
+      <div id="missions"></div>
 
       <div class="sec-title">🕐 みんなの捜査ログ</div>
       <div class="card" id="feed"></div>
@@ -444,7 +454,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
-const STATE = { points: 2480, posts: 38 };
+const STATE = { points: 2480, posts: 38, missions: [false, false] };
 
 const MARKINGS = [
   { lat: 35.6595, lng: 139.7005, type: 'danger', label: 'インターホン側面の傷', mark: '⚡', user: 'タカシ', ago: '12分前', verdict: 'マーキング濃厚' },
@@ -491,6 +501,23 @@ const RANKS = {
 
 const TYPE_COLOR = { danger:'#E63946', warn:'#F4A261', safe:'#64748B' };
 
+const LEVELS = [
+  { lv:1, title:'見習い探偵', min:0    },
+  { lv:2, title:'初級探偵',   min:200  },
+  { lv:3, title:'中級探偵',   min:500  },
+  { lv:4, title:'上級探偵',   min:900  },
+  { lv:5, title:'熟練探偵',   min:1400 },
+  { lv:6, title:'特上探偵',   min:2000 },
+  { lv:7, title:'特級探偵',   min:2480 },
+  { lv:8, title:'エース探偵', min:3000 },
+  { lv:9, title:'伝説の探偵', min:4000 },
+];
+
+const MISSION_DEFS = [
+  { id:0, icon:'🔍', title:'マーキングを1件調査', desc:'通勤・通学路をチェック', reward:50,  triggerPosts:39 },
+  { id:1, icon:'🗺️', title:'新エリアを1つ解放',   desc:'未踏エリアで投稿',       reward:120, triggerPosts:41 },
+];
+
 // 撮影結果のパターン（毎回ランダムに抽選）
 const CAM_OUTCOMES = [
   { weight:3, type:'danger', mark:'⚡', title:'マーキング濃厚！', conf:[88,96], pts:50,
@@ -513,16 +540,71 @@ function randInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
 // ───────────────────────────── RENDER ─────────────────────────────
 function fmt(n){ return n.toLocaleString('ja-JP'); }
 
+function getLevelInfo(pts){
+  let idx = 0;
+  for(let i=0;i<LEVELS.length;i++){ if(pts>=LEVELS[i].min) idx=i; else break; }
+  const cur=LEVELS[idx], next=LEVELS[idx+1]||null;
+  const pct = next ? Math.min(100,Math.round((pts-cur.min)/(next.min-cur.min)*100)) : 100;
+  const rem = next ? Math.max(0,next.min-pts) : 0;
+  return { cur, next, pct, rem };
+}
+
+function renderMissions(){
+  document.getElementById('missions').innerHTML = MISSION_DEFS.map(m=>{
+    const done = STATE.missions[m.id];
+    return `<div class="card mission${done?' done':''}">
+      <div class="mi">${done?'✅':m.icon}</div>
+      <div class="mt"><b>${m.title}</b><span>${m.desc}</span></div>
+      ${done?`<span class="done-badge">完了！</span>`:`<div class="mr">+${m.reward}pt</div>`}
+    </div>`;
+  }).join('');
+}
+
+function checkMissions(){
+  MISSION_DEFS.forEach(m=>{
+    if(!STATE.missions[m.id] && STATE.posts >= m.triggerPosts){
+      STATE.missions[m.id] = true;
+      STATE.points += m.reward;
+      setTimeout(()=>showToast(`🎯 ミッション達成！+${m.reward}pt`), 2500);
+    }
+  });
+}
+
+function showLevelUp(title, lv){
+  const el = document.createElement('div');
+  el.className = 'levelup';
+  el.innerHTML = `<div class="lv-big">⭐</div><h3>レベルアップ！</h3><div class="lv-sub">Lv.${lv}<br><b>${title}</b> に昇進しました</div>`;
+  document.querySelector('.phone').appendChild(el);
+  setTimeout(()=>el.remove(), 3300);
+}
+
+function updateRankData(gained){
+  Object.values(RANKS).forEach(seg=>{
+    const me = seg.find(r=>r.me);
+    if(!me) return;
+    me.pt += gained;
+    me.area = me.area.replace(/(\d+)件/,(_,n)=>`${+n+1}件`);
+  });
+  const activeSeg = document.querySelector('.seg button.active');
+  if(activeSeg) renderRank(activeSeg.dataset.seg);
+}
+
 function renderHome(){
+  const info = getLevelInfo(STATE.points);
+  document.getElementById('home-role').textContent = `${info.cur.title} / Lv.${info.cur.lv}`;
   document.getElementById('home-pt').textContent = fmt(STATE.points);
   document.getElementById('stat-posts').textContent = STATE.posts;
-  document.getElementById('lvbar').style.width = Math.min(100, 68 + (STATE.points-2480)/30) + '%';
+  document.getElementById('lvbar').style.width = info.pct + '%';
+  document.getElementById('home-lvtx').textContent = info.rem > 0
+    ? `次のランクまで あと ${fmt(info.rem)} pt`
+    : '最高ランク到達！';
   document.getElementById('feed').innerHTML = FEED.map(f => `
     <div class="feed-item">
       <div class="thumb" style="background:${f.bg}">${f.mark}</div>
       <div class="ft"><b>${f.who}</b> <span>${f.act} · ${f.ago}</span></div>
       <span class="chip ${f.chip[0]}">${f.chip[1]}</span>
     </div>`).join('');
+  renderMissions();
 }
 
 function renderRank(seg){
@@ -616,8 +698,19 @@ function camResult(){
       <button class="btn ghost" id="cam-again">もう一度撮影</button>
     </div>`;
   document.getElementById('cam-done').onclick = () => {
+    const oldLv = getLevelInfo(STATE.points).cur.lv;
     STATE.points += gained; STATE.posts += 1;
+    // フィードに先頭追加
+    const bgMap = { danger:'rgba(230,57,70,.2)', warn:'rgba(244,162,97,.2)', safe:'rgba(100,116,139,.2)' };
+    const chipMap = { danger:['ok','濃厚'], warn:['warn','要確認'], safe:['ng','偶然'] };
+    FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:'ユウキ', act:o.label+'を投稿', ago:'たった今', chip:chipMap[o.type] });
+    // ミッション達成チェック・ランキング更新
+    checkMissions();
+    updateRankData(gained);
     renderHome();
+    // レベルアップ判定
+    const newLv = getLevelInfo(STATE.points).cur;
+    if(newLv.lv > oldLv) setTimeout(()=>showLevelUp(newLv.title, newLv.lv), 800);
     // add a fresh marking near center
     const m = { lat:35.6595+(Math.random()-.5)*.004, lng:139.7010+(Math.random()-.5)*.004,
       type:o.type, mark:o.mark, verdict:o.verdict, user:'ユウキ', label:'あなたの新規投稿（'+o.label+'）', ago:'たった今' };
