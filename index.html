@@ -979,9 +979,19 @@ function openRankSheet(idx){
 }
 
 // ── Map ──
-let map = null, markerLayer = null;
+let map = null, markerLayer = null, mapFailed = false;
 function initMap(){
   if (map) { setTimeout(()=>map.invalidateSize(), 100); return; }
+  if (typeof L === 'undefined' || typeof L.map !== 'function'){
+    if (!mapFailed){
+      mapFailed = true;
+      const el = document.getElementById('map');
+      if (el) el.innerHTML = `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:30px;text-align:center;color:var(--gray)">
+        <div style="font-size:42px">🗺️</div>
+        <div style="font-size:13px;line-height:1.7">地図の読み込みに失敗しました。<br>通信環境を確認して再読み込みしてください。</div></div>`;
+    }
+    return;
+  }
   map = L.map('map', { zoomControl:false, attributionControl:false }).setView([35.6595, 139.7010], 16);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
   const useCluster = typeof L.markerClusterGroup === 'function';
