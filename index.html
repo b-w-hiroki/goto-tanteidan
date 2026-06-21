@@ -26,6 +26,8 @@
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8D%3C/text%3E%3C/svg%3E" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 <style>
   :root {
     --night: #12122A;
@@ -214,7 +216,7 @@
     background: var(--red); color: #fff; border-radius: 10px;
     font-size: 9px; font-weight: 800; min-width: 16px; height: 16px;
     display: flex; align-items: center; justify-content: center; padding: 0 3px;
-    pointer-events: none; line-height: 1;
+    line-height: 1;
   }
 
   /* ── Onboarding ── */
@@ -408,6 +410,32 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* ── Notification sheet ── */
+  .notif-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 400;
+    background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 20px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.5); max-height: 65%;
+    display: flex; flex-direction: column;
+  }
+  .notif-sheet.open { transform: translateY(0); }
+  .notif-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3a55; margin: 0 auto 12px; flex-shrink:0; }
+  .notif-sheet .ns-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-shrink:0; }
+  .notif-sheet .ns-hd b { font-size: 16px; font-weight: 800; }
+  .notif-sheet .ns-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .notif-list { overflow-y: auto; flex: 1; }
+  .notif-list::-webkit-scrollbar { width: 0; }
+  .notif-item { display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .notif-item:last-child { border: none; }
+  .notif-item .ni-icon { width: 40px; height: 40px; border-radius: 10px; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink:0; }
+  .notif-item .ni-tx b { font-size: 13px; display:block; }
+  .notif-item .ni-tx span { font-size: 11px; color: var(--gray); }
+
+  /* ── Marker cluster (dark theme) ── */
+  .marker-cluster { background: rgba(230,57,70,.3) !important; }
+  .marker-cluster div { background: rgba(230,57,70,.85) !important; color:#fff !important; font-weight:800; font-size:13px; }
+
   @media (max-width: 820px) { .pitch { display: none; } }
 
   /* ── 実機（スマホ）では電話枠を外して全画面表示 ── */
@@ -486,7 +514,7 @@
       <div class="statgrid">
         <div class="stat"><b id="stat-posts">38</b><span>投稿数</span></div>
         <div class="stat"><b>12</b><span>解放エリア</span></div>
-        <div class="stat"><b>5</b><span>連続記録</span></div>
+        <div class="stat"><b id="stat-streak">5</b><span>連続記録</span></div>
       </div>
 
       <div class="sec-title">📋 今日のミッション</div>
@@ -552,6 +580,7 @@
     </div>
   </div>
 
+  <div class="notif-sheet" id="notif-sheet"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -578,9 +607,10 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
-const STATE = { points: 2480, posts: 38, missions: [false, false], unread: 0 };
+const STATE = { points: 2480, posts: 38, missions: [false, false], unread: 0, streak: 5 };
 
 const MARKINGS = [
   { lat: 35.6595, lng: 139.7005, type: 'danger', label: 'インターホン側面の傷', mark: '⚡', user: 'タカシ', ago: '12分前', verdict: 'マーキング濃厚' },
@@ -752,6 +782,7 @@ function renderHome(){
   document.getElementById('home-role').textContent = `${info.cur.title} / Lv.${info.cur.lv}`;
   document.getElementById('home-pt').textContent = fmt(STATE.points);
   document.getElementById('stat-posts').textContent = STATE.posts;
+  document.getElementById('stat-streak').textContent = STATE.streak;
   document.getElementById('lvbar').style.width = info.pct + '%';
   document.getElementById('home-lvtx').textContent = info.rem > 0
     ? `次のランクまで あと ${fmt(info.rem)} pt`
@@ -828,17 +859,20 @@ function renderRank(seg){
 }
 
 // ── Map ──
-let map = null;
+let map = null, markerLayer = null;
 function initMap(){
   if (map) { setTimeout(()=>map.invalidateSize(), 100); return; }
   map = L.map('map', { zoomControl:false, attributionControl:false }).setView([35.6595, 139.7010], 16);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
+  const useCluster = typeof L.markerClusterGroup === 'function';
+  markerLayer = useCluster ? L.markerClusterGroup({ maxClusterRadius:50, disableClusteringAtZoom:17 }) : L.layerGroup();
   MARKINGS.forEach(m => {
     const color = TYPE_COLOR[m.type];
     const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color}"><span>${m.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
-    L.marker([m.lat,m.lng], { icon }).addTo(map)
+    L.marker([m.lat,m.lng], { icon }).addTo(markerLayer)
       .bindPopup(`<b>${m.label}</b><br>判定: <span style="color:${color}">●</span> ${m.verdict}<br>投稿: ${m.user} · ${m.ago}`);
   });
+  markerLayer.addTo(map);
   setTimeout(()=>map.invalidateSize(), 200);
 }
 
@@ -916,7 +950,7 @@ function camResult(){
     </div>`;
   document.getElementById('cam-done').onclick = () => {
     const oldLv = getLevelInfo(STATE.points).cur.lv;
-    STATE.points += gained; STATE.posts += 1;
+    STATE.points += gained; STATE.posts += 1; STATE.streak += 1;
     // フィードに先頭追加
     const bgMap = { danger:'rgba(230,57,70,.2)', warn:'rgba(244,162,97,.2)', safe:'rgba(100,116,139,.2)' };
     const chipMap = { danger:['ok','濃厚'], warn:['warn','要確認'], safe:['ng','偶然'] };
@@ -939,9 +973,9 @@ function camResult(){
     const m = { lat:35.6595+(Math.random()-.5)*.004, lng:139.7010+(Math.random()-.5)*.004,
       type:o.type, mark:o.mark, verdict:o.verdict, user:'ユウキ', label:'あなたの新規投稿（'+o.label+'）', ago:'たった今' };
     MARKINGS.push(m);
-    if (map){
+    if (map && markerLayer){
       const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};animation:none"><span>${o.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
-      L.marker([m.lat,m.lng],{icon}).addTo(map).bindPopup(`<b>${m.label}</b><br>判定: <span style="color:${color}">●</span> ${m.verdict}<br>投稿: あなた · たった今`);
+      L.marker([m.lat,m.lng],{icon}).addTo(markerLayer).bindPopup(`<b>${m.label}</b><br>判定: <span style="color:${color}">●</span> ${m.verdict}<br>投稿: あなた · たった今`);
     }
     renderMapOverlay();
     refreshHeat();
@@ -965,12 +999,36 @@ function showToast(msg){
   clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 2200);
 }
 
-// ── Notification badge ──
+// ── Notification badge + sheet ──
 function renderBadge(){
   const el = document.getElementById('home-badge');
   if (!el) return;
   if (STATE.unread > 0) { el.textContent = STATE.unread; el.style.display = 'flex'; }
   else { el.style.display = 'none'; }
+}
+function openNotifSheet(){
+  const sheet = document.getElementById('notif-sheet');
+  const items = FEED.slice(0, STATE.unread || FEED.length);
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="ns-hd">
+      <b>🔔 新着通知 ${STATE.unread > 0 ? `<span style="font-size:12px;background:var(--red);color:#fff;border-radius:10px;padding:1px 7px;margin-left:6px">${STATE.unread}</span>` : ''}</b>
+      <button class="ns-close" id="ns-close">×</button>
+    </div>
+    <div class="notif-list">
+      ${items.map(f=>`
+        <div class="notif-item">
+          <div class="ni-icon" style="background:${f.bg}">${f.mark}</div>
+          <div class="ni-tx"><b>${f.who}</b><span>${f.act} · ${f.ago}</span></div>
+          <span class="chip ${f.chip[0]}">${f.chip[1]}</span>
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('ns-close').onclick = closeNotifSheet;
+  STATE.unread = 0; renderBadge();
+  sheet.classList.add('open');
+}
+function closeNotifSheet(){
+  document.getElementById('notif-sheet').classList.remove('open');
 }
 
 // ── Onboarding ──
@@ -1003,7 +1061,7 @@ function switchView(name){
   if (name==='map') initMap();
   if (name==='cam') camIdle();
   if (name==='book') renderBook();
-  if (name==='home') { STATE.unread = 0; renderBadge(); }
+  if (name==='home') { closeNotifSheet(); STATE.unread = 0; renderBadge(); }
   // 詳細モーダルを閉じる
   document.getElementById('detail-modal').classList.remove('open');
 }
@@ -1095,6 +1153,12 @@ document.querySelectorAll('.seg button').forEach(b=>{
     b.classList.add('active');
     renderRank(b.dataset.seg);
   };
+});
+
+// badge click → open notif sheet without switching tab
+document.getElementById('home-badge').addEventListener('click', e => {
+  e.stopPropagation();
+  openNotifSheet();
 });
 
 // init
