@@ -661,6 +661,42 @@
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
   }
+
+  /* ── Tactile feedback（押下フィードバック） ── */
+  .feed-item, .rank-row, .catalog-link, .map-pill, .ff-chip, .rt,
+  .seg button, .tab, .btn, .hero, .avatar-btn, .mp-av, .ts-opt,
+  .shutter, .ns-close, .ls-close, .mp-close, .rs-close, .as-close, .dm-back, .tab-badge {
+    transition: transform .12s ease, background-color .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+  }
+  .feed-item:active, .rank-row:active, .catalog-link:active, .map-pill:active,
+  .ff-chip:active, .rt:active, .seg button:active, .btn:active, .hero:active,
+  .avatar-btn:active, .mp-av:active, .ts-opt:active, .tab:active { transform: scale(.96); }
+  .shutter:active { transform: scale(.9); }
+  .feed-item:active, .rank-row:active { background: rgba(255,255,255,.04); }
+
+  /* ── キーボード操作のフォーカス可視化 ── */
+  button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 8px;
+  }
+
+  /* ── 紙吹雪（レベルアップ演出） ── */
+  .confetti {
+    position: absolute; top: -24px; width: 9px; height: 14px; z-index: 201;
+    pointer-events: none; will-change: transform, opacity; border-radius: 2px;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    0% { opacity: 1; }
+    100% { transform: translateY(860px) rotate(720deg); opacity: 0; }
+  }
+
+  /* ── モーション控えめ設定の尊重（アクセシビリティ） ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important; scroll-behavior: auto !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -698,7 +734,7 @@
     <section class="view active" id="view-home">
       <div class="hdr">
         <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
-        <button class="avatar-btn" id="profile-btn" style="font-size:28px" title="マイページ">🕵️</button>
+        <button class="avatar-btn" id="profile-btn" style="font-size:28px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
       </div>
 
       <div class="hero" id="home-hero">
@@ -813,13 +849,13 @@
   <!-- Tab bar -->
   <nav class="tabbar">
     <button class="tab active" data-view="home">
-      <span class="tab-badge" id="home-badge" style="display:none">0</span>
+      <span class="tab-badge" id="home-badge" style="display:none" role="button" data-i18n-aria="aria_notif" aria-label="新着通知を開く">0</span>
       <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9v11h14V9"/></svg><span data-i18n="tab_home">ホーム</span>
     </button>
     <button class="tab" data-view="map">
       <svg viewBox="0 0 24 24"><path d="M9 3L4 5v16l5-2 6 2 5-2V3l-5 2-6-2z"/><path d="M9 3v16M15 5v16"/></svg><span data-i18n="tab_map">マップ</span>
     </button>
-    <button class="tab cam" data-view="cam">
+    <button class="tab cam" data-view="cam" data-i18n-aria="aria_cam" aria-label="カメラで撮影する">
       <div class="cambtn"><svg viewBox="0 0 24 24"><path d="M3 7h4l2-2h6l2 2h4v12H3z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
     </button>
     <button class="tab" data-view="rank">
@@ -846,6 +882,7 @@ const I18N = {
     pitch_note:'※ これは概念実証用のプロトタイプです。地図・投稿・AI判定・ポイントはすべてダミーデータで動作します。実際のタブを操作してみてください →',
     home_greet:'こんにちは、探偵', home_sub:'今日も街の安全を守ろう',
     pts_label:'捜査ポイント', perk_hint:'特典を見る ›', name_suffix:' さん',
+    aria_cam:'カメラで撮影する', aria_profile:'マイページを開く', aria_notif:'新着通知を開く',
     stat_posts:'投稿数', stat_areas:'解放エリア', stat_streak:'連続記録',
     sec_missions:'📋 今日のミッション', sec_feed:'🕐 みんなの捜査ログ',
     ff_all:'すべて', ff_ok:'濃厚', ff_warn:'要確認', ff_ng:'偶然',
@@ -897,6 +934,7 @@ const I18N = {
     pitch_note:'* This is a proof-of-concept prototype. The map, posts, AI judgments and points all run on dummy data. Try operating the tabs →',
     home_greet:'Hello, Detective', home_sub:"Let's keep the town safe today",
     pts_label:'investigation pts', perk_hint:'See perks ›', name_suffix:'',
+    aria_cam:'Open camera', aria_profile:'Open my page', aria_notif:'Open notifications',
     stat_posts:'Posts', stat_areas:'Areas', stat_streak:'Streak',
     sec_missions:'📋 Today\'s Missions', sec_feed:'🕐 Community Log',
     ff_all:'All', ff_ok:'Likely', ff_warn:'Check', ff_ng:'Coincidence',
@@ -1190,6 +1228,9 @@ function applyStaticI18n(){
   document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
     el.setAttribute('placeholder', t(el.getAttribute('data-i18n-ph')));
   });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el=>{
+    el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
+  });
   const ob = document.getElementById('ob-next');
   if(ob) ob.textContent = (typeof obStep!=='undefined' && obStep>=2) ? t('ob_start') : t('ob_next');
 }
@@ -1277,7 +1318,27 @@ function showLevelUp(lvObj){
     : `Lv.${lvObj.lv}<br><b>${tx(lvObj,'title')}</b> に昇進しました`;
   el.innerHTML = `<div class="lv-big">⭐</div><h3>${t('lvup_title')}</h3><div class="lv-sub">${body}</div>`;
   document.querySelector('.phone').appendChild(el);
+  launchConfetti();
   setTimeout(()=>el.remove(), 3300);
+}
+
+// レベルアップ時の紙吹雪
+function launchConfetti(){
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const phone = document.querySelector('.phone');
+  const colors = ['#E63946','#F4A261','#457B9D','#2D6A4F','#FFD700','#fff'];
+  for (let i=0; i<26; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100 + '%';
+    c.style.background = colors[i % colors.length];
+    c.style.animationDuration = (1.6 + Math.random()*1.2) + 's';
+    c.style.animationDelay = (Math.random()*0.5) + 's';
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    if (Math.random() < .4) c.style.borderRadius = '50%';
+    phone.appendChild(c);
+    setTimeout(()=>c.remove(), 3200);
+  }
 }
 
 function updateRankData(gained){
