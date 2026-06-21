@@ -627,11 +627,11 @@
   .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
 
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -661,7 +661,7 @@
       padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
     .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
-    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet {
+    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet {
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
   }
@@ -755,6 +755,48 @@
   .card-sheet canvas { width: 100%; max-width: 320px; height: auto; border-radius: 16px; border: 1px solid var(--line); }
   .card-sheet .cd-actions { display: flex; gap: 10px; margin-top: 14px; flex-shrink:0; }
   .card-sheet .cd-actions .btn { margin: 0; }
+
+  /* ── 統計ダッシュボード ── */
+  .stats-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 22px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.5); max-height: 84%; display: flex; flex-direction: column;
+  }
+  .stats-sheet.open { transform: translateY(0); }
+  .stats-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3a55; margin: 0 auto 12px; flex-shrink:0; }
+  .st-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-shrink:0; }
+  .st-hd b { font-size: 16px; font-weight: 800; }
+  .st-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .st-body { overflow-y: auto; flex: 1; }
+  .st-body::-webkit-scrollbar { width: 0; }
+  .st-sec { font-size: 12px; font-weight: 800; color: #aab4c8; margin: 14px 0 8px; }
+  .st-card { background: var(--night2); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+  .st-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 2px; }
+  .st-kpi { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .st-kpi b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); }
+  .st-kpi span { font-size: 11px; color: var(--gray); }
+  .st-bars { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; height: 110px; }
+  .st-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%; }
+  .st-bar .bar-fill { width: 70%; max-width: 26px; background: linear-gradient(180deg, var(--red), #b71f2b); border-radius: 6px 6px 0 0; transition: height .4s ease; min-height: 3px; }
+  .st-bar .bar-val { font-size: 10px; color: var(--gray); height: 12px; }
+  .st-bar .bar-day { font-size: 10px; color: var(--gray); }
+  .st-bar.today .bar-day { color: var(--red); font-weight: 800; }
+  .st-donut-row { display: flex; align-items: center; gap: 16px; }
+  .st-donut { width: 120px; height: 120px; flex-shrink: 0; }
+  .st-legend { flex: 1; }
+  .st-legend div { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 6px 0; }
+  .st-legend .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+  .st-legend .lg-val { margin-left: auto; font-weight: 800; }
+  .st-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .st-cal .cal-wd { font-size: 9px; color: var(--gray); text-align: center; padding-bottom: 2px; }
+  .st-cal .cal-cell { aspect-ratio: 1; border-radius: 5px; background: var(--night); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 9px; color: #7c8aa0; }
+  .st-cal .cal-cell.lv1 { background: rgba(230,57,70,.25); }
+  .st-cal .cal-cell.lv2 { background: rgba(230,57,70,.5); }
+  .st-cal .cal-cell.lv3 { background: rgba(230,57,70,.8); color: #fff; }
+  .st-cal .cal-cell.today { outline: 2px solid var(--gold); outline-offset: -2px; color:#fff; }
+  .st-cal .cal-cell.empty { background: transparent; border: none; }
 </style>
 </head>
 <body>
@@ -906,6 +948,7 @@
   <div class="mypage-sheet" id="mypage-sheet"></div>
   <div class="quiz-sheet" id="quiz-sheet"></div>
   <div class="card-sheet" id="card-sheet"></div>
+  <div class="stats-sheet" id="stats-sheet"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -994,6 +1037,10 @@ const I18N = {
     quiz_correct:'正解！', quiz_wrong:'残念、不正解', quiz_reward:'クイズ正解', quiz_next:'閉じる', quiz_answered_msg:'また明日チャレンジしてください',
     card_btn:'🎴 戦績カードを作成', card_title:'🎴 戦績カード', card_save:'画像を保存', card_share:'シェア', card_close:'閉じる',
     card_role:'称号', card_posts:'投稿', card_rank:'週間順位', card_made:'GO-TO 探偵団で活動中',
+    stats_btn:'📊 アクティビティ統計', stats_title:'📊 アクティビティ統計',
+    stats_activity:'週間アクティビティ', stats_breakdown:'種類別の内訳', stats_calendar:'投稿カレンダー',
+    stats_total_posts:'累計投稿', stats_active_days:'活動日数', stats_no_data:'データがありません',
+    cal_today:'今日', wd_sun:'日', wd_mon:'月', wd_tue:'火', wd_wed:'水', wd_thu:'木', wd_fri:'金', wd_sat:'土',
   },
   en: {
     pitch_lead:'Citizens become "detectives," spotting and reporting street markings. AI judges them and the crime-prevention map grows in real time.',
@@ -1052,6 +1099,10 @@ const I18N = {
     quiz_correct:'Correct!', quiz_wrong:'Sorry, wrong', quiz_reward:'Quiz correct', quiz_next:'Close', quiz_answered_msg:'Come back tomorrow',
     card_btn:'🎴 Create stats card', card_title:'🎴 Stats Card', card_save:'Save image', card_share:'Share', card_close:'Close',
     card_role:'Title', card_posts:'Posts', card_rank:'Weekly rank', card_made:'Active in GO-TO Detectives',
+    stats_btn:'📊 Activity stats', stats_title:'📊 Activity Stats',
+    stats_activity:'Weekly activity', stats_breakdown:'By category', stats_calendar:'Post calendar',
+    stats_total_posts:'Total posts', stats_active_days:'Active days', stats_no_data:'No data yet',
+    cal_today:'Today', wd_sun:'S', wd_mon:'M', wd_tue:'T', wd_wed:'W', wd_thu:'T', wd_fri:'F', wd_sat:'S',
   }
 };
 function t(k){ return (I18N[LANG] && I18N[LANG][k]!=null) ? I18N[LANG][k] : (I18N.ja[k]!=null ? I18N.ja[k] : k); }
@@ -1081,7 +1132,7 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
-  myPosts: 0, dangerFound: 0, shares: 0, earned: 0 };
+  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {} };
 
 const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya' };
 const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','🐶','🐹','🦝','🐲'];
@@ -1457,7 +1508,26 @@ function renderHome(){
 }
 
 // ── 危険度予報ウィジェット ──
-function dayHash(){ const s=todayStr(); let h=0; for(const c of s) h=(h*31+c.charCodeAt(0))>>>0; return h; }
+function hashStr(s){ let h=0; for(const c of s) h=(h*31+c.charCodeAt(0))>>>0; return h; }
+function dayHash(){ return hashStr(todayStr()); }
+function dateKey(d){ return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+// 過去の活動履歴をダミー生成（初回のみ）
+function seedHistory(){
+  if(STATE.history && Object.keys(STATE.history).length) return;
+  STATE.history = STATE.history || {};
+  const today = new Date();
+  for(let i=1;i<=34;i++){
+    const d = new Date(today); d.setDate(today.getDate()-i);
+    const k = dateKey(d), h = hashStr(k);
+    const v = (h%10) < 6 ? (h%5) : 0;
+    if(v>0) STATE.history[k] = v;
+  }
+  saveState();
+}
+function recordPostToday(){
+  const k = todayStr();
+  STATE.history[k] = (STATE.history[k]||0) + 1;
+}
 function renderForecast(){
   const el = document.getElementById('forecast');
   if(!el) return;
@@ -1569,6 +1639,7 @@ function openMyPage(){
       </div>
       <div class="mp-sec">${t('mp_badges')}（${gotCount}/${ACHIEVEMENTS.length}）</div>
       <div class="mp-achgrid">${achHtml}</div>
+      <button class="panel-btn" id="mp-stats" style="margin-bottom:10px">${t('stats_btn')}</button>
       <button class="panel-btn accent" id="mp-card" style="margin-bottom:10px">${t('card_btn')}</button>
       <button class="mp-reset" id="mp-reset">${t('mp_reset')}</button>
     </div>`;
@@ -1599,6 +1670,7 @@ function openMyPage(){
       saveState();
     };
   });
+  document.getElementById('mp-stats').onclick = () => { sheet.classList.remove('open'); openStats(); };
   document.getElementById('mp-card').onclick = () => { sheet.classList.remove('open'); openStatsCard(); };
   document.getElementById('mp-reset').onclick = () => {
     if (confirm(t('mp_reset_confirm'))) resetAll();
@@ -1746,6 +1818,84 @@ function roundRect(x, X, Y, w, h, r){
   x.beginPath();
   x.moveTo(X+r, Y); x.arcTo(X+w, Y, X+w, Y+h, r); x.arcTo(X+w, Y+h, X, Y+h, r);
   x.arcTo(X, Y+h, X, Y, r); x.arcTo(X, Y, X+w, Y, r); x.closePath();
+}
+
+// ── 統計ダッシュボード ──
+function openStats(){
+  const sheet = document.getElementById('stats-sheet');
+  const today = new Date();
+
+  // 週間アクティビティ（直近7日）
+  const wdKeys = ['wd_sun','wd_mon','wd_tue','wd_wed','wd_thu','wd_fri','wd_sat'];
+  const days = [];
+  for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); days.push(d); }
+  const counts = days.map(d=>STATE.history[dateKey(d)]||0);
+  const maxC = Math.max(1, ...counts);
+  const todayKey = dateKey(today);
+  const barsHtml = days.map((d,i)=>{
+    const isToday = dateKey(d)===todayKey;
+    const h = Math.round(counts[i]/maxC*84);
+    return `<div class="st-bar ${isToday?'today':''}">
+      <div class="bar-val">${counts[i]||''}</div>
+      <div class="bar-fill" style="height:${counts[i]?h:0}px"></div>
+      <div class="bar-day">${t(wdKeys[d.getDay()])}</div>
+    </div>`;
+  }).join('');
+
+  // 種類別の内訳（ドーナツ）
+  const dC=MARKINGS.filter(m=>m.type==='danger').length;
+  const wC=MARKINGS.filter(m=>m.type==='warn').length;
+  const sC=MARKINGS.filter(m=>m.type==='safe').length;
+  const tot=dC+wC+sC || 1;
+  const R=54, C=2*Math.PI*R;
+  let acc=0;
+  const seg=(val,color)=>{ const len=C*(val/tot); const off=C - acc; acc+=len;
+    return `<circle cx="60" cy="60" r="${R}" fill="none" stroke="${color}" stroke-width="14"
+      stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${off}" transform="rotate(-90 60 60)"/>`; };
+  const donut = `<svg class="st-donut" viewBox="0 0 120 120" aria-hidden="true">
+    <circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--night)" stroke-width="14"/>
+    ${seg(dC,'#E63946')}${seg(wC,'#F4A261')}${seg(sC,'#64748B')}
+    <text x="60" y="58" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">${tot}</text>
+    <text x="60" y="76" text-anchor="middle" font-size="10" fill="#8A97AD">${t('stats_total_posts')}</text>
+  </svg>`;
+  const legend = `<div class="st-legend">
+    <div><span class="dot" style="background:#E63946"></span>${t('lg_danger')}<span class="lg-val" style="color:#E63946">${dC}</span></div>
+    <div><span class="dot" style="background:#F4A261"></span>${t('lg_warn')}<span class="lg-val" style="color:#F4A261">${wC}</span></div>
+    <div><span class="dot" style="background:#64748B"></span>${t('lg_safe')}<span class="lg-val" style="color:#9aa6ba">${sC}</span></div>
+  </div>`;
+
+  // 投稿カレンダー（今月）
+  const y=today.getFullYear(), mo=today.getMonth();
+  const first=new Date(y,mo,1).getDay(), dim=new Date(y,mo+1,0).getDate();
+  let cells='';
+  for(let i=0;i<7;i++) cells+=`<div class="cal-wd">${t(wdKeys[i])}</div>`;
+  for(let i=0;i<first;i++) cells+=`<div class="cal-cell empty"></div>`;
+  let activeDays=0;
+  for(let dnum=1; dnum<=dim; dnum++){
+    const k=`${y}-${mo+1}-${dnum}`; const v=STATE.history[k]||0;
+    if(v>0) activeDays++;
+    const lv = v>=3?'lv3':v===2?'lv2':v===1?'lv1':'';
+    const isToday = (dnum===today.getDate());
+    cells+=`<div class="cal-cell ${lv} ${isToday?'today':''}">${dnum}</div>`;
+  }
+
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="st-hd"><b>${t('stats_title')}</b><button class="st-close" id="st-close">×</button></div>
+    <div class="st-body">
+      <div class="st-kpis">
+        <div class="st-kpi"><b>${STATE.myPosts}</b><span>${t('mp_week_posts')}</span></div>
+        <div class="st-kpi"><b>${activeDays}</b><span>${t('stats_active_days')}</span></div>
+      </div>
+      <div class="st-sec">${t('stats_activity')}</div>
+      <div class="st-card"><div class="st-bars">${barsHtml}</div></div>
+      <div class="st-sec">${t('stats_breakdown')}</div>
+      <div class="st-card"><div class="st-donut-row">${donut}${legend}</div></div>
+      <div class="st-sec">${t('stats_calendar')}</div>
+      <div class="st-card"><div class="st-cal">${cells}</div></div>
+    </div>`;
+  document.getElementById('st-close').onclick = ()=>sheet.classList.remove('open');
+  sheet.classList.add('open');
 }
 
 function openDetail(idx){
@@ -2015,6 +2165,7 @@ function camResult(){
     STATE.points += gained; STATE.posts += 1; STATE.streak += 1;
     STATE.myPosts += 1; STATE.earned += gained;
     if(o.type==='danger') STATE.dangerFound += 1;
+    recordPostToday();
     // フィードに先頭追加（日英両方を保存して言語切替に対応）
     const bgMap = { danger:'rgba(230,57,70,.2)', warn:'rgba(244,162,97,.2)', safe:'rgba(100,116,139,.2)' };
     const chipMap = { danger:['ok','濃厚'], warn:['warn','要確認'], safe:['ng','偶然'] };
@@ -2144,7 +2295,7 @@ function switchView(name){
   if (name==='rank' && rankTab==='team') renderTeam();
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
@@ -2298,6 +2449,7 @@ if ('serviceWorker' in navigator) {
 // init: 保存データの復元 → デイリー更新 → 言語適用 → 初回はオンボーディング
 loadState();
 ensureDaily();
+seedHistory();
 syncProfileToRanks();
 applyStaticI18n();
 if (ONBOARDED) {
