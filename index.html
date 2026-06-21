@@ -177,7 +177,7 @@
   .mission .mt span { font-size: 11px; color: var(--gray); }
   .mission .mr { font-size: 13px; font-weight: 800; color: var(--gold); white-space: nowrap; }
 
-  .feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
   .feed-item:last-child { border: none; }
   .feed-item .thumb { width: 48px; height: 48px; border-radius: 10px; font-size: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .feed-item .ft { flex: 1; }
@@ -206,6 +206,38 @@
   @keyframes lvbounce { from{transform:scale(0)} 80%{transform:scale(1.15)} to{transform:scale(1)} }
   .levelup h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: var(--gold); }
   .levelup .lv-sub { font-size: 14px; color: #A8C4D4; line-height: 1.7; }
+
+  /* ── Detail modal ── */
+  .detail-modal {
+    position: absolute; inset: 0; z-index: 150;
+    background: var(--night); overflow-y: auto;
+    transform: translateY(100%); transition: transform .32s cubic-bezier(.4,0,.2,1);
+  }
+  .detail-modal.open { transform: translateY(0); }
+  .detail-modal::-webkit-scrollbar { width: 0; }
+  .dm-head { display: flex; align-items: center; gap: 12px; padding: 52px 18px 0; margin-bottom: 4px; }
+  .dm-back { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; line-height: 1; }
+  .dm-mark { font-size: 72px; text-align: center; margin: 10px 0 8px; line-height: 1; }
+  .dm-label { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+  .dm-meta { text-align: center; margin-bottom: 16px; }
+  .dm-badge { font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+  .conf-row { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; }
+  .conf-row .conf-lbl { font-size: 12px; color: var(--gray); white-space: nowrap; }
+  .conf-bar { flex: 1; height: 8px; border-radius: 5px; background: var(--night2); overflow: hidden; border: 1px solid var(--line); }
+  .conf-bar i { display: block; height: 100%; border-radius: 5px; }
+  .conf-val { font-size: 13px; font-weight: 800; min-width: 36px; text-align: right; }
+  .ai-comment { font-size: 13px; color: #A8C4D4; line-height: 1.65; padding: 12px 14px; background: var(--night2); border-radius: 12px; border: 1px solid var(--line); margin-bottom: 14px; }
+  .catalog-link { display: flex; align-items: center; gap: 12px; background: var(--night2); border-radius: 12px; border: 1px solid var(--line); padding: 12px 14px; margin-bottom: 24px; cursor: pointer; }
+  .catalog-link .cl-icon { font-size: 30px; flex-shrink: 0; }
+  .catalog-link .cl-info b { font-size: 13px; display: block; }
+  .catalog-link .cl-info span { font-size: 11px; color: var(--gray); }
+
+  /* ── Book (handbook) tab ── */
+  .book-card { display: flex; gap: 14px; align-items: flex-start; background: var(--night2); border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--line); }
+  .book-mark { font-size: 30px; width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .book-info b { font-size: 14px; display: block; margin-bottom: 5px; }
+  .book-info p { font-size: 12px; color: #A8C4D4; line-height: 1.6; margin-bottom: 6px; }
+  .book-freq { font-size: 10px; color: var(--gray); }
 
   /* ── Map ── */
   #map { position: absolute; top: 44px; bottom: 78px; left: 0; right: 0; }
@@ -454,8 +486,16 @@
       <div class="card" id="rank-list"></div>
     </section>
 
+    <!-- BOOK -->
+    <section class="view" id="view-book">
+      <div class="hdr"><div><h2>探偵手帳</h2><div class="sub">マーキング図鑑</div></div><div style="font-size:26px">📖</div></div>
+      <p style="font-size:12px;color:var(--gray);margin-bottom:16px;line-height:1.6">侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。</p>
+      <div id="book-list"></div>
+    </section>
+
   </div>
 
+  <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
   <!-- Tab bar -->
@@ -471,6 +511,9 @@
     </button>
     <button class="tab" data-view="rank">
       <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6a6 6 0 01-12 0zM6 5H3v2a3 3 0 003 3M18 5h3v2a3 3 0 01-3 3M9 21h6M12 15v6"/></svg>ランク
+    </button>
+    <button class="tab" data-view="book">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>手帳
     </button>
   </nav>
 </div>
@@ -493,10 +536,42 @@ const MARKINGS = [
 ];
 
 const FEED = [
-  { mark: '⚡', bg: 'rgba(230,57,70,.2)', who: 'タカシ', act: 'インターホン側面を投稿', ago: '12分前', chip: ['ok','濃厚'] },
-  { mark: '→', bg: 'rgba(230,57,70,.2)', who: 'アヤ', act: 'メーターの矢印を投稿', ago: '2時間前', chip: ['ok','濃厚'] },
-  { mark: '●', bg: 'rgba(244,162,97,.2)', who: 'ケン', act: '表札のシールを投稿', ago: '1時間前', chip: ['warn','要確認'] },
-  { mark: '○', bg: 'rgba(100,116,139,.2)', who: 'リナ', act: '落書きを投稿', ago: '昨日', chip: ['ng','偶然'] },
+  { mark:'⚡', bg:'rgba(230,57,70,.2)', who:'タカシ', act:'インターホン側面を投稿', ago:'12分前', chip:['ok','濃厚'],
+    label:'インターホン側面の傷', verdict:'マーキング濃厚', conf:92,
+    aiComment:'表面の細い線刻は空き巣グループが住居の特徴を記録する「ターゲットマーク」と判定。電源系への干渉を示唆する可能性があります。' },
+  { mark:'→', bg:'rgba(230,57,70,.2)', who:'アヤ', act:'メーターの矢印を投稿', ago:'2時間前', chip:['ok','濃厚'],
+    label:'メーターボックスの矢印', verdict:'マーキング濃厚', conf:89,
+    aiComment:'侵入経路または逃走ルートを示す矢印と判定。近隣に類似記号がないか広域調査を推奨します。' },
+  { mark:'●', bg:'rgba(244,162,97,.2)', who:'ケン', act:'表札のシールを投稿', ago:'1時間前', chip:['warn','要確認'],
+    label:'表札周りのシール', verdict:'要確認', conf:64,
+    aiComment:'ターゲットを示すドット状記号の可能性があります。単体では確定できないため経過観察を推奨。' },
+  { mark:'○', bg:'rgba(100,116,139,.2)', who:'リナ', act:'落書きを投稿', ago:'昨日', chip:['ng','偶然'],
+    label:'誤検知（落書き）', verdict:'偶然と判定', conf:83,
+    aiComment:'経年劣化によるシミまたはチョークの落書きと判定。マーキングの特徴的なパターンは検出されませんでした。' },
+];
+
+const MARK_CATALOG = [
+  { mark:'⚡', name:'電気系マーク', color:'danger', frequency:'高頻度',
+    meaning:'配電盤・インターホンの位置を示すとされる記号。電源を切って警報を無効化する意図がある場合も。',
+    examples:['インターホン側面の傷','分電盤近くの線刻'] },
+  { mark:'→', name:'方向指示マーク', color:'danger', frequency:'高頻度',
+    meaning:'侵入経路・逃走ルートを示す矢印。複数の記号が連なる場合は特に要注意。',
+    examples:['メーターボックスの矢印','塀の上の引っかき傷'] },
+  { mark:'●', name:'ターゲットドット', color:'warn', frequency:'中頻度',
+    meaning:'対象住居をマークする記号。単体では確定できないが複数あれば要警戒。',
+    examples:['表札周りのシール','郵便受けの点'] },
+  { mark:'✕', name:'除外マーク', color:'warn', frequency:'中頻度',
+    meaning:'「犯行済みまたは対象外」を示す可能性。グループ内の情報共有に使用されるとされる。',
+    examples:['郵便受け裏の記号','ドア枠の傷'] },
+  { mark:'∴', name:'三点マーク', color:'warn', frequency:'低頻度',
+    meaning:'在否・生活習慣などを記録した可能性のある複合記号。海外での報告事例あり。',
+    examples:['玄関枠の点','ポストの角'] },
+  { mark:'M', name:'アルファベット記号', color:'danger', frequency:'中頻度',
+    meaning:'チームや物件のコード番号を示すとされる。海外でも同様の事例が報告されている。',
+    examples:['ベランダ柵のテープ','壁面の記号'] },
+  { mark:'○', name:'偶然・誤検知', color:'safe', frequency:'—',
+    meaning:'マーキングに見えるが実際は落書きや自然な汚れ。AIが偶然と判定したケース。',
+    examples:['経年劣化の汚れ','チョークの落書き'] },
 ];
 
 const RANKS = {
@@ -623,13 +698,61 @@ function renderHome(){
   document.getElementById('home-lvtx').textContent = info.rem > 0
     ? `次のランクまで あと ${fmt(info.rem)} pt`
     : '最高ランク到達！';
-  document.getElementById('feed').innerHTML = FEED.map(f => `
-    <div class="feed-item">
+  document.getElementById('feed').innerHTML = FEED.map((f,i) => `
+    <div class="feed-item" onclick="openDetail(${i})">
       <div class="thumb" style="background:${f.bg}">${f.mark}</div>
       <div class="ft"><b>${f.who}</b> <span>${f.act} · ${f.ago}</span></div>
       <span class="chip ${f.chip[0]}">${f.chip[1]}</span>
     </div>`).join('');
   renderMissions();
+}
+
+function openDetail(idx){
+  const f = FEED[idx];
+  const color = f.chip[0]==='ok'?'#E63946':f.chip[0]==='warn'?'#F4A261':'#64748B';
+  const badgeBg = f.chip[0]==='ok'?'rgba(230,57,70,.2)':f.chip[0]==='warn'?'rgba(244,162,97,.2)':'rgba(100,116,139,.2)';
+  const cat = MARK_CATALOG.find(c=>c.mark===f.mark);
+  const modal = document.getElementById('detail-modal');
+  modal.innerHTML = `
+    <div class="dm-head">
+      <button class="dm-back" onclick="document.getElementById('detail-modal').classList.remove('open')">←</button>
+      <span style="font-size:16px;font-weight:800">投稿詳細</span>
+    </div>
+    <div style="padding:0 18px 24px">
+      <div class="dm-mark">${f.mark}</div>
+      <div class="dm-label">${f.label||f.act}</div>
+      <div class="dm-meta">
+        <span class="dm-badge" style="background:${badgeBg};color:${color}">${f.verdict||f.chip[1]}</span>
+        <span style="font-size:11px;color:var(--gray);margin-left:8px">投稿: ${f.who} · ${f.ago}</span>
+      </div>
+      <div class="conf-row">
+        <span class="conf-lbl">AI信頼度</span>
+        <div class="conf-bar"><i style="width:${f.conf}%;background:${color}"></i></div>
+        <span class="conf-val" style="color:${color}">${f.conf}%</span>
+      </div>
+      <div class="ai-comment">🤖 ${f.aiComment}</div>
+      ${cat ? `<div class="catalog-link" onclick="document.getElementById('detail-modal').classList.remove('open');switchView('book')">
+        <div class="cl-icon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(230,57,70,.15)">${cat.mark}</div>
+        <div class="cl-info"><b>${cat.name}</b><span>探偵手帳で詳しく見る →</span></div>
+      </div>` : ''}
+    </div>`;
+  modal.classList.add('open');
+}
+
+function renderBook(){
+  document.getElementById('book-list').innerHTML = MARK_CATALOG.map(m=>{
+    const chipCls = m.color==='danger'?'ok':m.color==='warn'?'warn':'ng';
+    const chipLbl = m.color==='danger'?'要注意':m.color==='warn'?'要確認':'偶然多め';
+    const bg = m.color==='danger'?'rgba(230,57,70,.18)':m.color==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
+    return `<div class="book-card">
+      <div class="book-mark" style="background:${bg}">${m.mark}</div>
+      <div class="book-info">
+        <b>${m.name} <span class="chip ${chipCls}" style="font-size:9px">${chipLbl}</span></b>
+        <p>${m.meaning}</p>
+        <div class="book-freq">出現頻度: ${m.frequency}　例: ${m.examples.join('、')}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderRank(seg){
@@ -738,7 +861,13 @@ function camResult(){
     // フィードに先頭追加
     const bgMap = { danger:'rgba(230,57,70,.2)', warn:'rgba(244,162,97,.2)', safe:'rgba(100,116,139,.2)' };
     const chipMap = { danger:['ok','濃厚'], warn:['warn','要確認'], safe:['ng','偶然'] };
-    FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:'ユウキ', act:o.label+'を投稿', ago:'たった今', chip:chipMap[o.type] });
+    const aiCommentMap = {
+      danger:'高い信頼度でマーキングと判定。近隣での類似事例と照合した結果、侵入犯罪の予告記号の特徴と一致します。',
+      warn:'マーキングの可能性が確認されましたが確定には至りません。周辺の類似報告と合わせて判断することを推奨します。',
+      safe:'自然な経年劣化またはチョーク等による偶然の記号と判定。マーキングの特徴的なパターンは検出されませんでした。'
+    };
+    FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:'ユウキ', act:o.label+'を投稿', ago:'たった今', chip:chipMap[o.type],
+      label:o.label, verdict:o.verdict, conf:conf, aiComment:aiCommentMap[o.type] });
     // ミッション達成チェック・ランキング更新
     checkMissions();
     updateRankData(gained);
@@ -779,6 +908,9 @@ function switchView(name){
   document.querySelector(`.tab[data-view="${name}"]`).classList.add('active');
   if (name==='map') initMap();
   if (name==='cam') camIdle();
+  if (name==='book') renderBook();
+  // 詳細モーダルを閉じる
+  document.getElementById('detail-modal').classList.remove('open');
 }
 
 // inject map container into map view once
