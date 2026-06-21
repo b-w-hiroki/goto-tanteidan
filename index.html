@@ -412,6 +412,48 @@
   .seg button { flex: 1; padding: 9px; border: none; background: none; color: var(--gray); font-size: 12px; font-weight: 700; border-radius: 9px; cursor: pointer; font-family: inherit; }
   .seg button.active { background: var(--red); color: #fff; }
 
+  /* ── Rank tabs (個人 / 探偵団) ── */
+  .rank-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .rank-tabs .rt {
+    flex: 1; padding: 10px; border: 1px solid var(--line); background: var(--night2);
+    color: var(--gray); font-size: 13px; font-weight: 800; border-radius: 12px; cursor: pointer; font-family: inherit;
+  }
+  .rank-tabs .rt.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+  /* ── My team card ── */
+  .myteam {
+    background: linear-gradient(135deg, #1C3A5E 0%, #16263f 100%);
+    border: 1px solid var(--line); border-radius: 18px; padding: 16px; position: relative; overflow: hidden;
+  }
+  .myteam .mt-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .myteam .mt-emoji { font-size: 38px; line-height: 1; }
+  .myteam .mt-name b { font-size: 17px; font-weight: 800; display: block; }
+  .myteam .mt-name span { font-size: 11px; color: #9fb6cc; }
+  .myteam .mt-rankbadge { margin-left: auto; background: var(--gold); color: #1a1a1a; font-size: 13px; font-weight: 800; padding: 5px 12px; border-radius: 20px; white-space: nowrap; }
+  .myteam .mt-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .myteam .mt-cell { background: rgba(0,0,0,.22); border-radius: 12px; padding: 10px 6px; text-align: center; }
+  .myteam .mt-cell b { display: block; font-size: 18px; font-weight: 800; }
+  .myteam .mt-cell span { font-size: 10px; color: #9fb6cc; }
+
+  /* ── Team leaderboard row ── */
+  .team-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .team-row:last-child { border: none; }
+  .team-row.mine { background: rgba(69,123,157,.14); border-radius: 12px; margin: 0 -8px; padding: 12px 8px; }
+  .team-row .tr-pos { width: 26px; font-size: 15px; font-weight: 800; text-align: center; color: var(--gray); }
+  .team-row .tr-pos.g { color: #FFD700; } .team-row .tr-pos.s { color: #C0C0C0; } .team-row .tr-pos.b { color: #CD7F32; }
+  .team-row .tr-emoji { width: 40px; height: 40px; border-radius: 12px; background: var(--night); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .team-row .tr-info { flex: 1; }
+  .team-row .tr-info b { font-size: 14px; }
+  .team-row .tr-info span { font-size: 11px; color: var(--gray); display: block; }
+  .team-row .tr-pt { font-weight: 800; color: var(--blue); font-size: 14px; }
+  .team-switch { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .team-switch .ts-opt {
+    display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 20px;
+    border: 1px solid var(--line); background: var(--night2); color: #cdd6e4; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .team-switch .ts-opt.sel { background: rgba(69,123,157,.22); border-color: var(--blue); color: #fff; }
+
   .toast {
     position: absolute; bottom: 96px; left: 50%; transform: translateX(-50%) translateY(20px);
     background: var(--green); color: #fff; padding: 12px 20px; border-radius: 30px; font-size: 13px; font-weight: 700;
@@ -700,12 +742,23 @@
     <!-- RANKING -->
     <section class="view" id="view-rank">
       <div class="hdr"><div><h2>ランキング</h2><div class="sub">渋谷区エリア</div></div><div style="font-size:26px">🏆</div></div>
-      <div class="seg">
-        <button class="active" data-seg="week">今週</button>
-        <button data-seg="month">今月</button>
-        <button data-seg="all">総合</button>
+      <div class="rank-tabs" id="rank-tabs">
+        <button class="rt active" data-rtab="solo">👤 個人</button>
+        <button class="rt" data-rtab="team">🛡 探偵団</button>
       </div>
-      <div class="card" id="rank-list"></div>
+      <div id="rank-solo">
+        <div class="seg">
+          <button class="active" data-seg="week">今週</button>
+          <button data-seg="month">今月</button>
+          <button data-seg="all">総合</button>
+        </div>
+        <div class="card" id="rank-list"></div>
+      </div>
+      <div id="rank-team" style="display:none">
+        <div id="myteam-card"></div>
+        <div class="sec-title" style="margin-top:14px">🛡 探偵団ランキング</div>
+        <div class="card" id="team-list"></div>
+      </div>
     </section>
 
     <!-- BOOK -->
@@ -786,8 +839,20 @@
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
   myPosts: 0, dangerFound: 0, shares: 0, earned: 0 };
 
-const PROFILE = { name: 'ユウキ', avatar: '🕵️' };
+const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya' };
 const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','🐶','🐹','🦝','🐲'];
+
+// 探偵団（チーム）。pt は基礎値で、自分の所属チームには自分の貢献(STATE.earned)を加算して表示
+const TEAMS = [
+  { id:'shinjuku', name:'新宿パトロール隊',   emoji:'🦉', members:156, pt:52100 },
+  { id:'shibuya',  name:'渋谷探偵団',         emoji:'🦊', members:128, pt:46200 },
+  { id:'setagaya', name:'世田谷見守り隊',     emoji:'🐻', members:142, pt:45300 },
+  { id:'minato',   name:'港区ガーディアン',   emoji:'🐯', members:87,  pt:41900 },
+  { id:'meguro',   name:'目黒セーフティ',     emoji:'🐱', members:98,  pt:38400 },
+];
+function teamDisplayPt(t){ return t.pt + (t.id===PROFILE.team ? STATE.earned : 0); }
+function myTeam(){ return TEAMS.find(t=>t.id===PROFILE.team) || TEAMS[1]; }
+function teamsSorted(){ return TEAMS.slice().sort((a,b)=>teamDisplayPt(b)-teamDisplayPt(a)); }
 
 // 実績バッジ
 const ACHIEVEMENTS = [
@@ -1129,6 +1194,9 @@ function openMyPage(){
   }).join('');
   const gotCount = ACH_UNLOCKED.length;
 
+  const teamHtml = TEAMS.map(t=>
+    `<div class="ts-opt ${t.id===PROFILE.team?'sel':''}" data-team="${t.id}">${t.emoji} ${t.name}</div>`).join('');
+
   sheet.innerHTML = `
     <div class="grab"></div>
     <div class="mp-hd"><b>👤 マイページ</b><button class="mp-close" id="mp-close">×</button></div>
@@ -1137,6 +1205,9 @@ function openMyPage(){
       <div class="mp-avgrid" id="mp-avgrid">${avHtml}</div>
       <div class="mp-sec">探偵名</div>
       <input class="mp-name" id="mp-name" type="text" maxlength="12" value="${PROFILE.name.replace(/"/g,'&quot;')}" />
+      <div class="mp-sec">🛡 所属探偵団</div>
+      <div class="team-switch" id="mp-teams">${teamHtml}</div>
+      <div style="height:14px"></div>
       <div class="mp-sec">📊 今週のまとめ</div>
       <div class="mp-summary">
         <div class="mp-scell"><b>${STATE.myPosts}</b><span>今週の投稿</span></div>
@@ -1164,6 +1235,14 @@ function openMyPage(){
     PROFILE.name = v;
     syncProfileToRanks(); renderHome(); saveState();
   };
+  document.getElementById('mp-teams').querySelectorAll('.ts-opt').forEach(el=>{
+    el.onclick = () => {
+      PROFILE.team = el.dataset.team;
+      document.getElementById('mp-teams').querySelectorAll('.ts-opt').forEach(x=>x.classList.remove('sel'));
+      el.classList.add('sel');
+      saveState();
+    };
+  });
   document.getElementById('mp-reset').onclick = () => {
     if (confirm('すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？')) resetAll();
   };
@@ -1240,6 +1319,44 @@ function renderRank(seg){
       <div class="rp">${fmt(r.pt)}</div>
     </div>`;
   }).join('');
+}
+
+// ── 探偵団（チーム）ランキング ──
+function renderTeam(){
+  const sorted = teamsSorted();
+  const mine = myTeam();
+  const myRank = sorted.findIndex(t=>t.id===mine.id) + 1;
+  document.getElementById('myteam-card').innerHTML = `
+    <div class="myteam">
+      <div class="mt-top">
+        <div class="mt-emoji">${mine.emoji}</div>
+        <div class="mt-name"><b>${mine.name}</b><span>あなたの所属する探偵団</span></div>
+        <div class="mt-rankbadge">${myRank}位 / ${TEAMS.length}団</div>
+      </div>
+      <div class="mt-stats">
+        <div class="mt-cell"><b>${fmt(teamDisplayPt(mine))}</b><span>団の総ポイント</span></div>
+        <div class="mt-cell"><b>${mine.members}</b><span>団員数</span></div>
+        <div class="mt-cell"><b style="color:var(--gold)">${fmt(STATE.earned)}</b><span>あなたの貢献</span></div>
+      </div>
+    </div>`;
+  document.getElementById('team-list').innerHTML = sorted.map((t,i)=>{
+    const cls = i===0?'g':i===1?'s':i===2?'b':'';
+    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    return `<div class="team-row ${t.id===mine.id?'mine':''}">
+      <div class="tr-pos ${cls}">${medal}</div>
+      <div class="tr-emoji">${t.emoji}</div>
+      <div class="tr-info"><b>${t.name}</b><span>${t.members}名${t.id===mine.id?' · あなたの団':''}</span></div>
+      <div class="tr-pt">${fmt(teamDisplayPt(t))}</div>
+    </div>`;
+  }).join('');
+}
+let rankTab = 'solo';
+function switchRankTab(tab){
+  rankTab = tab;
+  document.querySelectorAll('#rank-tabs .rt').forEach(b=>b.classList.toggle('active', b.dataset.rtab===tab));
+  document.getElementById('rank-solo').style.display = tab==='solo' ? 'block' : 'none';
+  document.getElementById('rank-team').style.display = tab==='team' ? 'block' : 'none';
+  if(tab==='team') renderTeam();
 }
 
 // 各ランカーの代表的な投稿（ダミー生成）
@@ -1509,6 +1626,7 @@ function switchView(name){
   if (name==='cam') camIdle();
   if (name==='book') renderBook();
   if (name==='home') { STATE.unread = 0; renderBadge(); }
+  if (name==='rank' && rankTab==='team') renderTeam();
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
   ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet'].forEach(id=>{
@@ -1604,6 +1722,11 @@ document.querySelectorAll('.seg button').forEach(b=>{
     b.classList.add('active');
     renderRank(b.dataset.seg);
   };
+});
+
+// rank tabs: 個人 / 探偵団
+document.querySelectorAll('#rank-tabs .rt').forEach(b=>{
+  b.onclick = () => switchRankTab(b.dataset.rtab);
 });
 
 // badge click → open notif sheet without switching tab
