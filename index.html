@@ -45,13 +45,17 @@
     --green: #2D6A4F;
     --gold: #F4A261;
     --light: #F0F4F8;
-    --gray: #64748B;
+    --gray: #8A97AD;
     --line: #2A2A45;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
-    background: radial-gradient(circle at 30% 10%, #1d1d3a 0%, #0c0c1c 60%);
+    background:
+      radial-gradient(900px 600px at 12% -5%, rgba(230,57,70,.16), transparent 55%),
+      radial-gradient(800px 600px at 95% 8%, rgba(69,123,157,.18), transparent 55%),
+      radial-gradient(circle at 30% 12%, #1d1d3a 0%, #0b0b1a 62%);
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -623,11 +627,11 @@
   .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
 
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -657,7 +661,7 @@
       padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
     .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
-    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet {
+    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet {
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
   }
@@ -697,6 +701,60 @@
       transition-duration: .001ms !important; scroll-behavior: auto !important;
     }
   }
+
+  /* ── 危険度予報ウィジェット ── */
+  .forecast {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    padding: 11px 14px; border-radius: 14px; border: 1px solid var(--line);
+    background: var(--night2);
+  }
+  .forecast .fc-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
+  .forecast .fc-tx { flex: 1; min-width: 0; }
+  .forecast .fc-tx b { font-size: 13px; display: block; }
+  .forecast .fc-tx b .fc-lv { font-weight: 800; margin-left: 4px; }
+  .forecast .fc-tx span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; line-height: 1.45; }
+  .forecast .fc-meter { width: 46px; height: 46px; flex-shrink: 0; }
+
+  /* ── クイズ / 戦績カード ボタン ── */
+  .panel-btn {
+    width: 100%; padding: 13px 14px; border-radius: 14px; border: 1px solid var(--line);
+    background: var(--night2); color: #fff; font-size: 14px; font-weight: 700; font-family: inherit;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px;
+  }
+  .panel-btn.accent { background: linear-gradient(135deg, var(--blue), #34607c); border-color: transparent; }
+
+  /* ── クイズシート ── */
+  .quiz-sheet, .card-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 22px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.5); max-height: 82%; display: flex; flex-direction: column;
+  }
+  .quiz-sheet.open, .card-sheet.open { transform: translateY(0); }
+  .quiz-sheet .grab, .card-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3a55; margin: 0 auto 12px; flex-shrink:0; }
+  .qz-hd, .cd-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-shrink:0; }
+  .qz-hd b, .cd-hd b { font-size: 16px; font-weight: 800; }
+  .qz-close, .cd-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .qz-mark { font-size: 64px; text-align: center; margin: 6px 0 4px; line-height: 1; }
+  .qz-q { font-size: 14px; text-align: center; color: #A8C4D4; margin-bottom: 16px; }
+  .qz-opts { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+  .qz-opt {
+    padding: 13px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--night2);
+    color: #fff; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; text-align: left;
+    transition: background-color .15s, border-color .15s;
+  }
+  .qz-opt.correct { background: rgba(45,106,79,.3); border-color: var(--green); }
+  .qz-opt.wrong { background: rgba(230,57,70,.22); border-color: var(--red); }
+  .qz-opt:disabled { cursor: default; }
+  .qz-expl { margin-top: 14px; font-size: 12.5px; color: #A8C4D4; line-height: 1.65; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .qz-expl b { color: #fff; }
+
+  /* ── 戦績カードシート ── */
+  .card-sheet .cd-canvas-wrap { text-align: center; overflow-y: auto; flex: 1; }
+  .card-sheet canvas { width: 100%; max-width: 320px; height: auto; border-radius: 16px; border: 1px solid var(--line); }
+  .card-sheet .cd-actions { display: flex; gap: 10px; margin-top: 14px; flex-shrink:0; }
+  .card-sheet .cd-actions .btn { margin: 0; }
 </style>
 </head>
 <body>
@@ -745,6 +803,8 @@
         <div class="lvbar"><i id="lvbar"></i></div>
         <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint" data-i18n="perk_hint">特典を見る ›</span></div>
       </div>
+
+      <div class="forecast" id="forecast"></div>
 
       <div class="statgrid">
         <div class="stat"><b id="stat-posts">38</b><span data-i18n="stat_posts">投稿数</span></div>
@@ -808,6 +868,7 @@
         <button class="ff-chip" data-bfilter="warn" data-i18n="bf_warn">要確認</button>
         <button class="ff-chip" data-bfilter="safe" data-i18n="bf_safe">偶然</button>
       </div>
+      <button class="panel-btn accent" id="quiz-btn" data-i18n="quiz_btn">🧠 今日の防犯クイズ</button>
       <div id="book-list"></div>
     </section>
 
@@ -843,6 +904,8 @@
   <div class="rank-sheet" id="rank-sheet"></div>
   <div class="level-sheet" id="level-sheet"></div>
   <div class="mypage-sheet" id="mypage-sheet"></div>
+  <div class="quiz-sheet" id="quiz-sheet"></div>
+  <div class="card-sheet" id="card-sheet"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -925,6 +988,12 @@ const I18N = {
     lvup_title:'レベルアップ！', lvup_to:'に昇進しました',
     just_now:'たった今', posted_suffix:'を投稿', your_new_post:'あなたの新規投稿',
     map_fail:'地図の読み込みに失敗しました。<br>通信環境を確認して再読み込みしてください。',
+    fc_label:'今日の地域の警戒度', fc_safe:'落ち着いています', fc_caution:'やや注意', fc_alert:'警戒',
+    fc_safe_msg:'目立った不審情報は少なめ。油断せずパトロールを。', fc_caution_msg:'要確認の投稿が増加中。周辺に注意を。', fc_alert_msg:'濃厚なマーキングが多発。戸締まりを厳重に。',
+    quiz_btn:'🧠 今日の防犯クイズ', quiz_title:'🧠 防犯クイズ', quiz_q:'この記号の意味は？', quiz_done_today:'本日のクイズは回答済み',
+    quiz_correct:'正解！', quiz_wrong:'残念、不正解', quiz_reward:'クイズ正解', quiz_next:'閉じる', quiz_answered_msg:'また明日チャレンジしてください',
+    card_btn:'🎴 戦績カードを作成', card_title:'🎴 戦績カード', card_save:'画像を保存', card_share:'シェア', card_close:'閉じる',
+    card_role:'称号', card_posts:'投稿', card_rank:'週間順位', card_made:'GO-TO 探偵団で活動中',
   },
   en: {
     pitch_lead:'Citizens become "detectives," spotting and reporting street markings. AI judges them and the crime-prevention map grows in real time.',
@@ -977,6 +1046,12 @@ const I18N = {
     lvup_title:'Level up!', lvup_to:'',
     just_now:'just now', posted_suffix:'', your_new_post:'Your new post',
     map_fail:'Failed to load the map.<br>Check your connection and reload.',
+    fc_label:"Today's area alert level", fc_safe:'Calm', fc_caution:'Some caution', fc_alert:'Alert',
+    fc_safe_msg:'Few notable reports. Stay vigilant on patrol.', fc_caution_msg:'"Needs-check" posts are rising. Watch your surroundings.', fc_alert_msg:'Many strong markings reported. Lock up carefully.',
+    quiz_btn:"🧠 Today's crime-prevention quiz", quiz_title:'🧠 Crime-Prevention Quiz', quiz_q:'What does this symbol mean?', quiz_done_today:"Today's quiz is answered",
+    quiz_correct:'Correct!', quiz_wrong:'Sorry, wrong', quiz_reward:'Quiz correct', quiz_next:'Close', quiz_answered_msg:'Come back tomorrow',
+    card_btn:'🎴 Create stats card', card_title:'🎴 Stats Card', card_save:'Save image', card_share:'Share', card_close:'Close',
+    card_role:'Title', card_posts:'Posts', card_rank:'Weekly rank', card_made:'Active in GO-TO Detectives',
   }
 };
 function t(k){ return (I18N[LANG] && I18N[LANG][k]!=null) ? I18N[LANG][k] : (I18N.ja[k]!=null ? I18N.ja[k] : k); }
@@ -1046,6 +1121,7 @@ const DAILY_POOL = [
   { id:'safe1',   icon:'🟢', title:'安全を確認',       desc:'偶然判定を1件記録',     title_en:'Confirm safety',   desc_en:'Log one coincidence',     reward:30, goal:1, metric:'safe'   },
 ];
 const DAILY = { date:'', picks:[], progress:{}, done:{} };
+const QUIZ = { date:'', answered:false, correct:false, markIdx:0 };
 let ONBOARDED = false;
 
 const MARKINGS = [
@@ -1192,7 +1268,7 @@ function saveState(){
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify({
       v:1, state:STATE, profile:PROFILE, feed:FEED, markings:MARKINGS,
-      ach:ACH_UNLOCKED, daily:DAILY, ranks:RANKS, onboarded:ONBOARDED, lang:LANG
+      ach:ACH_UNLOCKED, daily:DAILY, quiz:QUIZ, ranks:RANKS, onboarded:ONBOARDED, lang:LANG
     }));
   } catch(e){ /* localStorage 不可環境は無視 */ }
 }
@@ -1207,6 +1283,7 @@ function loadState(){
     if(Array.isArray(d.markings)){ MARKINGS.length=0; MARKINGS.push(...d.markings); }
     if(Array.isArray(d.ach)) ACH_UNLOCKED = d.ach.slice();
     if(d.daily) Object.assign(DAILY, d.daily);
+    if(d.quiz) Object.assign(QUIZ, d.quiz);
     if(d.ranks){ ['week','month','all'].forEach(k=>{ if(d.ranks[k]) RANKS[k] = d.ranks[k]; }); }
     ONBOARDED = !!d.onboarded;
     if(d.lang) LANG = d.lang;
@@ -1376,6 +1453,30 @@ function renderHome(){
       </div>`).join('')
     : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
+  renderForecast();
+}
+
+// ── 危険度予報ウィジェット ──
+function dayHash(){ const s=todayStr(); let h=0; for(const c of s) h=(h*31+c.charCodeAt(0))>>>0; return h; }
+function renderForecast(){
+  const el = document.getElementById('forecast');
+  if(!el) return;
+  const danger = MARKINGS.filter(m=>m.type==='danger').length;
+  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
+  const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'#E63946'}
+            : score>=32 ? {k:'caution', ic:'⛅', c:'#F4A261'}
+            : {k:'safe', ic:'☀️', c:'#6ee7a8'};
+  const dash = 2*Math.PI*18, off = dash*(1-score/100);
+  el.innerHTML = `
+    <div class="fc-icon">${lvl.ic}</div>
+    <div class="fc-tx"><b>${t('fc_label')}<span class="fc-lv" style="color:${lvl.c}">${t('fc_'+lvl.k)}</span></b><span>${t('fc_'+lvl.k+'_msg')}</span></div>
+    <svg class="fc-meter" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="18" fill="none" stroke="var(--line)" stroke-width="5"/>
+      <circle cx="22" cy="22" r="18" fill="none" stroke="${lvl.c}" stroke-width="5" stroke-linecap="round"
+        stroke-dasharray="${dash}" stroke-dashoffset="${off}" transform="rotate(-90 22 22)"/>
+      <text x="22" y="26" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${score}</text>
+    </svg>`;
 }
 
 let feedFilter = 'all';
@@ -1468,6 +1569,7 @@ function openMyPage(){
       </div>
       <div class="mp-sec">${t('mp_badges')}（${gotCount}/${ACHIEVEMENTS.length}）</div>
       <div class="mp-achgrid">${achHtml}</div>
+      <button class="panel-btn accent" id="mp-card" style="margin-bottom:10px">${t('card_btn')}</button>
       <button class="mp-reset" id="mp-reset">${t('mp_reset')}</button>
     </div>`;
 
@@ -1497,10 +1599,153 @@ function openMyPage(){
       saveState();
     };
   });
+  document.getElementById('mp-card').onclick = () => { sheet.classList.remove('open'); openStatsCard(); };
   document.getElementById('mp-reset').onclick = () => {
     if (confirm(t('mp_reset_confirm'))) resetAll();
   };
   sheet.classList.add('open');
+}
+
+// ── 防犯クイズ ──
+function openQuiz(){
+  const sheet = document.getElementById('quiz-sheet');
+  const today = todayStr();
+  if(QUIZ.date !== today){ QUIZ.date = today; QUIZ.answered = false; QUIZ.correct = false; QUIZ.markIdx = Math.floor(Math.random()*MARK_CATALOG.length); saveState(); }
+  const cat = MARK_CATALOG[QUIZ.markIdx];
+  // 選択肢：正解 + ランダムな別の名称3つ
+  const others = MARK_CATALOG.filter((_,i)=>i!==QUIZ.markIdx);
+  for(let i=others.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [others[i],others[j]]=[others[j],others[i]]; }
+  const opts = [cat, ...others.slice(0,3)];
+  for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [opts[i],opts[j]]=[opts[j],opts[i]]; }
+
+  const optHtml = opts.map(o=>`<button class="qz-opt" data-correct="${o===cat?'1':'0'}">${tx(o,'name')}</button>`).join('');
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="qz-hd"><b>${t('quiz_title')}</b><button class="qz-close" id="qz-close">×</button></div>
+    <div class="qz-mark">${cat.mark}</div>
+    <div class="qz-q">${t('quiz_q')}</div>
+    <div class="qz-opts" id="qz-opts">${optHtml}</div>
+    <div id="qz-result"></div>`;
+  document.getElementById('qz-close').onclick = ()=>sheet.classList.remove('open');
+
+  const reveal = (correct) => {
+    document.querySelectorAll('#qz-opts .qz-opt').forEach(b=>{
+      b.disabled = true;
+      if(b.dataset.correct==='1') b.classList.add('correct');
+    });
+    document.getElementById('qz-result').innerHTML = `
+      <div class="qz-expl"><b>${correct?t('quiz_correct'):t('quiz_wrong')}</b> — ${tx(cat,'name')}<br>${tx(cat,'meaning')}</div>`;
+  };
+
+  if(QUIZ.answered){
+    reveal(QUIZ.correct);
+    document.querySelectorAll('#qz-opts .qz-opt').forEach(b=>{ if(b.dataset.correct!=='1') b.style.opacity=.5; });
+  } else {
+    document.querySelectorAll('#qz-opts .qz-opt').forEach(b=>{
+      b.onclick = () => {
+        const correct = b.dataset.correct==='1';
+        if(!correct) b.classList.add('wrong');
+        QUIZ.answered = true; QUIZ.correct = correct;
+        if(correct){ STATE.points += 40; STATE.earned += 40; renderHome(); setTimeout(()=>showToast(`${t('toast_daily')}${t('quiz_reward')} +40${t('pt')}`), 400); }
+        saveState();
+        reveal(correct);
+      };
+    });
+  }
+  sheet.classList.add('open');
+}
+
+// ── 戦績カード（canvas画像生成）──
+function openStatsCard(){
+  const sheet = document.getElementById('card-sheet');
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="cd-hd"><b>${t('card_title')}</b><button class="cd-close" id="cd-close">×</button></div>
+    <div class="cd-canvas-wrap"><canvas id="cd-canvas" width="1080" height="1080"></canvas></div>
+    <div class="cd-actions">
+      <button class="btn primary" id="cd-save">${t('card_save')}</button>
+      <button class="btn ghost" id="cd-share">${t('card_share')}</button>
+    </div>`;
+  const canvas = document.getElementById('cd-canvas');
+  drawStatsCard(canvas);
+  document.getElementById('cd-close').onclick = ()=>sheet.classList.remove('open');
+  document.getElementById('cd-save').onclick = () => {
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'goto-tanteidan-card.png';
+    a.click();
+  };
+  document.getElementById('cd-share').onclick = async () => {
+    try {
+      if(navigator.canShare && canvas.toBlob){
+        canvas.toBlob(async (blob)=>{
+          const file = new File([blob], 'goto-tanteidan-card.png', { type:'image/png' });
+          if(navigator.canShare({ files:[file] })){ await navigator.share({ files:[file], title:'GO-TO 探偵団' }); }
+          else { showToast(t('toast_copy')); }
+        }, 'image/png');
+      } else { showToast(t('toast_copy')); }
+    } catch(e){ /* キャンセル等は無視 */ }
+  };
+  sheet.classList.add('open');
+}
+
+function drawStatsCard(canvas){
+  const x = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const info = getLevelInfo(STATE.points);
+  const weekMe = RANKS.week.find(r=>r.me); const weekRank = RANKS.week.indexOf(weekMe)+1;
+  // 背景
+  const g = x.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#1d1d3a'); g.addColorStop(1,'#0b0b1a');
+  x.fillStyle = g; x.fillRect(0,0,W,H);
+  // アクセントの光
+  const rg = x.createRadialGradient(W*0.18,H*0.12,40, W*0.18,H*0.12,W*0.8);
+  rg.addColorStop(0,'rgba(230,57,70,.30)'); rg.addColorStop(1,'rgba(230,57,70,0)');
+  x.fillStyle = rg; x.fillRect(0,0,W,H);
+  // 角丸枠
+  x.strokeStyle = 'rgba(255,255,255,.10)'; x.lineWidth = 4;
+  roundRect(x, 48, 48, W-96, H-96, 40); x.stroke();
+  // ヘッダー
+  x.fillStyle = '#E63946'; roundRect(x, 90, 96, 250, 56, 28); x.fill();
+  x.fillStyle = '#fff'; x.font = '700 28px sans-serif'; x.textBaseline='middle';
+  x.fillText('GO-TO 探偵団', 112, 124);
+  // アバター
+  x.font = '150px sans-serif'; x.textAlign='center';
+  x.fillText(PROFILE.avatar, W/2, 330);
+  // 名前
+  x.fillStyle = '#fff'; x.font = '800 64px sans-serif';
+  x.fillText(`${txName(PROFILE.name)}${t('name_suffix')}`, W/2, 440);
+  // 称号
+  x.fillStyle = '#F4A261'; x.font = '700 38px sans-serif';
+  x.fillText(`Lv.${info.cur.lv}  ${tx(info.cur,'title')}`, W/2, 510);
+  // 大きなポイント
+  x.fillStyle = '#fff'; x.font = '800 150px sans-serif';
+  x.fillText(fmt(STATE.points), W/2, 660);
+  x.fillStyle = '#A8C4D4'; x.font = '600 34px sans-serif';
+  x.fillText(t('pts_label'), W/2, 740);
+  // ステータス3つ
+  const cells = [
+    [String(STATE.posts), t('card_posts')],
+    [String(STATE.streak), t('stat_streak')],
+    [`${weekRank}${t('rank_suffix')||''}`.trim()||`#${weekRank}`, t('card_rank')],
+  ];
+  const cw = (W-180-60)/3;
+  cells.forEach((c,i)=>{
+    const cx0 = 90 + i*(cw+30);
+    x.fillStyle = 'rgba(255,255,255,.06)'; roundRect(x, cx0, 800, cw, 150, 24); x.fill();
+    x.fillStyle = '#F4A261'; x.font = '800 56px sans-serif'; x.textAlign='center';
+    x.fillText(c[0], cx0+cw/2, 868);
+    x.fillStyle = '#A8C4D4'; x.font = '600 26px sans-serif';
+    x.fillText(c[1], cx0+cw/2, 918);
+  });
+  // フッター
+  x.fillStyle = '#5a6478'; x.font = '600 28px sans-serif'; x.textAlign='center';
+  x.fillText('🔍 ' + t('card_made'), W/2, 1010);
+}
+function roundRect(x, X, Y, w, h, r){
+  x.beginPath();
+  x.moveTo(X+r, Y); x.arcTo(X+w, Y, X+w, Y+h, r); x.arcTo(X+w, Y+h, X, Y+h, r);
+  x.arcTo(X, Y+h, X, Y, r); x.arcTo(X, Y, X+w, Y, r); x.closePath();
 }
 
 function openDetail(idx){
@@ -1899,7 +2144,7 @@ function switchView(name){
   if (name==='rank' && rankTab==='team') renderTeam();
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
@@ -2039,6 +2284,9 @@ document.querySelectorAll('#book-filter .ff-chip').forEach(b=>{
     renderBook();
   };
 });
+
+// 防犯クイズ
+document.getElementById('quiz-btn').addEventListener('click', openQuiz);
 
 // PWA service worker
 if ('serviceWorker' in navigator) {
