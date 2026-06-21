@@ -1,0 +1,20 @@
+{
+  "name": "GO-TO 探偵団",
+  "short_name": "探偵団",
+  "description": "市民が「探偵」となり、街のマーキングを発見・投稿。AIが判定し、防犯マップがリアルタイムに育つ。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#12122A",
+  "theme_color": "#12122A",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

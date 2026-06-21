@@ -7,6 +7,13 @@
 <meta name="description" content="市民が「探偵」となり、街のマーキング（侵入犯罪の目印）を発見・投稿。AIが判定し、防犯マップがリアルタイムに育つ。インタラクティブ・プロトタイプ。" />
 <meta name="theme-color" content="#12122A" />
 
+<!-- PWA -->
+<link rel="manifest" href="manifest.json" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="探偵団" />
+<link rel="apple-touch-icon" href="icon.svg" />
+
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="🔍 GO-TO 探偵団 — 市民参加型防犯アプリ" />
@@ -176,7 +183,7 @@
   .mission .mi { width: 42px; height: 42px; border-radius: 12px; background: rgba(69,123,157,.2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
   .mission .mt { flex: 1; }
   .mission .mt b { font-size: 14px; }
-  .mission .mt span { font-size: 11px; color: var(--gray); }
+  .mission .mt span { font-size: 11px; color: var(--gray); display: block; margin-top: 2px; }
   .mission .mr { font-size: 13px; font-weight: 800; color: var(--gold); white-space: nowrap; }
 
   .feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
@@ -212,11 +219,11 @@
   /* ── Tab notification badge ── */
   .tab { position: relative; }
   .tab-badge {
-    position: absolute; top: 8px; right: 8px;
+    position: absolute; top: 5px; left: calc(50% + 5px); right: auto;
     background: var(--red); color: #fff; border-radius: 10px;
     font-size: 9px; font-weight: 800; min-width: 16px; height: 16px;
     display: flex; align-items: center; justify-content: center; padding: 0 3px;
-    line-height: 1;
+    line-height: 1; border: 2px solid var(--night); cursor: pointer; z-index: 1;
   }
 
   /* ── Onboarding ── */
@@ -412,7 +419,7 @@
 
   /* ── Notification sheet ── */
   .notif-sheet {
-    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 400;
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
     background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
     border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
     padding: 14px 18px 20px; transform: translateY(110%); transition: transform .3s ease;
@@ -435,6 +442,55 @@
   /* ── Marker cluster (dark theme) ── */
   .marker-cluster { background: rgba(230,57,70,.3) !important; }
   .marker-cluster div { background: rgba(230,57,70,.85) !important; color:#fff !important; font-weight:800; font-size:13px; }
+
+  /* ── Feed filter chips ── */
+  .feed-filter { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .ff-chip {
+    font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 16px;
+    border: 1px solid var(--line); background: var(--night2); color: var(--gray);
+    cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .ff-chip.active { background: var(--red); border-color: var(--red); color: #fff; }
+  .feed-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
+
+  /* ── Rank detail sheet ── */
+  .rank-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 22px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.5); max-height: 72%;
+    display: flex; flex-direction: column;
+  }
+  .rank-sheet.open { transform: translateY(0); }
+  .rank-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3a55; margin: 0 auto 14px; flex-shrink:0; }
+  .rs-prof { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-shrink:0; }
+  .rs-prof .rs-av { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink:0; }
+  .rs-prof .rs-name b { font-size: 18px; font-weight: 800; display: block; }
+  .rs-prof .rs-name span { font-size: 12px; color: var(--gray); }
+  .rs-prof .rs-close { margin-left: auto; background: none; border: none; color: var(--gray); font-size: 22px; cursor: pointer; align-self: flex-start; }
+  .rs-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; flex-shrink:0; }
+  .rs-stat { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; text-align: center; }
+  .rs-stat b { display: block; font-size: 18px; font-weight: 800; color: var(--gold); }
+  .rs-stat span { font-size: 10px; color: var(--gray); }
+  .rs-sub { font-size: 13px; font-weight: 700; color: #aab4c8; margin-bottom: 8px; flex-shrink:0; }
+  .rs-posts { overflow-y: auto; flex: 1; }
+  .rs-posts::-webkit-scrollbar { width: 0; }
+  .rs-post { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .rs-post:last-child { border: none; }
+  .rs-post .rp-mark { width: 38px; height: 38px; border-radius: 10px; font-size: 19px; display: flex; align-items: center; justify-content: center; flex-shrink:0; }
+  .rs-post .rp-tx b { font-size: 13px; display: block; }
+  .rs-post .rp-tx span { font-size: 11px; color: var(--gray); }
+
+  /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
+  .notif-sheet, .rank-sheet, .area-sheet {
+    pointer-events: none; visibility: hidden;
+    transition: transform .3s ease, visibility 0s linear .3s;
+  }
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open {
+    pointer-events: auto; visibility: visible;
+    transition: transform .3s ease, visibility 0s;
+  }
 
   @media (max-width: 820px) { .pitch { display: none; } }
 
@@ -461,6 +517,9 @@
       padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
     .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+    .notif-sheet, .rank-sheet, .area-sheet {
+      bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+    }
   }
 </style>
 </head>
@@ -521,6 +580,12 @@
       <div id="missions"></div>
 
       <div class="sec-title">🕐 みんなの捜査ログ</div>
+      <div class="feed-filter" id="feed-filter">
+        <button class="ff-chip active" data-filter="all">すべて</button>
+        <button class="ff-chip" data-filter="ok">濃厚</button>
+        <button class="ff-chip" data-filter="warn">要確認</button>
+        <button class="ff-chip" data-filter="ng">偶然</button>
+      </div>
       <div class="card" id="feed"></div>
     </section>
 
@@ -581,6 +646,7 @@
   </div>
 
   <div class="notif-sheet" id="notif-sheet"></div>
+  <div class="rank-sheet" id="rank-sheet"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -787,14 +853,19 @@ function renderHome(){
   document.getElementById('home-lvtx').textContent = info.rem > 0
     ? `次のランクまで あと ${fmt(info.rem)} pt`
     : '最高ランク到達！';
-  document.getElementById('feed').innerHTML = FEED.map((f,i) => `
-    <div class="feed-item" onclick="openDetail(${i})">
-      <div class="thumb" style="background:${f.bg}">${f.mark}</div>
-      <div class="ft"><b>${f.who}</b> <span>${f.act} · ${f.ago}</span></div>
-      <span class="chip ${f.chip[0]}">${f.chip[1]}</span>
-    </div>`).join('');
+  const items = FEED.map((f,i)=>({f,i})).filter(o => feedFilter==='all' || o.f.chip[0]===feedFilter);
+  document.getElementById('feed').innerHTML = items.length
+    ? items.map(({f,i}) => `
+      <div class="feed-item" onclick="openDetail(${i})">
+        <div class="thumb" style="background:${f.bg}">${f.mark}</div>
+        <div class="ft"><b>${f.who}</b> <span>${f.act} · ${f.ago}</span></div>
+        <span class="chip ${f.chip[0]}">${f.chip[1]}</span>
+      </div>`).join('')
+    : `<div class="feed-empty">該当する投稿はありません</div>`;
   renderMissions();
 }
+
+let feedFilter = 'all';
 
 function openDetail(idx){
   const f = FEED[idx];
@@ -844,18 +915,67 @@ function renderBook(){
   }).join('');
 }
 
+let currentSeg = 'week';
 function renderRank(seg){
+  currentSeg = seg;
   const list = RANKS[seg];
   document.getElementById('rank-list').innerHTML = list.map((r,i)=>{
     const cls = i===0?'g':i===1?'s':i===2?'b':'';
     const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-    return `<div class="rank-row ${r.me?'me':''}">
+    return `<div class="rank-row ${r.me?'me':''}" onclick="openRankSheet(${i})" style="cursor:pointer">
       <div class="pos ${cls}">${medal}</div>
       <div class="av" style="background:${r.bg}">${r.av}</div>
       <div class="rn"><b>${r.name}</b><span>${r.area}</span></div>
       <div class="rp">${fmt(r.pt)}</div>
     </div>`;
   }).join('');
+}
+
+// 各ランカーの代表的な投稿（ダミー生成）
+const RS_SAMPLE_MARKS = [
+  { mark:'⚡', bg:'rgba(230,57,70,.2)', label:'インターホン側面の傷', v:'濃厚' },
+  { mark:'→', bg:'rgba(230,57,70,.2)', label:'メーターの矢印', v:'濃厚' },
+  { mark:'●', bg:'rgba(244,162,97,.2)', label:'表札周りのシール', v:'要確認' },
+  { mark:'✕', bg:'rgba(244,162,97,.2)', label:'郵便受け裏の記号', v:'要確認' },
+  { mark:'M', bg:'rgba(230,57,70,.2)', label:'ベランダ柵のテープ', v:'濃厚' },
+  { mark:'○', bg:'rgba(100,116,139,.2)', label:'落書き・自然な汚れ', v:'偶然' },
+];
+const RS_AGOS = ['たった今','1時間前','3時間前','昨日','2日前','3日前'];
+function openRankSheet(idx){
+  const r = RANKS[currentSeg][idx];
+  const posts = Number((r.area.match(/(\d+)件/)||[])[1] || 0);
+  // 件数に応じて代表投稿数を決定（最大6件表示）
+  const show = Math.min(6, Math.max(3, posts % 6 + 3));
+  const start = idx % RS_SAMPLE_MARKS.length;
+  let html = '';
+  for (let k=0; k<show; k++){
+    const p = RS_SAMPLE_MARKS[(start+k)%RS_SAMPLE_MARKS.length];
+    const ago = RS_AGOS[k%RS_AGOS.length];
+    html += `<div class="rs-post">
+      <div class="rp-mark" style="background:${p.bg}">${p.mark}</div>
+      <div class="rp-tx"><b>${p.label}</b><span>${p.v} · ${ago}</span></div>
+    </div>`;
+  }
+  const danger = Math.round(posts * 0.45);
+  const warn = Math.round(posts * 0.35);
+  const segLabel = currentSeg==='week'?'今週':currentSeg==='month'?'今月':'総合';
+  const sheet = document.getElementById('rank-sheet');
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="rs-prof">
+      <div class="rs-av" style="background:${r.bg}">${r.av}</div>
+      <div class="rs-name"><b>${r.name}</b><span>${r.area}</span></div>
+      <button class="rs-close" id="rs-close">×</button>
+    </div>
+    <div class="rs-stats">
+      <div class="rs-stat"><b>${fmt(r.pt)}</b><span>${segLabel}ポイント</span></div>
+      <div class="rs-stat"><b style="color:#E63946">${danger}</b><span>濃厚 検出</span></div>
+      <div class="rs-stat"><b style="color:#F4A261">${warn}</b><span>要確認</span></div>
+    </div>
+    <div class="rs-sub">📌 最近の投稿</div>
+    <div class="rs-posts">${html}</div>`;
+  document.getElementById('rs-close').onclick = ()=>sheet.classList.remove('open');
+  sheet.classList.add('open');
 }
 
 // ── Map ──
@@ -1061,9 +1181,13 @@ function switchView(name){
   if (name==='map') initMap();
   if (name==='cam') camIdle();
   if (name==='book') renderBook();
-  if (name==='home') { closeNotifSheet(); STATE.unread = 0; renderBadge(); }
-  // 詳細モーダルを閉じる
+  if (name==='home') { STATE.unread = 0; renderBadge(); }
+  // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
+  ['notif-sheet','rank-sheet','area-sheet'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('open');
+  });
 }
 
 // inject map container into map view once
@@ -1160,6 +1284,23 @@ document.getElementById('home-badge').addEventListener('click', e => {
   e.stopPropagation();
   openNotifSheet();
 });
+
+// feed filter chips
+document.querySelectorAll('#feed-filter .ff-chip').forEach(b=>{
+  b.onclick = () => {
+    document.querySelectorAll('#feed-filter .ff-chip').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    feedFilter = b.dataset.filter;
+    renderHome();
+  };
+});
+
+// PWA service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
 
 // init
 renderHome();
