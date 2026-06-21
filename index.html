@@ -219,6 +219,30 @@
     font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer;
   }
   .map-pill .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .map-pill.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+  /* ── Area stats bottom sheet ── */
+  .area-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(18,18,42,.97); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 20px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.5);
+  }
+  .area-sheet.open { transform: translateY(0); }
+  .area-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3a55; margin: 0 auto 12px; }
+  .area-sheet .as-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .area-sheet .as-hd b { font-size: 16px; font-weight: 800; }
+  .area-sheet .as-hd .as-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .danger-meter { height: 10px; border-radius: 6px; background: var(--night); overflow: hidden; margin: 6px 0 4px; border: 1px solid var(--line); }
+  .danger-meter i { display: block; height: 100%; border-radius: 6px; transition: width .5s; }
+  .as-score { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+  .as-score b { font-size: 30px; font-weight: 800; }
+  .as-score span { font-size: 12px; color: var(--gray); }
+  .as-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .as-cell { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; text-align: center; }
+  .as-cell b { display: block; font-size: 20px; font-weight: 800; }
+  .as-cell span { font-size: 10px; color: var(--gray); }
   .map-legend {
     position: absolute; bottom: 90px; left: 12px; z-index: 1000;
     background: rgba(18,18,42,.92); backdrop-filter: blur(8px);
@@ -452,6 +476,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script>
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, missions: [false, false] };
@@ -637,14 +662,24 @@ function initMap(){
 }
 
 // ── Camera flow ──
+// 撮影対象（毎回ランダムでリプレイ感を出す）
+const CAM_SUBJECTS = [
+  { target:'📮', place:'渋谷区宇田川町付近' },
+  { target:'🚪', place:'渋谷区桜丘町付近' },
+  { target:'📦', place:'渋谷区道玄坂付近' },
+  { target:'🅿️', place:'渋谷区神南付近' },
+  { target:'🏠', place:'渋谷区松濤付近' },
+  { target:'🔌', place:'渋谷区円山町付近' },
+];
 function camIdle(){
+  const s = CAM_SUBJECTS[Math.floor(Math.random()*CAM_SUBJECTS.length)];
   document.getElementById('cam-stage').innerHTML = `
     <div class="viewfinder">
       <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
       <div class="scan"></div>
-      <div class="target" id="vtarget">📮</div>
+      <div class="target" id="vtarget">${s.target}</div>
     </div>
-    <div class="cam-hint">📍 渋谷区宇田川町付近<br>怪しい記号にカメラを向けて撮影</div>
+    <div class="cam-hint">📍 ${s.place}<br>怪しい記号にカメラを向けて撮影</div>
     <div class="shutter" id="shutter"></div>`;
   document.getElementById('shutter').onclick = camAnalyze;
 }
@@ -720,6 +755,7 @@ function camResult(){
       L.marker([m.lat,m.lng],{icon}).addTo(map).bindPopup(`<b>${m.label}</b><br>判定: <span style="color:${color}">●</span> ${m.verdict}<br>投稿: あなた · たった今`);
     }
     renderMapOverlay();
+    refreshHeat();
     switchView('map');
     showToast('✅ 投稿完了！+'+gained+'pt 獲得');
     setTimeout(camIdle, 400);
@@ -749,11 +785,12 @@ function switchView(name){
 document.getElementById('view-map').innerHTML = `
   <div id="map"></div>
   <div class="map-overlay" id="map-overlay"></div>
-  <div class="map-legend">
+  <div class="map-legend" id="map-legend">
     <div><span class="dot" style="background:#E63946"></span>マーキング濃厚</div>
     <div><span class="dot" style="background:#F4A261"></span>要確認</div>
     <div><span class="dot" style="background:#64748B"></span>偶然・誤検知</div>
-  </div>`;
+  </div>
+  <div class="area-sheet" id="area-sheet"></div>`;
 
 function isRecent(ago){ return /分前|時間前|たった今/.test(ago); }
 function renderMapOverlay(){
@@ -763,7 +800,62 @@ function renderMapOverlay(){
   document.getElementById('map-overlay').innerHTML = `
     <div class="map-pill"><span class="dot" style="background:#E63946"></span>危険 ${danger}</div>
     <div class="map-pill"><span class="dot" style="background:#F4A261"></span>要確認 ${warn}</div>
-    <div class="map-pill">🔄 24h以内 ${recent}件</div>`;
+    <div class="map-pill">🔄 24h以内 ${recent}件</div>
+    <div class="map-pill${heatOn?' active':''}" id="pill-heat">🔥 ヒートマップ</div>
+    <div class="map-pill" id="pill-stats">📊 エリア統計</div>`;
+  document.getElementById('pill-heat').onclick = toggleHeat;
+  document.getElementById('pill-stats').onclick = openAreaSheet;
+}
+
+// ── ヒートマップ ──
+const HEAT_WEIGHT = { danger:1.0, warn:0.55, safe:0.2 };
+let heatLayer = null, heatOn = false;
+function buildHeat(){
+  const pts = MARKINGS.map(m=>[m.lat, m.lng, HEAT_WEIGHT[m.type]||0.4]);
+  return L.heatLayer(pts, { radius:38, blur:26, maxZoom:17,
+    gradient:{0.3:'#457B9D', 0.55:'#F4A261', 0.8:'#E63946'} });
+}
+function toggleHeat(){
+  if(!map) return;
+  if(typeof L.heatLayer !== 'function'){ showToast('⚠️ ヒートマップを読み込めませんでした'); return; }
+  heatOn = !heatOn;
+  if(heatOn){ heatLayer = buildHeat(); heatLayer.addTo(map); }
+  else if(heatLayer){ map.removeLayer(heatLayer); heatLayer = null; }
+  renderMapOverlay();
+}
+function refreshHeat(){
+  if(heatOn && map){
+    if(heatLayer) map.removeLayer(heatLayer);
+    heatLayer = buildHeat(); heatLayer.addTo(map);
+  }
+}
+
+// ── エリア統計シート ──
+function openAreaSheet(){
+  const danger = MARKINGS.filter(m=>m.type==='danger').length;
+  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  const safe   = MARKINGS.filter(m=>m.type==='safe').length;
+  const total  = MARKINGS.length;
+  // 危険度スコア（0-100）: 危険=満点、要確認=半分の重み
+  const score = Math.min(100, Math.round((danger*12 + warn*6)));
+  const lvl = score>=70 ? {t:'警戒', c:'#E63946'} : score>=40 ? {t:'やや注意', c:'#F4A261'} : {t:'比較的安全', c:'#2D6A4F'};
+  const sheet = document.getElementById('area-sheet');
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="as-hd"><b>📊 渋谷区宇田川町 今週の危険度</b><button class="as-close" id="as-close">×</button></div>
+    <div class="as-score"><b style="color:${lvl.c}">${score}</b><span>/100 · ${lvl.t}</span></div>
+    <div class="danger-meter"><i style="width:${score}%;background:${lvl.c}"></i></div>
+    <div class="as-grid">
+      <div class="as-cell"><b style="color:#E63946">${danger}</b><span>マーキング濃厚</span></div>
+      <div class="as-cell"><b style="color:#F4A261">${warn}</b><span>要確認</span></div>
+      <div class="as-cell"><b style="color:#64748B">${safe}</b><span>偶然・誤検知</span></div>
+    </div>
+    <div class="as-grid" style="grid-template-columns:1fr 1fr">
+      <div class="as-cell"><b>${total}</b><span>累計投稿</span></div>
+      <div class="as-cell"><b>${MARKINGS.filter(m=>isRecent(m.ago)).length}</b><span>24時間以内</span></div>
+    </div>`;
+  document.getElementById('as-close').onclick = ()=>sheet.classList.remove('open');
+  sheet.classList.add('open');
 }
 renderMapOverlay();
 
