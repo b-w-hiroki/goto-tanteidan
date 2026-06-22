@@ -627,11 +627,11 @@
   .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
 
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -661,7 +661,7 @@
       padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
     .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
-    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet {
+    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet {
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
   }
@@ -797,6 +797,52 @@
   .st-cal .cal-cell.lv3 { background: rgba(230,57,70,.8); color: #fff; }
   .st-cal .cal-cell.today { outline: 2px solid var(--gold); outline-offset: -2px; color:#fff; }
   .st-cal .cal-cell.empty { background: transparent; border: none; }
+
+  /* ── 投稿リアクション ── */
+  .react-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .react-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 10px 6px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--night2); color: #cdd6e4; font-family: inherit; cursor: pointer;
+    transition: transform .12s ease, background-color .15s, border-color .15s;
+  }
+  .react-btn:active { transform: scale(.95); }
+  .react-btn.on { background: rgba(69,123,157,.22); border-color: var(--blue); color: #fff; }
+  .react-btn .re-emoji { font-size: 18px; line-height: 1; }
+  .react-btn .re-lbl { font-size: 10px; }
+  .react-btn .re-cnt { font-size: 12px; font-weight: 800; }
+
+  /* ── セーフティシート（Tips・チェック・緊急）── */
+  .safety-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 22px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.5); max-height: 84%; display: flex; flex-direction: column;
+  }
+  .safety-sheet.open { transform: translateY(0); }
+  .safety-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3a55; margin: 0 auto 12px; flex-shrink:0; }
+  .sf-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-shrink:0; }
+  .sf-hd b { font-size: 16px; font-weight: 800; }
+  .sf-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .sf-body { overflow-y: auto; flex: 1; }
+  .sf-body::-webkit-scrollbar { width: 0; }
+  .sf-sec { font-size: 12px; font-weight: 800; color: #aab4c8; margin: 14px 0 8px; }
+  .sf-tip {
+    background: linear-gradient(135deg, rgba(244,162,97,.18), rgba(230,57,70,.12));
+    border: 1px solid rgba(244,162,97,.35); border-radius: 14px; padding: 14px;
+    font-size: 13.5px; line-height: 1.7; color: #F1E0CE;
+  }
+  .sf-check { display: flex; align-items: center; gap: 12px; padding: 11px 12px; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
+  .sf-check .ck-box { width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--line); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .sf-check.done .ck-box { background: var(--green); border-color: var(--green); }
+  .sf-check .ck-tx { font-size: 13px; }
+  .sf-check.done .ck-tx { color: var(--gray); text-decoration: line-through; }
+  .sf-call { display: flex; align-items: center; gap: 12px; padding: 13px 14px; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; text-decoration: none; color: #fff; }
+  .sf-call .cl-num { font-size: 22px; font-weight: 800; color: var(--red); min-width: 64px; }
+  .sf-call .cl-lbl { font-size: 13px; flex: 1; }
+  .sf-call .cl-go { font-size: 18px; color: var(--gray); }
+  .sf-note { font-size: 11px; color: var(--gray); margin-top: 4px; text-align: center; }
 </style>
 </head>
 <body>
@@ -911,6 +957,7 @@
         <button class="ff-chip" data-bfilter="safe" data-i18n="bf_safe">偶然</button>
       </div>
       <button class="panel-btn accent" id="quiz-btn" data-i18n="quiz_btn">🧠 今日の防犯クイズ</button>
+      <button class="panel-btn" id="safety-btn" data-i18n="safety_btn" style="margin-top:-4px">🛡 防犯Tips・緊急</button>
       <div id="book-list"></div>
     </section>
 
@@ -949,6 +996,7 @@
   <div class="quiz-sheet" id="quiz-sheet"></div>
   <div class="card-sheet" id="card-sheet"></div>
   <div class="stats-sheet" id="stats-sheet"></div>
+  <div class="safety-sheet" id="safety-sheet"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -1041,6 +1089,10 @@ const I18N = {
     stats_activity:'週間アクティビティ', stats_breakdown:'種類別の内訳', stats_calendar:'投稿カレンダー',
     stats_total_posts:'累計投稿', stats_active_days:'活動日数', stats_no_data:'データがありません',
     cal_today:'今日', wd_sun:'日', wd_mon:'月', wd_tue:'火', wd_wed:'水', wd_thu:'木', wd_fri:'金', wd_sat:'土',
+    react_up:'役立った', react_warn:'注意', react_check:'確認した',
+    safety_btn:'🛡 防犯Tips・緊急', safety_title:'🛡 防犯Tips・緊急',
+    tips_sec:'💡 今日の防犯Tip', checklist_sec:'✅ 外出前チェック', emergency_sec:'🆘 緊急連絡先',
+    emergency_note:'タップで発信できます（実機）',
   },
   en: {
     pitch_lead:'Citizens become "detectives," spotting and reporting street markings. AI judges them and the crime-prevention map grows in real time.',
@@ -1103,6 +1155,10 @@ const I18N = {
     stats_activity:'Weekly activity', stats_breakdown:'By category', stats_calendar:'Post calendar',
     stats_total_posts:'Total posts', stats_active_days:'Active days', stats_no_data:'No data yet',
     cal_today:'Today', wd_sun:'S', wd_mon:'M', wd_tue:'T', wd_wed:'W', wd_thu:'T', wd_fri:'F', wd_sat:'S',
+    react_up:'Helpful', react_warn:'Caution', react_check:'Confirmed',
+    safety_btn:'🛡 Tips & Emergency', safety_title:'🛡 Tips & Emergency',
+    tips_sec:"💡 Today's tip", checklist_sec:'✅ Before you go out', emergency_sec:'🆘 Emergency contacts',
+    emergency_note:'Tap to call (on device)',
   }
 };
 function t(k){ return (I18N[LANG] && I18N[LANG][k]!=null) ? I18N[LANG][k] : (I18N.ja[k]!=null ? I18N.ja[k] : k); }
@@ -1132,7 +1188,7 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
-  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {} };
+  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {}, checklist: { date:'', done:{} } };
 
 const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya' };
 const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','🐶','🐹','🦝','🐲'];
@@ -1269,6 +1325,29 @@ const RANKS = {
 };
 
 const TYPE_COLOR = { danger:'#E63946', warn:'#F4A261', safe:'#64748B' };
+
+// 防犯Tips・チェックリスト・緊急連絡先
+const TIPS = [
+  { text:'郵便受けや表札周りに見慣れない記号がないか、月1回チェックしましょう。', text_en:'Check around your mailbox and nameplate for unfamiliar marks once a month.' },
+  { text:'在宅時でも玄関は施錠を。短時間の外出でも必ず鍵をかけましょう。', text_en:'Lock the door even when home. Always lock up, even for a short errand.' },
+  { text:'インターホンや door の傷・シールは記録（撮影）して共有を。', text_en:'Photograph and share any scratches or stickers on intercoms and doors.' },
+  { text:'夜間はセンサーライトの活用が侵入抑止に効果的です。', text_en:'Motion-sensor lights at night are effective at deterring intruders.' },
+  { text:'郵便物や新聞をためないことが「留守」を悟らせない基本です。', text_en:"Don't let mail or papers pile up — it signals an empty home." },
+  { text:'窓には補助錠を。ガラス破りに時間をかけさせるのが有効です。', text_en:'Add auxiliary window locks to make glass-breaking take longer.' },
+  { text:'不審な記号を見つけたら、消す前に必ず撮影・投稿しましょう。', text_en:'If you find a suspicious mark, photograph and post it before erasing.' },
+];
+const CHECKLIST = [
+  { text:'玄関・勝手口を施錠した', text_en:'Locked the front and back doors' },
+  { text:'すべての窓を施錠した', text_en:'Locked all windows' },
+  { text:'郵便受けを確認した', text_en:'Checked the mailbox' },
+  { text:'インターホン周りに記号がない', text_en:'No marks around the intercom' },
+  { text:'センサーライトが作動する', text_en:'Sensor lights are working' },
+];
+const EMERGENCY = [
+  { label:'警察（事件・事故）', label_en:'Police (crime / accident)', num:'110' },
+  { label:'警察相談専用ダイヤル', label_en:'Police consultation line', num:'#9110' },
+  { label:'消防・救急', label_en:'Fire / ambulance', num:'119' },
+];
 
 const LEVELS = [
   { lv:1, title:'見習い探偵', min:0,    icon:'🔰', perk:'撮影・投稿・防犯マップ閲覧の基本機能',          title_en:'Trainee Detective',  perk_en:'Basics: shoot, post, view the map' },
@@ -1527,6 +1606,17 @@ function seedHistory(){
 function recordPostToday(){
   const k = todayStr();
   STATE.history[k] = (STATE.history[k]||0) + 1;
+}
+// フィード投稿のリアクション初期値を付与
+function seedReactions(){
+  const seeds = [[14,2,8],[9,1,5],[6,3,2],[3,0,1]];
+  FEED.forEach((f,i)=>{
+    if(!f.reactions){
+      const s = seeds[i] || [hashStr((f.label||'x'))%12, hashStr((f.act||'y'))%4, hashStr((f.who||'z'))%6];
+      f.reactions = { up:s[0], warn:s[1], check:s[2] };
+    }
+    if(f.myReaction===undefined) f.myReaction = null;
+  });
 }
 function renderForecast(){
   const el = document.getElementById('forecast');
@@ -1898,6 +1988,49 @@ function openStats(){
   sheet.classList.add('open');
 }
 
+// ── セーフティハブ（Tips・チェックリスト・緊急連絡先）──
+function openSafety(){
+  const sheet = document.getElementById('safety-sheet');
+  // チェックリストは日替わりでリセット
+  const today = todayStr();
+  if(STATE.checklist.date !== today){ STATE.checklist = { date: today, done:{} }; saveState(); }
+  const tip = TIPS[dayHash() % TIPS.length];
+  const checkHtml = CHECKLIST.map((c,i)=>{
+    const done = !!STATE.checklist.done[i];
+    return `<div class="sf-check ${done?'done':''}" data-ci="${i}">
+      <div class="ck-box">${done?'✓':''}</div><div class="ck-tx">${tx(c,'text')}</div>
+    </div>`;
+  }).join('');
+  const callHtml = EMERGENCY.map(e=>`
+    <a class="sf-call" href="tel:${e.num.replace('#','%23')}">
+      <span class="cl-num">${e.num}</span><span class="cl-lbl">${tx(e,'label')}</span><span class="cl-go">›</span>
+    </a>`).join('');
+
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="sf-hd"><b>${t('safety_title')}</b><button class="sf-close" id="sf-close">×</button></div>
+    <div class="sf-body">
+      <div class="sf-sec">${t('tips_sec')}</div>
+      <div class="sf-tip">💡 ${tx(tip,'text')}</div>
+      <div class="sf-sec">${t('checklist_sec')}</div>
+      <div id="sf-checks">${checkHtml}</div>
+      <div class="sf-sec">${t('emergency_sec')}</div>
+      ${callHtml}
+      <div class="sf-note">${t('emergency_note')}</div>
+    </div>`;
+  document.getElementById('sf-close').onclick = ()=>sheet.classList.remove('open');
+  document.getElementById('sf-checks').querySelectorAll('.sf-check').forEach(el=>{
+    el.onclick = () => {
+      const i = el.dataset.ci;
+      STATE.checklist.done[i] = !STATE.checklist.done[i];
+      el.classList.toggle('done', STATE.checklist.done[i]);
+      el.querySelector('.ck-box').textContent = STATE.checklist.done[i] ? '✓' : '';
+      saveState();
+    };
+  });
+  sheet.classList.add('open');
+}
+
 function openDetail(idx){
   const f = FEED[idx];
   const color = f.chip[0]==='ok'?'#E63946':f.chip[0]==='warn'?'#F4A261':'#64748B';
@@ -1922,12 +2055,39 @@ function openDetail(idx){
         <span class="conf-val" style="color:${color}">${f.conf}%</span>
       </div>
       <div class="ai-comment">🤖 ${tx(f,'aiComment')}</div>
+      <div class="react-row" id="react-row">${reactionBtns(f)}</div>
       ${cat ? `<div class="catalog-link" onclick="document.getElementById('detail-modal').classList.remove('open');switchView('book')">
         <div class="cl-icon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(230,57,70,.15)">${cat.mark}</div>
         <div class="cl-info"><b>${tx(cat,'name')}</b><span>${t('dm_catalog')}</span></div>
       </div>` : ''}
     </div>`;
   modal.classList.add('open');
+  bindReactions(idx);
+}
+
+const REACTIONS = [ {k:'up',emoji:'👍',key:'react_up'}, {k:'warn',emoji:'⚠️',key:'react_warn'}, {k:'check',emoji:'✅',key:'react_check'} ];
+function reactionBtns(f){
+  if(!f.reactions) f.reactions = {up:0,warn:0,check:0};
+  return REACTIONS.map(r=>`
+    <button class="react-btn ${f.myReaction===r.k?'on':''}" data-react="${r.k}">
+      <span class="re-emoji">${r.emoji}</span><span class="re-lbl">${t(r.key)}</span><span class="re-cnt">${f.reactions[r.k]||0}</span>
+    </button>`).join('');
+}
+function bindReactions(idx){
+  const f = FEED[idx];
+  document.querySelectorAll('#react-row .react-btn').forEach(btn=>{
+    btn.onclick = () => {
+      const k = btn.dataset.react;
+      if(f.myReaction===k){ f.reactions[k]=Math.max(0,(f.reactions[k]||0)-1); f.myReaction=null; }
+      else {
+        if(f.myReaction){ f.reactions[f.myReaction]=Math.max(0,(f.reactions[f.myReaction]||0)-1); }
+        f.reactions[k]=(f.reactions[k]||0)+1; f.myReaction=k;
+      }
+      document.getElementById('react-row').innerHTML = reactionBtns(f);
+      bindReactions(idx);
+      saveState();
+    };
+  });
 }
 
 let bookQuery = '', bookFilter = 'all';
@@ -2183,7 +2343,8 @@ function camResult(){
     FEED.unshift({ mark:o.mark, bg:bgMap[o.type], who:PROFILE.name,
       act:o.label+'を投稿', act_en:'posted '+enLabel, ago:'たった今', chip:chipMap[o.type],
       label:o.label, label_en:enLabel, verdict:o.verdict, conf:conf,
-      aiComment:aiCommentMap[o.type], aiComment_en:aiCommentMapEn[o.type] });
+      aiComment:aiCommentMap[o.type], aiComment_en:aiCommentMapEn[o.type],
+      reactions:{up:0,warn:0,check:0}, myReaction:null });
     STATE.unread++; renderBadge();
     // デイリーミッション・実績・ランキング更新
     bumpDaily('posts'); bumpDaily(o.type);
@@ -2295,7 +2456,7 @@ function switchView(name){
   if (name==='rank' && rankTab==='team') renderTeam();
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
@@ -2436,8 +2597,9 @@ document.querySelectorAll('#book-filter .ff-chip').forEach(b=>{
   };
 });
 
-// 防犯クイズ
+// 防犯クイズ / セーフティ
 document.getElementById('quiz-btn').addEventListener('click', openQuiz);
+document.getElementById('safety-btn').addEventListener('click', openSafety);
 
 // PWA service worker
 if ('serviceWorker' in navigator) {
@@ -2450,6 +2612,7 @@ if ('serviceWorker' in navigator) {
 loadState();
 ensureDaily();
 seedHistory();
+seedReactions();
 syncProfileToRanks();
 applyStaticI18n();
 if (ONBOARDED) {
