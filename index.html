@@ -41,6 +41,7 @@
     --night2: #1E2A40;
     --navy: #1C2951;
     --red: #E63946;
+    --red-dk: #b71f2b;
     --blue: #457B9D;
     --green: #2D6A4F;
     --gold: #F4A261;
@@ -48,6 +49,11 @@
     --gray: #8A97AD;
     --line: #2A2A45;
   }
+  /* アクセントテーマ（chromeのアクセント色のみ変更。危険＝赤の意味色は据え置き） */
+  [data-accent="blue"]   { --red:#3E8FD0; --red-dk:#2c6aa0; }
+  [data-accent="green"]  { --red:#2FA56E; --red-dk:#1f7350; }
+  [data-accent="purple"] { --red:#8B5CF6; --red-dk:#6d3ed6; }
+  [data-accent="pink"]   { --red:#EC4899; --red-dk:#be2d72; }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
@@ -163,7 +169,7 @@
 
   /* ── Home hero ── */
   .hero {
-    background: linear-gradient(135deg, #E63946 0%, #b71f2b 100%);
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
     border-radius: 18px; padding: 15px 16px; margin-bottom: 12px; position: relative; overflow: hidden;
     cursor: pointer;
   }
@@ -600,6 +606,13 @@
     background: var(--night2); border: 1px solid var(--line);
   }
   .mp-av.sel { background: rgba(230,57,70,.2); border-color: var(--red); }
+  .accent-row { display: flex; gap: 12px; }
+  .accent-dot {
+    width: 38px; height: 38px; border-radius: 50%; border: 3px solid transparent;
+    cursor: pointer; padding: 0; transition: transform .12s ease;
+  }
+  .accent-dot:active { transform: scale(.9); }
+  .accent-dot.sel { border-color: #fff; box-shadow: 0 0 0 2px var(--night); }
   .mp-name {
     width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 15px; font-family: inherit;
     background: var(--night2); border: 1px solid var(--line); color: #fff; margin-bottom: 16px;
@@ -779,7 +792,7 @@
   .st-kpi span { font-size: 11px; color: var(--gray); }
   .st-bars { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; height: 110px; }
   .st-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%; }
-  .st-bar .bar-fill { width: 70%; max-width: 26px; background: linear-gradient(180deg, var(--red), #b71f2b); border-radius: 6px 6px 0 0; transition: height .4s ease; min-height: 3px; }
+  .st-bar .bar-fill { width: 70%; max-width: 26px; background: linear-gradient(180deg, var(--red), var(--red-dk)); border-radius: 6px 6px 0 0; transition: height .4s ease; min-height: 3px; }
   .st-bar .bar-val { font-size: 10px; color: var(--gray); height: 12px; }
   .st-bar .bar-day { font-size: 10px; color: var(--gray); }
   .st-bar.today .bar-day { color: var(--red); font-weight: 800; }
@@ -1062,7 +1075,7 @@ const I18N = {
     mypage:'👤 マイページ', mp_avatar:'アバター', mp_name:'探偵名', mp_team:'🛡 所属探偵団',
     mp_summary:'📊 今週のまとめ', mp_week_posts:'今週の投稿', mp_earned:'獲得ポイント', mp_week_rank:'週間ランキング', mp_streak:'連続記録',
     mp_badges:'🏆 実績バッジ', mp_reset:'🗑 データをリセット', mp_reset_confirm:'すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？',
-    mp_lang:'🌐 言語 / Language', rank_suffix:'位',
+    mp_lang:'🌐 言語 / Language', rank_suffix:'位', mp_accent:'🎨 アクセントカラー',
     notif_title:'🔔 新着通知',
     recent_posts:'📌 最近の投稿', detected_danger:'濃厚 検出', detected_warn:'要確認',
     my_team_sub:'あなたの所属する探偵団', team_total:'団の総ポイント', team_members:'団員数', your_contrib:'あなたの貢献',
@@ -1128,7 +1141,7 @@ const I18N = {
     mypage:'👤 My Page', mp_avatar:'Avatar', mp_name:'Detective name', mp_team:'🛡 Your squad',
     mp_summary:'📊 This week', mp_week_posts:'Posts this week', mp_earned:'Points earned', mp_week_rank:'Weekly rank', mp_streak:'Streak',
     mp_badges:'🏆 Achievements', mp_reset:'🗑 Reset data', mp_reset_confirm:'This will reset all records (points, posts, achievements). Are you sure?',
-    mp_lang:'🌐 言語 / Language', rank_suffix:'',
+    mp_lang:'🌐 言語 / Language', rank_suffix:'', mp_accent:'🎨 Accent color',
     notif_title:'🔔 New notifications',
     recent_posts:'📌 Recent posts', detected_danger:'Likely found', detected_warn:'To check',
     my_team_sub:'The squad you belong to', team_total:'Squad total pts', team_members:'Members', your_contrib:'Your contribution',
@@ -1190,7 +1203,16 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
   myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {}, checklist: { date:'', done:{} } };
 
-const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya' };
+const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'red' };
+const ACCENTS = [
+  { id:'red',    color:'#E63946' }, { id:'blue', color:'#3E8FD0' },
+  { id:'green',  color:'#2FA56E' }, { id:'purple', color:'#8B5CF6' },
+  { id:'pink',   color:'#EC4899' },
+];
+function applyAccent(){
+  if(PROFILE.accent && PROFILE.accent!=='red') document.documentElement.dataset.accent = PROFILE.accent;
+  else delete document.documentElement.dataset.accent;
+}
 const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','🐶','🐹','🦝','🐲'];
 
 // 探偵団（チーム）。pt は基礎値で、自分の所属チームには自分の貢献(STATE.earned)を加算して表示
@@ -1713,6 +1735,9 @@ function openMyPage(){
       <div class="mp-sec">${t('mp_lang')}</div>
       <div class="team-switch" id="mp-langs">${langHtml}</div>
       <div style="height:14px"></div>
+      <div class="mp-sec">${t('mp_accent')}</div>
+      <div class="accent-row" id="mp-accents">${ACCENTS.map(a=>`<button class="accent-dot ${PROFILE.accent===a.id?'sel':''}" data-accent="${a.id}" style="background:${a.color}" aria-label="${a.id}"></button>`).join('')}</div>
+      <div style="height:14px"></div>
       <div class="mp-sec">${t('mp_avatar')}</div>
       <div class="mp-avgrid" id="mp-avgrid">${avHtml}</div>
       <div class="mp-sec">${t('mp_name')}</div>
@@ -1736,6 +1761,14 @@ function openMyPage(){
 
   document.getElementById('mp-langs').querySelectorAll('.ts-opt').forEach(el=>{
     el.onclick = () => { setLang(el.dataset.lang); openMyPage(); };
+  });
+  document.getElementById('mp-accents').querySelectorAll('.accent-dot').forEach(el=>{
+    el.onclick = () => {
+      PROFILE.accent = el.dataset.accent; applyAccent();
+      document.getElementById('mp-accents').querySelectorAll('.accent-dot').forEach(x=>x.classList.remove('sel'));
+      el.classList.add('sel');
+      saveState();
+    };
   });
   document.getElementById('mp-close').onclick = ()=>sheet.classList.remove('open');
   document.getElementById('mp-avgrid').querySelectorAll('.mp-av').forEach(el=>{
@@ -2614,6 +2647,7 @@ ensureDaily();
 seedHistory();
 seedReactions();
 syncProfileToRanks();
+applyAccent();
 applyStaticI18n();
 if (ONBOARDED) {
   const ob = document.getElementById('onboard');
