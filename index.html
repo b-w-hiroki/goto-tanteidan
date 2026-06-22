@@ -856,6 +856,45 @@
   .sf-call .cl-lbl { font-size: 13px; flex: 1; }
   .sf-call .cl-go { font-size: 18px; color: var(--gray); }
   .sf-note { font-size: 11px; color: var(--gray); margin-top: 4px; text-align: center; }
+
+  /* ── 時間帯演出（朝/昼/夕/夜で phone 上部にグロウを重ねる） ── */
+  .phone::before {
+    content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    transition: opacity 2s ease; opacity: 0;
+  }
+  .phone[data-time="morning"]::before {
+    background: radial-gradient(ellipse 80% 45% at 50% 0%, rgba(255,160,80,.13) 0%, transparent 70%);
+    opacity: 1;
+  }
+  .phone[data-time="evening"]::before {
+    background: radial-gradient(ellipse 80% 45% at 50% 0%, rgba(160,80,220,.10) 0%, transparent 70%);
+    opacity: 1;
+  }
+
+  /* ── コンボバナー ── */
+  .combo-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, #F4A261, #E63946); color: #fff;
+    font-size: 13px; font-weight: 800; padding: 5px 14px; border-radius: 20px;
+    animation: comboPop .4s cubic-bezier(.36,.07,.19,.97) both; margin-bottom: 10px;
+    box-shadow: 0 4px 14px rgba(230,57,70,.45);
+  }
+  @keyframes comboPop {
+    0%   { transform: scale(0) rotate(-12deg); opacity: 0; }
+    65%  { transform: scale(1.15) rotate(4deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  /* ── レベルアップナッジ ── */
+  .lv-nudge {
+    display: flex; align-items: center; gap: 8px; cursor: pointer;
+    padding: 10px 14px; border-radius: 12px; margin-bottom: 12px;
+    background: linear-gradient(135deg, rgba(244,162,97,.16), rgba(230,57,70,.10));
+    border: 1px solid rgba(244,162,97,.3); font-size: 12.5px; font-weight: 700; color: #F1D6BE;
+    transition: transform .12s ease;
+  }
+  .lv-nudge:active { transform: scale(.97); }
+  .lv-nudge .nudge-ic { font-size: 18px; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -912,6 +951,8 @@
         <div class="stat"><b>12</b><span data-i18n="stat_areas">解放エリア</span></div>
         <div class="stat"><b id="stat-streak">5</b><span data-i18n="stat_streak">連続記録</span></div>
       </div>
+
+      <div class="lv-nudge" id="lv-nudge" style="display:none" onclick="openLevelSheet()" tabindex="0" role="button" aria-label="レベルアップ詳細"></div>
 
       <div class="sec-title" data-i18n="sec_missions">📋 今日のミッション</div>
       <div id="missions"></div>
@@ -1048,6 +1089,10 @@ const I18N = {
     pitch_f3t:'ポイント＆ランキング', pitch_f3d:'貢献に応じて捜査ポイント・特典・地域ランク',
     pitch_note:'※ これは概念実証用のプロトタイプです。地図・投稿・AI判定・ポイントはすべてダミーデータで動作します。実際のタブを操作してみてください →',
     home_greet:'こんにちは、探偵', home_sub:'今日も街の安全を守ろう',
+    greet_morning:'おはよう、探偵', sub_morning:'今日も街の安全を守ろう',
+    greet_day:'こんにちは、探偵', sub_day:'今日も街の安全を守ろう',
+    greet_evening:'お疲れ様、探偵', sub_evening:'今日も一日お疲れ様でした',
+    greet_night:'夜もパトロール中', sub_night:'深夜もパトロールありがとう',
     pts_label:'捜査ポイント', perk_hint:'特典を見る ›', name_suffix:' さん',
     aria_cam:'カメラで撮影する', aria_profile:'マイページを開く', aria_notif:'新着通知を開く',
     stat_posts:'投稿数', stat_areas:'解放エリア', stat_streak:'連続記録',
@@ -1114,6 +1159,10 @@ const I18N = {
     pitch_f3t:'Points & Ranking', pitch_f3d:'Earn investigation points, perks and area ranks for contributing',
     pitch_note:'* This is a proof-of-concept prototype. The map, posts, AI judgments and points all run on dummy data. Try operating the tabs →',
     home_greet:'Hello, Detective', home_sub:"Let's keep the town safe today",
+    greet_morning:'Good morning, Detective', sub_morning:"Let's keep the town safe today",
+    greet_day:'Hello, Detective', sub_day:"Let's keep the town safe today",
+    greet_evening:'Good evening, Detective', sub_evening:'Good work today',
+    greet_night:'Night patrol active', sub_night:'Thanks for patrolling tonight',
     pts_label:'investigation pts', perk_hint:'See perks ›', name_suffix:'',
     aria_cam:'Open camera', aria_profile:'Open my page', aria_notif:'Open notifications',
     stat_posts:'Posts', stat_areas:'Areas', stat_streak:'Streak',
@@ -1201,7 +1250,7 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
-  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {}, checklist: { date:'', done:{} } };
+  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
 
 const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'red' };
 const ACCENTS = [
@@ -1401,6 +1450,14 @@ function pickOutcome(){
   return CAM_OUTCOMES[0];
 }
 function randInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+
+// ── 時間帯検出 ──
+function getTimeOfDay(){ const h=new Date().getHours(); return h>=5&&h<11?'morning':h>=11&&h<17?'day':h>=17&&h<21?'evening':'night'; }
+function applyTimeOfDay(){ const ph=document.querySelector('.phone'); if(ph) ph.dataset.time=getTimeOfDay(); }
+function updateStatusTime(){
+  const now=new Date(), h=now.getHours(), m=String(now.getMinutes()).padStart(2,'0');
+  const el=document.querySelector('.statusbar span:first-child'); if(el) el.textContent=h+':'+m;
+}
 
 // ───────────────────────────── RENDER ─────────────────────────────
 function fmt(n){ return n.toLocaleString('ja-JP'); }
@@ -1606,6 +1663,28 @@ function renderHome(){
     : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
   renderForecast();
+  // 時間帯グリーティング
+  applyTimeOfDay();
+  const tod = getTimeOfDay();
+  const greetEl = document.querySelector('[data-i18n="home_greet"]');
+  if(greetEl) greetEl.textContent = t('greet_'+tod);
+  const subEl = document.querySelector('[data-i18n="home_sub"]');
+  if(subEl) subEl.textContent = t('sub_'+tod);
+  // レベルアップナッジ
+  const nudgeEl = document.getElementById('lv-nudge');
+  if(nudgeEl){
+    if(info.next){
+      const avgPts = STATE.myPosts>0 ? Math.max(10, STATE.earned/STATE.myPosts) : 40;
+      const postsToGo = Math.ceil(info.rem / avgPts);
+      const q = LANG==='en'?['"','"']:['「','」'];
+      nudgeEl.style.display = 'flex';
+      nudgeEl.innerHTML = `<span class="nudge-ic">🚀</span><span>${LANG==='en'
+        ? `${postsToGo} more post${postsToGo!==1?'s':''} to ${q[0]}${tx(info.next,'title')}${q[1]}!`
+        : `あと${postsToGo}投稿で${q[0]}${tx(info.next,'title')}${q[1]}に昇格！`}</span>`;
+    } else {
+      nudgeEl.style.display = 'none';
+    }
+  }
 }
 
 // ── 危険度予報ウィジェット ──
@@ -2343,20 +2422,30 @@ function camResult(){
   const conf = randInt(o.conf[0], o.conf[1]);
   const color = TYPE_COLOR[o.type];
   const bonus = STATE.posts === 38 ? t('cam_bonus') : '';
+  // コンボ判定（連続 danger で加点＆演出）
+  const prevCombo = STATE.camCombo || 0;
+  const isCombo = o.type === 'danger' && prevCombo >= 1;
+  const comboCount = o.type === 'danger' ? prevCombo + 1 : 0;
+  const comboBonus = isCombo ? Math.min(30, prevCombo * 10) : 0;
+  const totalGained = gained + comboBonus;
+  const comboBadge = isCombo
+    ? `<div class="combo-badge">🔥 ${LANG==='en'?'COMBO':'コンボ'} ×${comboCount}  +${comboBonus}pt!</div>` : '';
   document.getElementById('cam-stage').innerHTML = `
     <div class="result-card">
+      ${comboBadge}
       <div class="big">${o.mark}</div>
       <h3 style="color:${color}">${tx(o,'title')}</h3>
       <div class="desc">${t('cam_conf')} <b>${conf}%</b><br>${tx(o,'desc')}<br>${t('cam_added')}</div>
-      <div class="pt-pop"><div class="n">+${gained} ${t('pt')}</div><div class="l">${t('cam_got')}${bonus}</div></div>
+      <div class="pt-pop"><div class="n">+${totalGained} ${t('pt')}</div><div class="l">${t('cam_got')}${bonus}</div></div>
       <button class="btn primary" id="cam-done">${t('cam_reflect')}</button>
       <button class="btn ghost" id="cam-again">${LANG==='en'?'Shoot again':'もう一度撮影'}</button>
       <button class="btn ghost" id="cam-share">${t('cam_share')}</button>
     </div>`;
   document.getElementById('cam-done').onclick = () => {
+    STATE.camCombo = comboCount;
     const oldLv = getLevelInfo(STATE.points).cur.lv;
-    STATE.points += gained; STATE.posts += 1; STATE.streak += 1;
-    STATE.myPosts += 1; STATE.earned += gained;
+    STATE.points += totalGained; STATE.posts += 1; STATE.streak += 1;
+    STATE.myPosts += 1; STATE.earned += totalGained;
     if(o.type==='danger') STATE.dangerFound += 1;
     recordPostToday();
     // フィードに先頭追加（日英両方を保存して言語切替に対応）
@@ -2382,7 +2471,7 @@ function camResult(){
     // デイリーミッション・実績・ランキング更新
     bumpDaily('posts'); bumpDaily(o.type);
     checkAchievements();
-    updateRankData(gained);
+    updateRankData(totalGained);
     renderHome();
     // レベルアップ判定
     const newLv = getLevelInfo(STATE.points).cur;
@@ -2400,7 +2489,7 @@ function camResult(){
     refreshHeat();
     saveState();
     switchView('map');
-    showToast(t('toast_posted')+gained+t('toast_pt_got'));
+    showToast(t('toast_posted')+totalGained+t('toast_pt_got'));
     setTimeout(camIdle, 400);
   };
   document.getElementById('cam-again').onclick = camIdle;
@@ -2656,6 +2745,8 @@ if (ONBOARDED) {
 renderHome();
 renderRank('week');
 renderMapOverlay();
+updateStatusTime();
+setInterval(updateStatusTime, 30000);
 </script>
 </body>
 </html>
