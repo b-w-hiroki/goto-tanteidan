@@ -37,19 +37,20 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 <style>
   :root {
-    --night: #12122A;
-    --night2: #1E2A40;
-    --navy: #1C2951;
+    --night: #0E0C18;
+    --night2: #1A1628;
+    --navy: #1F1A38;
     --red: #E63946;
     --red-dk: #b71f2b;
-    --blue: #457B9D;
+    --blue: #5B7FA6;
     --green: #2D6A4F;
-    --gold: #F4A261;
-    --light: #F0F4F8;
-    --gray: #8A97AD;
-    --line: #2A2A45;
+    --gold: #D4A820;
+    --light: #F5EDDC;
+    --gray: #8A8498;
+    --line: #28243C;
   }
   /* アクセントテーマ（chromeのアクセント色のみ変更。危険＝赤の意味色は据え置き） */
+  [data-accent="amber"]  { --red:#C8960A; --red-dk:#96700A; }
   [data-accent="blue"]   { --red:#3E8FD0; --red-dk:#2c6aa0; }
   [data-accent="green"]  { --red:#2FA56E; --red-dk:#1f7350; }
   [data-accent="purple"] { --red:#8B5CF6; --red-dk:#6d3ed6; }
@@ -58,9 +59,9 @@
   body {
     font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
     background:
-      radial-gradient(900px 600px at 12% -5%, rgba(230,57,70,.16), transparent 55%),
-      radial-gradient(800px 600px at 95% 8%, rgba(69,123,157,.18), transparent 55%),
-      radial-gradient(circle at 30% 12%, #1d1d3a 0%, #0b0b1a 62%);
+      radial-gradient(900px 600px at 12% -5%, rgba(200,150,10,.13), transparent 55%),
+      radial-gradient(800px 600px at 95% 8%, rgba(80,40,130,.16), transparent 55%),
+      radial-gradient(circle at 30% 12%, #1a1525 0%, #08060F 65%);
     background-attachment: fixed;
     min-height: 100vh;
     display: flex;
@@ -89,7 +90,7 @@
   }
   .pitch h1 { font-size: 40px; line-height: 1.15; margin-bottom: 10px; }
   .pitch h1 .glass { font-size: 38px; }
-  .pitch .lead { color: #A8C4D4; font-size: 15px; line-height: 1.7; margin-bottom: 24px; }
+  .pitch .lead { color: #C4B090; font-size: 15px; line-height: 1.7; margin-bottom: 24px; }
   .pitch .feat { display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start; }
   .pitch .feat .ic {
     width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
@@ -106,7 +107,7 @@
     background: var(--night);
     border-radius: 44px;
     border: 11px solid #000;
-    box-shadow: 0 40px 80px rgba(0,0,0,.55), inset 0 0 0 2px #2a2a45;
+    box-shadow: 0 40px 80px rgba(0,0,0,.7), inset 0 0 0 2px #28243c, 0 0 40px rgba(180,130,0,.07);
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
@@ -131,8 +132,8 @@
   /* ── Tab bar ── */
   .tabbar {
     position: absolute; bottom: 0; left: 0; right: 0; height: 78px;
-    background: rgba(18,18,42,.92);
-    backdrop-filter: blur(12px);
+    background: rgba(10,8,18,.95);
+    backdrop-filter: blur(14px);
     border-top: 1px solid var(--line);
     display: flex; z-index: 45; padding-bottom: 14px;
   }
@@ -230,7 +231,7 @@
   .levelup .lv-big { font-size: 80px; animation: lvbounce .5s .25s ease-out both; margin-bottom: 8px; }
   @keyframes lvbounce { from{transform:scale(0)} 80%{transform:scale(1.15)} to{transform:scale(1)} }
   .levelup h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: var(--gold); }
-  .levelup .lv-sub { font-size: 14px; color: #A8C4D4; line-height: 1.7; }
+  .levelup .lv-sub { font-size: 14px; color: #C8B898; line-height: 1.7; }
 
   /* ── Tab notification badge ── */
   .tab { position: relative; }
@@ -257,7 +258,7 @@
   }
   .ob-icon { font-size: 80px; margin-bottom: 22px; line-height: 1; }
   .ob-title { font-size: 22px; font-weight: 800; line-height: 1.35; margin-bottom: 14px; }
-  .ob-desc { font-size: 14px; color: #A8C4D4; line-height: 1.75; }
+  .ob-desc { font-size: 14px; color: #C8B898; line-height: 1.75; }
   .ob-dots { display: flex; gap: 8px; justify-content: center; padding: 18px 0 4px; }
   .ob-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: all .25s; }
   .ob-dot.on { background: var(--red); width: 22px; border-radius: 4px; }
@@ -282,7 +283,7 @@
   .conf-bar { flex: 1; height: 8px; border-radius: 5px; background: var(--night2); overflow: hidden; border: 1px solid var(--line); }
   .conf-bar i { display: block; height: 100%; border-radius: 5px; }
   .conf-val { font-size: 13px; font-weight: 800; min-width: 36px; text-align: right; }
-  .ai-comment { font-size: 13px; color: #A8C4D4; line-height: 1.65; padding: 12px 14px; background: var(--night2); border-radius: 12px; border: 1px solid var(--line); margin-bottom: 14px; }
+  .ai-comment { font-size: 13px; color: #C0B090; line-height: 1.65; padding: 12px 14px; background: var(--night2); border-radius: 12px; border: 1px solid var(--line); margin-bottom: 14px; }
   .catalog-link { display: flex; align-items: center; gap: 12px; background: var(--night2); border-radius: 12px; border: 1px solid var(--line); padding: 12px 14px; margin-bottom: 24px; cursor: pointer; }
   .catalog-link .cl-icon { font-size: 30px; flex-shrink: 0; }
   .catalog-link .cl-info b { font-size: 13px; display: block; }
@@ -292,7 +293,7 @@
   .book-card { display: flex; gap: 14px; align-items: flex-start; background: var(--night2); border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--line); }
   .book-mark { font-size: 30px; width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .book-info b { font-size: 14px; display: block; margin-bottom: 5px; }
-  .book-info p { font-size: 12px; color: #A8C4D4; line-height: 1.6; margin-bottom: 6px; }
+  .book-info p { font-size: 12px; color: #C0B090; line-height: 1.6; margin-bottom: 6px; }
   .book-freq { font-size: 10px; color: var(--gray); }
 
   /* ── Map ── */
@@ -378,7 +379,7 @@
     cursor: pointer; transition: transform .1s;
   }
   .shutter:active { transform: scale(.92); }
-  .cam-hint { font-size: 13px; color: #A8C4D4; margin-bottom: 18px; line-height: 1.6; }
+  .cam-hint { font-size: 13px; color: #C0B090; margin-bottom: 18px; line-height: 1.6; }
 
   .ai-box { width: 100%; }
   .ai-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; opacity: .35; transition: opacity .3s; }
@@ -395,7 +396,7 @@
   .result-card { width: 100%; text-align: center; }
   .result-card .big { font-size: 60px; margin-bottom: 8px; }
   .result-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-  .result-card .desc { font-size: 13px; color: #A8C4D4; line-height: 1.6; margin-bottom: 18px; }
+  .result-card .desc { font-size: 13px; color: #C0B090; line-height: 1.6; margin-bottom: 18px; }
   .pt-pop {
     background: linear-gradient(135deg, var(--gold), #e08a3c); color: #1a1a1a;
     border-radius: 16px; padding: 16px; font-weight: 800; margin-bottom: 18px;
@@ -408,7 +409,7 @@
     font-size: 15px; font-weight: 700; font-family: inherit;
   }
   .btn.primary { background: var(--red); color: #fff; }
-  .btn.ghost { background: transparent; color: #A8C4D4; border: 1px solid var(--line); margin-top: 10px; }
+  .btn.ghost { background: transparent; color: #C0B090; border: 1px solid var(--line); margin-top: 10px; }
 
   /* ── Ranking ── */
   .rank-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
@@ -436,7 +437,7 @@
 
   /* ── My team card ── */
   .myteam {
-    background: linear-gradient(135deg, #1C3A5E 0%, #16263f 100%);
+    background: linear-gradient(135deg, #2A1F40 0%, #1A1428 100%);
     border: 1px solid var(--line); border-radius: 18px; padding: 16px; position: relative; overflow: hidden;
   }
   .myteam .mt-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
@@ -644,11 +645,11 @@
   .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
 
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -678,7 +679,7 @@
       padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
     .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
-    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet {
+    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet {
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
   }
@@ -754,7 +755,7 @@
   .qz-hd b, .cd-hd b { font-size: 16px; font-weight: 800; }
   .qz-close, .cd-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
   .qz-mark { font-size: 64px; text-align: center; margin: 6px 0 4px; line-height: 1; }
-  .qz-q { font-size: 14px; text-align: center; color: #A8C4D4; margin-bottom: 16px; }
+  .qz-q { font-size: 14px; text-align: center; color: #C0B090; margin-bottom: 16px; }
   .qz-opts { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
   .qz-opt {
     padding: 13px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--night2);
@@ -764,7 +765,7 @@
   .qz-opt.correct { background: rgba(45,106,79,.3); border-color: var(--green); }
   .qz-opt.wrong { background: rgba(230,57,70,.22); border-color: var(--red); }
   .qz-opt:disabled { cursor: default; }
-  .qz-expl { margin-top: 14px; font-size: 12.5px; color: #A8C4D4; line-height: 1.65; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .qz-expl { margin-top: 14px; font-size: 12.5px; color: #C0B090; line-height: 1.65; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
   .qz-expl b { color: #fff; }
 
   /* ── 戦績カードシート ── */
@@ -899,6 +900,50 @@
   }
   .lv-nudge:active { transform: scale(.97); }
   .lv-nudge .nudge-ic { font-size: 18px; flex-shrink: 0; }
+
+  /* ── 地域アラート ── */
+  .alert-card {
+    display: flex; gap: 11px; align-items: flex-start; padding: 11px 14px; cursor: pointer;
+    border-bottom: 1px solid var(--line); transition: background .15s;
+  }
+  .alert-card:last-child { border: none; }
+  .alert-card:active { background: rgba(255,255,255,.04); }
+  .alert-src-ic { width: 38px; height: 38px; border-radius: 11px; font-size: 19px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .alert-src-ic.police { background: rgba(230,57,70,.18); }
+  .alert-src-ic.city   { background: rgba(69,123,157,.18); }
+  .alert-src-ic.watch  { background: rgba(45,106,79,.18); }
+  .alert-tx { flex: 1; min-width: 0; }
+  .alert-tx b { font-size: 13px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .alert-tx .alert-meta { font-size: 11px; color: var(--gray); margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .alert-chip { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 700; white-space: nowrap; }
+  .alert-chip.police { background: rgba(230,57,70,.2); color: #ff9aa3; }
+  .alert-chip.city   { background: rgba(69,123,157,.2); color: #93c5e8; }
+  .alert-chip.watch  { background: rgba(45,106,79,.2); color: #6ee7a8; }
+  .alert-new-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); flex-shrink: 0; margin-top: 8px; }
+
+  /* ── アラート詳細シート ── */
+  .alert-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(14,12,24,.98); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+    padding: 14px 18px 22px; transform: translateY(110%); transition: transform .3s ease;
+    box-shadow: 0 -10px 30px rgba(0,0,0,.6); max-height: 82%; display: flex; flex-direction: column;
+  }
+  .alert-sheet.open { transform: translateY(0); }
+  .alert-sheet .grab { width: 40px; height: 4px; border-radius: 3px; background: #3a3452; margin: 0 auto 12px; flex-shrink:0; }
+  .al-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-shrink:0; }
+  .al-hd b { font-size: 16px; font-weight: 800; }
+  .al-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .al-body { overflow-y: auto; flex: 1; }
+  .al-body::-webkit-scrollbar { width: 0; }
+  .al-item { background: var(--night2); border: 1px solid var(--line); border-radius: 14px; padding: 13px 14px; margin-bottom: 10px; }
+  .al-item-top { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 9px; }
+  .al-item-src { width: 40px; height: 40px; border-radius: 12px; font-size: 20px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .al-item-info b { font-size: 13.5px; display: block; line-height: 1.35; margin-bottom: 4px; }
+  .al-item-info .al-item-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .al-item-body { font-size: 12.5px; color: #C0B090; line-height: 1.7; }
 </style>
 </head>
 <body>
@@ -963,6 +1008,9 @@
 
       <div class="sec-title" data-i18n="sec_weekly">🗓 今週のチャレンジ</div>
       <div id="weekly-missions"></div>
+
+      <div class="sec-title" data-i18n="sec_alerts">📢 地域アラート</div>
+      <div id="alerts-list"></div>
 
       <div class="sec-title" data-i18n="sec_feed">🕐 みんなの捜査ログ</div>
       <div class="feed-filter" id="feed-filter">
@@ -1058,6 +1106,7 @@
   <div class="card-sheet" id="card-sheet"></div>
   <div class="stats-sheet" id="stats-sheet"></div>
   <div class="safety-sheet" id="safety-sheet"></div>
+  <div class="alert-sheet" id="alert-sheet"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -1158,6 +1207,10 @@ const I18N = {
     safety_btn:'🛡 防犯Tips・緊急', safety_title:'🛡 防犯Tips・緊急',
     tips_sec:'💡 今日の防犯Tip', checklist_sec:'✅ 外出前チェック', emergency_sec:'🆘 緊急連絡先',
     emergency_note:'タップで発信できます（実機）',
+    sec_alerts:'📢 地域アラート',
+    alert_cat_police:'警察署', alert_cat_city:'区役所', alert_cat_watch:'自警団',
+    alerts_viewall:'すべてのアラートを見る →',
+    alerts_title:'📢 地域アラート',
   },
   en: {
     pitch_lead:'Citizens become "detectives," spotting and reporting street markings. AI judges them and the crime-prevention map grows in real time.',
@@ -1228,6 +1281,10 @@ const I18N = {
     safety_btn:'🛡 Tips & Emergency', safety_title:'🛡 Tips & Emergency',
     tips_sec:"💡 Today's tip", checklist_sec:'✅ Before you go out', emergency_sec:'🆘 Emergency contacts',
     emergency_note:'Tap to call (on device)',
+    sec_alerts:'📢 Area Alerts',
+    alert_cat_police:'Police', alert_cat_city:'City Hall', alert_cat_watch:'Neighborhood Watch',
+    alerts_viewall:'View all alerts →',
+    alerts_title:'📢 Area Alerts',
   }
 };
 function t(k){ return (I18N[LANG] && I18N[LANG][k]!=null) ? I18N[LANG][k] : (I18N.ja[k]!=null ? I18N.ja[k] : k); }
@@ -1259,15 +1316,15 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
   myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
 
-const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'red' };
+const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'amber' };
 const ACCENTS = [
-  { id:'red',    color:'#E63946' }, { id:'blue', color:'#3E8FD0' },
-  { id:'green',  color:'#2FA56E' }, { id:'purple', color:'#8B5CF6' },
-  { id:'pink',   color:'#EC4899' },
+  { id:'amber',  color:'#C8960A' }, { id:'red',  color:'#E63946' },
+  { id:'blue',   color:'#3E8FD0' }, { id:'green', color:'#2FA56E' },
+  { id:'purple', color:'#8B5CF6' }, { id:'pink',  color:'#EC4899' },
 ];
 function applyAccent(){
   if(PROFILE.accent && PROFILE.accent!=='red') document.documentElement.dataset.accent = PROFILE.accent;
-  else delete document.documentElement.dataset.accent;
+  else { delete document.documentElement.dataset.accent; }
 }
 const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','🐶','🐹','🦝','🐲'];
 
@@ -1440,6 +1497,35 @@ const EMERGENCY = [
   { label:'警察（事件・事故）', label_en:'Police (crime / accident)', num:'110' },
   { label:'警察相談専用ダイヤル', label_en:'Police consultation line', num:'#9110' },
   { label:'消防・救急', label_en:'Fire / ambulance', num:'119' },
+];
+
+// 地域アラート（自治体・警察・自警団からのお知らせ）
+const ALERTS = [
+  { id:1, src:'🚔', org:'渋谷警察署', org_en:'Shibuya Police Station', cat:'police',
+    title:'侵入盗の被害増加に関する注意喚起', title_en:'Burglary increase alert',
+    body:'本年度に入り渋谷区内での侵入盗被害が前年比120%増加しています。外出前の施錠確認と、見慣れない記号の投稿へのご協力をお願いします。',
+    body_en:'Burglary damage in Shibuya has risen 120% year-on-year. Please ensure locks are checked before going out, and continue reporting unfamiliar markings.',
+    date:'2026-06-20', isNew:true },
+  { id:2, src:'🏛️', org:'渋谷区役所', org_en:'Shibuya City Hall', cat:'city',
+    title:'防犯カメラ設置箇所の更新について', title_en:'CCTV location update',
+    body:'区内の防犯カメラ42台を高解像度モデルに更新しました。設置場所は区公式サイトの「防犯マップ」ページでご確認いただけます。',
+    body_en:'42 CCTV cameras in the ward have been upgraded to high-resolution models. See the latest locations on the ward\'s official "Safety Map" page.',
+    date:'2026-06-18', isNew:false },
+  { id:3, src:'👥', org:'代々木上原自警団', org_en:'Yoyogi-Uehara Neighborhood Watch', cat:'watch',
+    title:'不審者目撃情報 — 代々木上原駅周辺', title_en:'Suspicious person sighting near station',
+    body:'6/17夜20時頃、代々木上原駅北口付近で不審者の目撃情報が寄せられています。見慣れない人物を見かけた際は無理に近づかず110番通報をお願いします。',
+    body_en:'A suspicious person was reported near Yoyogi-Uehara Station north exit around 8 pm on Jun 17. Do not approach; call 110 if you see an unfamiliar individual.',
+    date:'2026-06-17', isNew:false },
+  { id:4, src:'🚔', org:'渋谷警察署', org_en:'Shibuya Police Station', cat:'police',
+    title:'マーキング被害相談窓口を設置しました', title_en:'Marking consultation office opened',
+    body:'マーキング等の特殊詐欺前兆事案に関する専用相談窓口を設置しました。相談は月〜金 9:00〜17:00。お気軽にご連絡ください。',
+    body_en:'A dedicated consultation service for marking-related suspicious activity has opened. Available Mon–Fri 9:00–17:00. Feel free to call.',
+    date:'2026-06-14', isNew:false },
+  { id:5, src:'🏛️', org:'渋谷区役所', org_en:'Shibuya City Hall', cat:'city',
+    title:'防犯パトロール強化月間（7月）のお知らせ', title_en:'Reinforced patrol month — July',
+    body:'7月を「防犯パトロール強化月間」と定め、区内12か所でパトロールイベントを開催します。詳細は後日、区公式サイトよりお知らせします。',
+    body_en:'July is designated "Reinforced Patrol Month," with 12 patrol events across the ward. Full details will be posted on the ward\'s official site.',
+    date:'2026-06-10', isNew:false },
 ];
 
 const LEVELS = [
@@ -1631,6 +1717,63 @@ function bumpDaily(metric){
   renderMissions();
 }
 
+// ── 地域アラート ──
+function alertCatLabel(cat){ return t('alert_cat_'+cat); }
+function renderAlerts(){
+  const el = document.getElementById('alerts-list');
+  if(!el) return;
+  const shown = ALERTS.slice(0,3);
+  el.innerHTML = `<div class="card" style="padding:0;overflow:hidden">${
+    shown.map(a=>{
+      const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
+      const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
+      return `<div class="alert-card" onclick="openAlertSheet()">
+        <div class="alert-src-ic ${a.cat}">${a.src}</div>
+        <div class="alert-tx">
+          <b>${titleTx}</b>
+          <div class="alert-meta">
+            <span class="alert-chip ${a.cat}">${alertCatLabel(a.cat)}</span>
+            <span>${orgTx}</span>
+            <span>${a.date.slice(5).replace('-','/')}</span>
+          </div>
+        </div>
+        ${a.isNew?'<div class="alert-new-dot"></div>':''}
+      </div>`;
+    }).join('')
+  }<div style="padding:8px 14px 10px;border-top:1px solid var(--line)">
+    <button class="panel-btn" onclick="openAlertSheet()" style="margin:0;padding:10px;font-size:12px">${t('alerts_viewall')}</button>
+  </div></div>`;
+}
+function openAlertSheet(){
+  const sheet = document.getElementById('alert-sheet');
+  if(!sheet) return;
+  const listHtml = ALERTS.map(a=>{
+    const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
+    const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
+    const bodyTx  = LANG==='en' ? (a.body_en||a.body)   : a.body;
+    return `<div class="al-item">
+      <div class="al-item-top">
+        <div class="al-item-src alert-src-ic ${a.cat}">${a.src}</div>
+        <div class="al-item-info">
+          <b>${titleTx}</b>
+          <div class="al-item-meta">
+            <span class="alert-chip ${a.cat}">${alertCatLabel(a.cat)}</span>
+            <span style="font-size:11px;color:var(--gray)">${orgTx} · ${a.date.slice(5).replace('-','/')}</span>
+            ${a.isNew?'<div class="alert-new-dot"></div>':''}
+          </div>
+        </div>
+      </div>
+      <div class="al-item-body">${bodyTx}</div>
+    </div>`;
+  }).join('');
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="al-hd"><b>${t('alerts_title')}</b><button class="al-close" id="al-close">×</button></div>
+    <div class="al-body">${listHtml}</div>`;
+  document.getElementById('al-close').onclick = ()=>sheet.classList.remove('open');
+  sheet.classList.add('open');
+}
+
 // ── 実績バッジ ──
 function checkAchievements(){
   ACHIEVEMENTS.forEach(a=>{
@@ -1707,6 +1850,7 @@ function renderHome(){
       </div>`).join('')
     : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
+  renderAlerts();
   renderForecast();
   // 時間帯グリーティング
   applyTimeOfDay();
@@ -2625,7 +2769,7 @@ function switchView(name){
   if (name==='rank' && rankTab==='team') renderTeam();
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
