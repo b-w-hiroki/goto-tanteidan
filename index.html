@@ -172,7 +172,8 @@
   .hero {
     background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
     border-radius: 18px; padding: 15px 16px; margin-bottom: 12px; position: relative; overflow: hidden;
-    cursor: pointer;
+    cursor: pointer; border: 2px solid transparent;
+    transition: border-color .4s ease, box-shadow .4s ease;
   }
   .hero .glasswm { position: absolute; right: -10px; top: -16px; font-size: 110px; opacity: .14; }
   .hero .role { font-size: 12px; opacity: .85; }
@@ -944,6 +945,32 @@
   .al-item-info b { font-size: 13.5px; display: block; line-height: 1.35; margin-bottom: 4px; }
   .al-item-info .al-item-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
   .al-item-body { font-size: 12.5px; color: #C0B090; line-height: 1.7; }
+
+  /* ── 称号フレーム（ヒーローカードの光るボーダー） ── */
+  .hero.frame-copper  { border-color: #CD7F32; box-shadow: 0 4px 22px rgba(205,127,50,.50); }
+  .hero.frame-silver  { border-color: #B0BCC8; box-shadow: 0 4px 22px rgba(176,188,200,.50); }
+  .hero.frame-amber   { border-color: #C8960A; box-shadow: 0 4px 22px rgba(200,150,10,.60); }
+  .hero.frame-gold    { border-color: #D4A820; box-shadow: 0 4px 26px rgba(212,168,32,.65); }
+  .hero.frame-crimson { border-color: #DC143C; box-shadow: 0 4px 24px rgba(220,20,60,.60); }
+  .hero.frame-violet  { border-color: #8B5CF6; box-shadow: 0 4px 24px rgba(139,92,246,.60); }
+  .hero.frame-legend  { border-color: #FFD700; box-shadow: 0 0 32px rgba(255,215,0,.75), 0 4px 20px rgba(255,215,0,.4); }
+
+  /* ── 称号フレームコレクション（マイページ内） ── */
+  .frame-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .frame-cell {
+    aspect-ratio: 1; border-radius: 12px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px;
+    background: var(--night2); border: 2px solid var(--line); cursor: pointer;
+    position: relative; transition: transform .12s ease, border-color .2s;
+  }
+  .frame-cell:not(.locked):active { transform: scale(.93); }
+  .frame-cell .frame-ic { font-size: 22px; line-height: 1; }
+  .frame-cell .frame-lbl { font-size: 8.5px; color: var(--gray); text-align: center; line-height: 1.3; padding: 0 3px; }
+  .frame-cell.locked { opacity: .38; cursor: default; }
+  .frame-cell.sel { background: rgba(200,150,10,.14); }
+  .frame-cell.sel .frame-lbl { color: var(--gold); font-weight: 700; }
+  .frame-cell .frame-lock { position: absolute; top: 3px; right: 4px; font-size: 9px; color: var(--gray); }
+  .frame-cell .frame-equipped { position: absolute; top: 3px; left: 4px; font-size: 8px; color: var(--gold); font-weight: 800; }
 </style>
 </head>
 <body>
@@ -1177,6 +1204,7 @@ const I18N = {
     mp_summary:'📊 今週のまとめ', mp_week_posts:'今週の投稿', mp_earned:'獲得ポイント', mp_week_rank:'週間ランキング', mp_streak:'連続記録',
     mp_badges:'🏆 実績バッジ', mp_reset:'🗑 データをリセット', mp_reset_confirm:'すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？',
     mp_lang:'🌐 言語 / Language', rank_suffix:'位', mp_accent:'🎨 アクセントカラー',
+    mp_frames:'🖼 称号フレーム', frame_equipped:'装備中', frame_lv_need:'Lv.{0}で解放',
     notif_title:'🔔 新着通知',
     recent_posts:'📌 最近の投稿', detected_danger:'濃厚 検出', detected_warn:'要確認',
     my_team_sub:'あなたの所属する探偵団', team_total:'団の総ポイント', team_members:'団員数', your_contrib:'あなたの貢献',
@@ -1251,6 +1279,7 @@ const I18N = {
     mp_summary:'📊 This week', mp_week_posts:'Posts this week', mp_earned:'Points earned', mp_week_rank:'Weekly rank', mp_streak:'Streak',
     mp_badges:'🏆 Achievements', mp_reset:'🗑 Reset data', mp_reset_confirm:'This will reset all records (points, posts, achievements). Are you sure?',
     mp_lang:'🌐 言語 / Language', rank_suffix:'', mp_accent:'🎨 Accent color',
+    mp_frames:'🖼 Title Frames', frame_equipped:'Equipped', frame_lv_need:'Unlocks at Lv.{0}',
     notif_title:'🔔 New notifications',
     recent_posts:'📌 Recent posts', detected_danger:'Likely found', detected_warn:'To check',
     my_team_sub:'The squad you belong to', team_total:'Squad total pts', team_members:'Members', your_contrib:'Your contribution',
@@ -1316,7 +1345,19 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
   myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
 
-const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'amber' };
+const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'amber', frame: 'amber' };
+
+// 称号フレーム（レベルで解放・ヒーローカードに装備）
+const TITLE_FRAMES = [
+  { id:'none',    name:'フレームなし',   name_en:'No Frame',          icon:'◻️', unlockLv:1, color:'transparent' },
+  { id:'copper',  name:'古銅の探偵',     name_en:'Copper Detective',  icon:'🥉', unlockLv:1, color:'#CD7F32' },
+  { id:'silver',  name:'銀の鑑識',       name_en:'Silver Analyst',    icon:'🥈', unlockLv:3, color:'#B0BCC8' },
+  { id:'amber',   name:'琥珀の目',       name_en:'Amber Eye',         icon:'🔍', unlockLv:5, color:'#C8960A' },
+  { id:'gold',    name:'黄金の鑑識官',   name_en:'Gold Inspector',    icon:'🥇', unlockLv:6, color:'#D4A820' },
+  { id:'crimson', name:'深紅の守護者',   name_en:'Crimson Guardian',  icon:'🛡️', unlockLv:7, color:'#DC143C' },
+  { id:'violet',  name:'紫煙の謎解き',   name_en:'Violet Sleuth',     icon:'🔮', unlockLv:8, color:'#8B5CF6' },
+  { id:'legend',  name:'伝説のエース',   name_en:'Legendary Ace',     icon:'👑', unlockLv:9, color:'#FFD700' },
+];
 const ACCENTS = [
   { id:'amber',  color:'#C8960A' }, { id:'red',  color:'#E63946' },
   { id:'blue',   color:'#3E8FD0' }, { id:'green', color:'#2FA56E' },
@@ -1325,6 +1366,13 @@ const ACCENTS = [
 function applyAccent(){
   if(PROFILE.accent && PROFILE.accent!=='red') document.documentElement.dataset.accent = PROFILE.accent;
   else { delete document.documentElement.dataset.accent; }
+}
+function isFrameUnlocked(f){ return f.id==='none' || getLevelInfo(STATE.points).cur.lv >= f.unlockLv; }
+function applyFrame(){
+  const hero = document.getElementById('home-hero');
+  if(!hero) return;
+  const fid = PROFILE.frame || 'none';
+  hero.className = 'hero' + (fid !== 'none' ? ' frame-'+fid : '');
 }
 const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','🐶','🐹','🦝','🐲'];
 
@@ -1852,8 +1900,9 @@ function renderHome(){
   renderMissions();
   renderAlerts();
   renderForecast();
-  // 時間帯グリーティング
+  // 時間帯グリーティング＋称号フレーム
   applyTimeOfDay();
+  applyFrame();
   const tod = getTimeOfDay();
   const greetEl = document.querySelector('[data-i18n="home_greet"]');
   if(greetEl) greetEl.textContent = t('greet_'+tod);
@@ -2008,6 +2057,19 @@ function openMyPage(){
       <div style="height:14px"></div>
       <div class="mp-sec">${t('mp_avatar')}</div>
       <div class="mp-avgrid" id="mp-avgrid">${avHtml}</div>
+      <div style="height:14px"></div>
+      <div class="mp-sec">${t('mp_frames')}（${TITLE_FRAMES.filter(f=>isFrameUnlocked(f)).length}/${TITLE_FRAMES.length}）</div>
+      <div class="frame-grid" id="mp-frames">${TITLE_FRAMES.map(f=>{
+        const unlocked = isFrameUnlocked(f);
+        const sel = f.id === (PROFILE.frame||'none');
+        const lockTip = !unlocked ? t('frame_lv_need').replace('{0}',f.unlockLv) : '';
+        return `<div class="frame-cell${!unlocked?' locked':''}${sel?' sel':''}" data-fid="${f.id}" title="${lockTip||tx(f,'name')}">
+          ${sel?`<span class="frame-equipped">${t('frame_equipped')}</span>`:''}
+          ${!unlocked?`<span class="frame-lock">🔒</span>`:''}
+          <span class="frame-ic">${f.icon}</span>
+          <span class="frame-lbl">${tx(f,'name')}</span>
+        </div>`;
+      }).join('')}</div>
       <div class="mp-sec">${t('mp_name')}</div>
       <input class="mp-name" id="mp-name" type="text" maxlength="12" value="${PROFILE.name.replace(/"/g,'&quot;')}" />
       <div class="mp-sec">${t('mp_team')}</div>
@@ -2039,6 +2101,21 @@ function openMyPage(){
     };
   });
   document.getElementById('mp-close').onclick = ()=>sheet.classList.remove('open');
+  document.getElementById('mp-frames').querySelectorAll('.frame-cell:not(.locked)').forEach(el=>{
+    el.onclick = () => {
+      PROFILE.frame = el.dataset.fid;
+      applyFrame(); saveState();
+      document.getElementById('mp-frames').querySelectorAll('.frame-cell').forEach(x=>{
+        x.classList.remove('sel');
+        const eq = x.querySelector('.frame-equipped');
+        if(eq) eq.remove();
+      });
+      el.classList.add('sel');
+      const eq = document.createElement('span');
+      eq.className = 'frame-equipped'; eq.textContent = t('frame_equipped');
+      el.prepend(eq);
+    };
+  });
   document.getElementById('mp-avgrid').querySelectorAll('.mp-av').forEach(el=>{
     el.onclick = () => {
       PROFILE.avatar = el.dataset.av;
