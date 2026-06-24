@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ダンジョン探索RPG - CGI GAME ver1.0</title>
+<style>
+  body {
+    background: #c0c0c0;
+    font-family: "MS Gothic", "ＭＳ ゴシック", monospace;
+    font-size: 13px;
+    color: #000000;
+    margin: 0;
+    padding: 8px;
+  }
+  .main-frame {
+    width: 640px;
+    margin: 0 auto;
+    border: 2px solid #808080;
+    background: #ffffff;
+    padding: 0;
+  }
+  .title-bar {
+    background: #000080;
+    color: #ffffff;
+    padding: 3px 6px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .content {
+    padding: 8px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 16px;
+    color: #000080;
+    border-bottom: 2px solid #000080;
+    padding-bottom: 4px;
+    margin: 4px 0 8px 0;
+  }
+  h2 {
+    font-size: 13px;
+    color: #800000;
+    margin: 6px 0 4px 0;
+    border-left: 4px solid #800000;
+    padding-left: 6px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  td, th {
+    border: 1px solid #808080;
+    padding: 3px 6px;
+    font-size: 12px;
+  }
+  th {
+    background: #d4d0c8;
+    font-weight: bold;
+  }
+  .stat-bar-bg {
+    background: #808080;
+    display: inline-block;
+    height: 12px;
+    width: 120px;
+    vertical-align: middle;
+    border: 1px inset #404040;
+  }
+  .stat-bar-hp {
+    background: #00aa00;
+    height: 100%;
+    display: inline-block;
+  }
+  .stat-bar-mp {
+    background: #0000cc;
+    height: 100%;
+    display: inline-block;
+  }
+  .stat-bar-exp {
+    background: #cc8800;
+    height: 100%;
+    display: inline-block;
+  }
+  .btn {
+    display: inline-block;
+    background: #d4d0c8;
+    border: 2px outset #ffffff;
+    padding: 3px 10px;
+    cursor: pointer;
+    font-family: "MS Gothic", monospace;
+    font-size: 12px;
+    margin: 2px;
+    min-width: 60px;
+    text-align: center;
+    user-select: none;
+  }
+  .btn:active {
+    border: 2px inset #808080;
+    padding: 4px 9px 2px 11px;
+  }
+  .btn:hover {
+    background: #e8e4dc;
+  }
+  .btn-danger {
+    color: #cc0000;
+    font-weight: bold;
+  }
+  .btn-primary {
+    color: #000080;
+    font-weight: bold;
+  }
+  .btn-disabled {
+    color: #808080;
+    cursor: default;
+  }
+  .log-box {
+    background: #000000;
+    color: #00ff00;
+    font-family: "MS Gothic", monospace;
+    font-size: 12px;
+    padding: 6px 8px;
+    height: 140px;
+    overflow-y: auto;
+    border: 2px inset #404040;
+    white-space: pre-wrap;
+    line-height: 1.4;
+  }
+  .log-box .log-damage { color: #ff4444; }
+  .log-box .log-heal { color: #44ff44; }
+  .log-box .log-mp { color: #4444ff; }
+  .log-box .log-system { color: #ffff00; }
+  .log-box .log-item { color: #ff8800; }
+  .ascii-art {
+    font-family: "MS Gothic", monospace;
+    font-size: 11px;
+    color: #000080;
+    line-height: 1.2;
+    text-align: center;
+    background: #f0f0f0;
+    border: 1px solid #808080;
+    padding: 6px;
+    margin: 4px 0;
+  }
+  .hr { border: 1px solid #808080; margin: 6px 0; }
+  .status-panel {
+    background: #fffff0;
+    border: 1px solid #808080;
+    padding: 6px;
+    margin: 4px 0;
+  }
+  .battle-panel {
+    background: #f0f8ff;
+    border: 2px solid #000080;
+    padding: 8px;
+    margin: 4px 0;
+  }
+  .enemy-hp-bar {
+    background: #ff4444;
+    height: 100%;
+    display: inline-block;
+  }
+  .shop-item { background: #fffff0; }
+  .shop-item:hover { background: #ffffc0; }
+  select {
+    font-family: "MS Gothic", monospace;
+    font-size: 12px;
+    background: #ffffff;
+    border: 2px inset #808080;
+  }
+  input[type="text"] {
+    font-family: "MS Gothic", monospace;
+    font-size: 12px;
+    border: 2px inset #808080;
+    background: #ffffff;
+    padding: 2px 4px;
+    width: 160px;
+  }
+  .scene-title {
+    background: #000080;
+    color: #ffffff;
+    padding: 2px 8px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .footer {
+    background: #d4d0c8;
+    border-top: 1px solid #808080;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: #444;
+  }
+</style>
+</head>
+<body>
+
+<div class="main-frame">
+  <div class="title-bar">⚔ ダンジョン探索RPG - CGI GAME ver1.0 [DEMO]</div>
+  <div class="content">
+    <div id="game-root"></div>
+  </div>
+  <div class="footer" id="footer-bar">
+    Ready | ダンジョン探索RPG © 1998-2026 DungeonSoft | Powered by CGI/1.1
+  </div>
+</div>
+
+<script>
+// =============================================
+// ゲームデータ定義
+// =============================================
+
+const CLASSES = {
+  warrior: { name: "戦士", hp: 120, mp: 20, atk: 15, def: 12, spd: 8, skills: ["パワーアタック", "かばう"] },
+  mage:    { name: "魔法使い", hp: 70, mp: 80, atk: 8, def: 6, spd: 10, skills: ["ファイア", "サンダー"] },
+  priest:  { name: "僧侶", hp: 90, mp: 60, atk: 9, def: 9, spd: 9, skills: ["ヒール", "ライト"] },
+  thief:   { name: "盗賊", hp: 85, mp: 30, atk: 12, def: 8, spd: 16, skills: ["2回攻撃", "盗む"] },
+};
+
+const SKILLS = {
+  "パワーアタック": { mp: 8,  type: "atk",   power: 2.0,  desc: "強力な一撃！" },
+  "かばう":         { mp: 5,  type: "def",    power: 1,    desc: "仲間をかばう（DEF2倍）" },
+  "ファイア":       { mp: 12, type: "magic",  power: 2.5,  desc: "炎の魔法！" },
+  "サンダー":       { mp: 16, type: "magic",  power: 3.2,  desc: "雷撃！" },
+  "ヒール":         { mp: 10, type: "heal",   power: 35,   desc: "HPを回復する" },
+  "ライト":         { mp: 8,  type: "magic",  power: 1.8,  desc: "聖なる光で攻撃" },
+  "2回攻撃":        { mp: 6,  type: "double", power: 1.2,  desc: "素早く2回攻撃！" },
+  "盗む":           { mp: 4,  type: "steal",  power: 1,    desc: "敵からアイテムを盗む" },
+};
+
+const ITEMS = {
+  ポーション:     { price: 80,  effect: "hp", value: 50,  desc: "HPを50回復" },
+  ハイポーション: { price: 250, effect: "hp", value: 150, desc: "HPを150回復" },
+  エーテル:       { price: 120, effect: "mp", value: 30,  desc: "MPを30回復" },
+  毒消し:         { price: 50,  effect: "cure_poison", value: 1, desc: "毒を治す" },
+  爆弾:           { price: 200, effect: "bomb", value: 100, desc: "敵に100ダメージ" },
+};
+
+const WEAPONS = {
+  "銅の剣":   { price: 100,  atk: 5,  desc: "錆びた銅剣" },
+  "鉄の剣":   { price: 400,  atk: 12, desc: "標準的な鉄剣" },
+  "鋼の剣":   { price: 1200, atk: 22, desc: "鋼鉄の長剣" },
+  "炎の剣":   { price: 4000, atk: 38, desc: "炎属性の魔剣" },
+  "木の杖":   { price: 80,   atk: 3,  desc: "魔力を宿す杖" },
+  "魔法の杖": { price: 600,  atk: 15, desc: "魔力が高い杖" },
+  "短剣":     { price: 150,  atk: 7,  desc: "素早く攻撃できる" },
+};
+
+const ARMORS = {
+  "布の鎧":   { price: 80,   def: 3,  desc: "粗末な布の鎧" },
+  "革の鎧":   { price: 300,  def: 8,  desc: "革製の鎧" },
+  "鉄の鎧":   { price: 900,  def: 16, desc: "鉄製の重い鎧" },
+  "鎖帷子":   { price: 2000, def: 26, desc: "細かな鎖を編んだ鎧" },
+  "魔法ローブ":{ price: 500, def: 10, desc: "魔力を高める" },
+};
+
+const AREAS = [
+  {
+    id: "town",
+    name: "🏰 コペルの町",
+    desc: "小さな宿場町。旅人が行き交う。\n最近、近くのダンジョンで魔物が増えたと聞く。",
+    ascii: [
+      "         _____",
+      "        /     \\",
+      "       / 町 宿  \\",
+      "  ____/___________\\____",
+      " |  []  []   []  []   |",
+      " |____________________|",
+      "   ████▓▓████▓▓████",
+    ],
+    actions: ["dungeon", "shop", "inn", "status", "save"],
+  },
+  {
+    id: "dungeon_entrance",
+    name: "🕯 ダンジョン入口",
+    desc: "薄暗い洞窟の入口。生臭い風が吹いてくる。\nかすかに魔物の気配がする...",
+    ascii: [
+      "     _____",
+      "    /     \\",
+      "   |  ＊  |",
+      "   | [入] |   ← 危険区域",
+      "   |  口  |",
+      "   |_____|",
+      "  /       \\",
+    ],
+    danger: 1,
+    actions: ["explore_b1", "back_town"],
+  },
+  {
+    id: "dungeon_b1",
+    name: "⚔ ダンジョン B1F",
+    desc: "地下1階。苔むした石畳。\nどこからか魔物の声が聞こえる。",
+    ascii: [
+      " ___  ___  ___  ___",
+      "|   ||   ||   ||   |",
+      "|B1F||   ||   ||   |",
+      "|___||___||___||___|",
+      "  ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓",
+    ],
+    danger: 2,
+    actions: ["explore_b2", "battle_random", "back_entrance"],
+  },
+  {
+    id: "dungeon_b2",
+    name: "💀 ダンジョン B2F",
+    desc: "地下2階。深くなるほど魔物が強くなる。\nボスの部屋が近い...",
+    ascii: [
+      " ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓",
+      " ▓  B2F AREA    ▓",
+      " ▓   [????]     ▓",
+      " ▓   BOSS→      ▓",
+      " ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓",
+    ],
+    danger: 3,
+    actions: ["boss_battle", "battle_random", "back_b1"],
+  },
+];
+
+const ENEMIES = {
+  スライム:    { hp: 30,  mp: 0,  atk: 6,  def: 2,  exp: 12,  gold: 8,   ascii: ["  (  )",  " ( ΩΩ )", "  \\__/  "] },
+  コウモリ:    { hp: 25,  mp: 0,  atk: 8,  def: 3,  exp: 15,  gold: 12,  ascii: [" \\(  )/", " (> o<)", "  /\\  /\\  "] },
+  ゴブリン:    { hp: 55,  mp: 10, atk: 14, def: 6,  exp: 28,  gold: 22,  ascii: ["  (^o^)", " \\|_|/ ", "  / \\   "] },
+  スケルトン:  { hp: 70,  mp: 0,  atk: 18, def: 8,  exp: 40,  gold: 35,  ascii: ["  (☠☠)", "  |_|  ", "  /|\\  "] },
+  ダークウルフ:{ hp: 90,  mp: 0,  atk: 22, def: 10, exp: 55,  gold: 48,  ascii: [" /\\_/\\", "(  oO  )", "  m m  "] },
+  魔法使い:    { hp: 60,  mp: 50, atk: 20, def: 5,  exp: 65,  gold: 70,  ascii: ["  (★_★)", "  |§|  ", "  /_\\  "] },
+  ダークナイト:{ hp: 150, mp: 20, atk: 30, def: 20, exp: 120, gold: 100, ascii: ["  [■■]", " ▓(>∀<)▓", "  /  \\  "], boss: true },
+  ドラゴン:    { hp: 400, mp: 80, atk: 55, def: 35, exp: 500, gold: 800, ascii: [" /\\  /\\", "(oo OO )", " \\/◆\\/  "], boss: true },
+};
+
+const ENEMY_POOL_B1 = ["スライム", "コウモリ", "ゴブリン"];
+const ENEMY_POOL_B2 = ["スケルトン", "ダークウルフ", "魔法使い"];
+
+// =============================================
+// ゲーム状態
+// =============================================
+let G = {
+  phase: "title", // title | create | town | dungeon_entrance | dungeon_b1 | dungeon_b2 | battle | shop | inn | gameover | gameclear
+  player: null,
+  battle: null,
+  logs: [],
+  turn: 1,
+};
+
+function newPlayer(name, cls) {
+  const c = CLASSES[cls];
+  return {
+    name, cls,
+    lv: 1,
+    maxHp: c.hp, hp: c.hp,
+    maxMp: c.mp, mp: c.mp,
+    baseAtk: c.atk, baseDef: c.def, baseSpd: c.spd,
+    atk: c.atk, def: c.def, spd: c.spd,
+    exp: 0, expNext: 50,
+    gold: 100,
+    weapon: null, armor: null,
+    items: { ポーション: 3 },
+    skills: [...c.skills],
+    poison: false,
+    kills: 0,
+    defeatedBoss: [],
+  };
+}
+
+// =============================================
+// ログシステム
+// =============================================
+function log(msg, type) {
+  G.logs.push({ msg, type: type || "normal" });
+  if (G.logs.length > 60) G.logs.shift();
+  const box = document.getElementById("log-box");
+  if (!box) return;
+  box.innerHTML = G.logs.map(l => {
+    const cls = l.type !== "normal" ? ` class="log-${l.type}"` : "";
+    return `<span${cls}>${escHtml(l.msg)}</span>`;
+  }).join("\n");
+  box.scrollTop = box.scrollHeight;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// =============================================
+// セーブ/ロード
+// =============================================
+function saveGame() {
+  localStorage.setItem("retro_rpg_save", JSON.stringify(G.player));
+  log("【セーブ完了】冒険の記録を保存しました。", "system");
+}
+
+function loadGame() {
+  const d = localStorage.getItem("retro_rpg_save");
+  if (!d) return false;
+  G.player = JSON.parse(d);
+  return true;
+}
+
+// =============================================
+// 計算ユーティリティ
+// =============================================
+function calcAtk(p) {
+  const w = p.weapon ? WEAPONS[p.weapon].atk : 0;
+  return p.baseAtk + w;
+}
+function calcDef(p) {
+  const a = p.armor ? ARMORS[p.armor].def : 0;
+  return p.baseDef + a;
+}
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
+
+function hpPct(cur, max) { return Math.round(clamp(cur/max, 0, 1) * 100); }
+
+function barHtml(pct, type) {
+  const w = Math.round(120 * pct / 100);
+  return `<span class="stat-bar-bg"><span class="stat-bar-${type}" style="width:${w}px;"></span></span>`;
+}
+
+// =============================================
+// レベルアップ
+// =============================================
+function checkLevelUp() {
+  const p = G.player;
+  while (p.exp >= p.expNext) {
+    p.exp -= p.expNext;
+    p.lv++;
+    const gain = {
+      hp: rand(8, 16), mp: rand(4, 10),
+      atk: rand(1, 3), def: rand(1, 2), spd: rand(0, 1),
+    };
+    p.maxHp += gain.hp; p.hp = Math.min(p.hp + gain.hp, p.maxHp);
+    p.maxMp += gain.mp; p.mp = Math.min(p.mp + gain.mp, p.maxMp);
+    p.baseAtk += gain.atk; p.baseDef += gain.def; p.baseSpd += gain.spd;
+    p.expNext = Math.floor(p.expNext * 1.5);
+    log(`★ LEVEL UP! Lv.${p.lv} になった！ HP+${gain.hp} MP+${gain.mp} ATK+${gain.atk} DEF+${gain.def}`, "system");
+  }
+}
+
+// =============================================
+// バトルシステム
+// =============================================
+function startBattle(enemyName, isBoss) {
+  const ed = ENEMIES[enemyName];
+  G.battle = {
+    name: enemyName,
+    hp: ed.hp, maxHp: ed.hp,
+    mp: ed.mp, atk: ed.atk, def: ed.def,
+    exp: ed.exp, gold: ed.gold,
+    ascii: ed.ascii,
+    isBoss: !!ed.boss,
+    poison: false,
+    turn: 0,
+  };
+  G.phase = "battle";
+  log(`⚔ ${enemyName} があらわれた！`, "system");
+  render();
+}
+
+function battleAction(action, skillOrItem) {
+  const p = G.player;
+  const e = G.battle;
+  e.turn++;
+
+  let playerDmg = 0;
+  let msg = "";
+
+  // プレイヤーターン
+  if (action === "attack") {
+    const atk = calcAtk(p);
+    const dmg = Math.max(1, rand(atk - 3, atk + 5) - e.def);
+    e.hp -= dmg;
+    playerDmg = dmg;
+    msg = `${p.name} の攻撃！ ${e.name} に ${dmg} ダメージ！`;
+    log(msg, "damage");
+  } else if (action === "skill") {
+    const sk = SKILLS[skillOrItem];
+    if (p.mp < sk.mp) { log("MPが足りない！", "damage"); battleEnemyTurn(); return; }
+    p.mp -= sk.mp;
+    if (sk.type === "atk" || sk.type === "double") {
+      const times = sk.type === "double" ? 2 : 1;
+      let total = 0;
+      for (let i = 0; i < times; i++) {
+        const atk = calcAtk(p);
+        const dmg = Math.max(1, Math.floor(rand(atk - 2, atk + 4) * sk.power) - e.def);
+        e.hp -= dmg; total += dmg;
+      }
+      playerDmg = total;
+      log(`${p.name} の ${skillOrItem}！ ${e.name} に ${total} ダメージ！`, "damage");
+    } else if (sk.type === "magic") {
+      const dmg = Math.max(1, Math.floor(rand(p.baseAtk, p.baseAtk * 2) * sk.power));
+      e.hp -= dmg; playerDmg = dmg;
+      log(`${p.name} の ${skillOrItem}！ ${e.name} に ${dmg} 魔法ダメージ！`, "damage");
+    } else if (sk.type === "heal") {
+      const heal = Math.floor(sk.power + rand(0, 20));
+      p.hp = Math.min(p.hp + heal, p.maxHp);
+      log(`${p.name} は ${skillOrItem} を唱えた！ HP ${heal} 回復！`, "heal");
+    } else if (sk.type === "steal") {
+      if (rand(1, 100) <= 60) {
+        p.gold += 20; log(`${p.name} は ${e.name} から 20G を盗んだ！`, "item");
+      } else { log("盗みに失敗した...", "normal"); }
+    }
+  } else if (action === "item") {
+    const it = ITEMS[skillOrItem];
+    if (!p.items[skillOrItem] || p.items[skillOrItem] <= 0) { log("アイテムがない！", "damage"); return; }
+    p.items[skillOrItem]--;
+    if (it.effect === "hp") {
+      const heal = it.value;
+      p.hp = Math.min(p.hp + heal, p.maxHp);
+      log(`${skillOrItem} を使った！ HP ${heal} 回復！`, "heal");
+    } else if (it.effect === "mp") {
+      p.mp = Math.min(p.mp + it.value, p.maxMp);
+      log(`${skillOrItem} を使った！ MP ${it.value} 回復！`, "mp");
+    } else if (it.effect === "cure_poison") {
+      p.poison = false;
+      log(`${skillOrItem} で毒を治した！`, "heal");
+    } else if (it.effect === "bomb") {
+      e.hp -= it.value;
+      log(`${skillOrItem} を投げた！ ${e.name} に ${it.value} ダメージ！`, "damage");
+      playerDmg = it.value;
+    }
+  } else if (action === "run") {
+    const spd = p.baseSpd + rand(0, 5);
+    if (spd >= e.atk / 3 || rand(1, 100) <= 50) {
+      log("うまく逃げ出した！", "system");
+      G.battle = null;
+      G.phase = G.player._prevPhase || "dungeon_b1";
+      render(); return;
+    } else {
+      log("逃げられなかった！", "damage");
+    }
+  }
+
+  // 毒ダメージ
+  if (p.poison) {
+    const pdmg = Math.max(1, Math.floor(p.maxHp * 0.05));
+    p.hp -= pdmg;
+    log(`${p.name} は毒でHPが ${pdmg} 減った！`, "damage");
+  }
+
+  // 勝利チェック
+  if (e.hp <= 0) {
+    e.hp = 0;
+    log(`${e.name} を倒した！ EXP +${e.exp}  GOLD +${e.gold}G`, "system");
+    p.exp += e.exp;
+    p.gold += e.gold;
+    p.kills++;
+    if (e.isBoss) p.defeatedBoss.push(e.name);
+    checkLevelUp();
+    G.battle = null;
+    if (p.defeatedBoss.includes("ドラゴン")) {
+      G.phase = "gameclear";
+    } else {
+      G.phase = p._prevPhase || "dungeon_b1";
+    }
+    render(); return;
+  }
+
+  battleEnemyTurn();
+}
+
+function battleEnemyTurn() {
+  const p = G.player;
+  const e = G.battle;
+  if (!e || e.hp <= 0) return;
+
+  const def = calcDef(p);
+  let dmg = Math.max(0, rand(e.atk - 3, e.atk + 5) - def);
+
+  // ボスは強い行動
+  if (e.isBoss && rand(1, 100) <= 30) {
+    dmg = Math.floor(dmg * 1.8);
+    log(`${e.name} の必殺攻撃！ ${p.name} に ${dmg} ダメージ！！`, "damage");
+  } else {
+    if (dmg > 0) log(`${e.name} の攻撃！ ${p.name} に ${dmg} ダメージ！`, "damage");
+    else log(`${e.name} の攻撃！ しかしかわした！`, "normal");
+  }
+
+  p.hp -= dmg;
+  if (p.hp <= 0) {
+    p.hp = 0;
+    log(`${p.name} は倒れてしまった...`, "damage");
+    G.battle = null;
+    G.phase = "gameover";
+    render(); return;
+  }
+
+  render();
+}
+
+// =============================================
+// ショップ
+// =============================================
+function buyItem(itemName, category) {
+  const p = G.player;
+  let price, data;
+  if (category === "item") { data = ITEMS[itemName]; price = data.price; }
+  else if (category === "weapon") { data = WEAPONS[itemName]; price = data.price; }
+  else if (category === "armor") { data = ARMORS[itemName]; price = data.price; }
+
+  if (p.gold < price) { log("所持金が足りない！", "damage"); return; }
+  p.gold -= price;
+
+  if (category === "item") {
+    p.items[itemName] = (p.items[itemName] || 0) + 1;
+    log(`${itemName} を購入した！（所持 ${p.items[itemName]}個）`, "item");
+  } else if (category === "weapon") {
+    p.weapon = itemName;
+    log(`${itemName} を装備した！ ATK +${data.atk}`, "item");
+  } else if (category === "armor") {
+    p.armor = itemName;
+    log(`${itemName} を装備した！ DEF +${data.def}`, "item");
+  }
+  render();
+}
+
+// =============================================
+// レンダリング
+// =============================================
+function render() {
+  const root = document.getElementById("game-root");
+  const p = G.player;
+
+  if (G.phase === "title") { root.innerHTML = renderTitle(); return; }
+  if (G.phase === "create") { root.innerHTML = renderCreate(); return; }
+  if (G.phase === "gameover") { root.innerHTML = renderGameOver(); return; }
+  if (G.phase === "gameclear") { root.innerHTML = renderGameClear(); return; }
+
+  let html = "";
+
+  // ステータスバー（常時表示）
+  if (p) {
+    const hpPc = hpPct(p.hp, p.maxHp);
+    const mpPc = hpPct(p.mp, p.maxMp);
+    const expPc = hpPct(p.exp, p.expNext);
+    const atkTotal = calcAtk(p);
+    const defTotal = calcDef(p);
+    html += `
+    <div class="status-panel">
+      <table><tr>
+        <td width="50%">
+          <b>${escHtml(p.name)}</b>（${CLASSES[p.cls].name}）Lv.<b>${p.lv}</b>
+          <br>HP: ${p.hp}/${p.maxHp} ${barHtml(hpPc,"hp")} ${p.poison?"<span style='color:#800;'>[毒]</span>":""}
+          <br>MP: ${p.mp}/${p.maxMp} ${barHtml(mpPc,"mp")}
+          <br>EXP: ${p.exp}/${p.expNext} ${barHtml(expPc,"exp")}
+        </td>
+        <td>
+          ATK: ${atkTotal}　DEF: ${defTotal}　SPD: ${p.baseSpd}<br>
+          GOLD: ${p.gold}G　所持アイテム: ${Object.entries(p.items).filter(([,v])=>v>0).map(([k,v])=>`${k}×${v}`).join(" / ") || "なし"}<br>
+          武器: ${p.weapon || "なし"}　防具: ${p.armor || "なし"}<br>
+          討伐数: ${p.kills}体
+        </td>
+      </tr></table>
+    </div>`;
+  }
+
+  if (G.phase === "battle") {
+    html += renderBattle();
+  } else if (G.phase === "shop") {
+    html += renderShop();
+  } else if (G.phase === "inn") {
+    html += renderInn();
+  } else if (G.phase === "status") {
+    html += renderStatus();
+  } else {
+    html += renderArea();
+  }
+
+  // ログ
+  html += `<h2>◆ メッセージログ</h2>
+  <div class="log-box" id="log-box"></div>`;
+
+  root.innerHTML = html;
+
+  // ログ再描画
+  const box = document.getElementById("log-box");
+  if (box) {
+    box.innerHTML = G.logs.map(l => {
+      const cls = l.type !== "normal" ? ` class="log-${l.type}"` : "";
+      return `<span${cls}>${escHtml(l.msg)}</span>`;
+    }).join("\n");
+    box.scrollTop = box.scrollHeight;
+  }
+}
+
+// =============================================
+// 各シーン描画
+// =============================================
+
+function renderTitle() {
+  const hasSave = !!localStorage.getItem("retro_rpg_save");
+  return `
+  <div class="ascii-art">
+   ██████╗ ██╗   ██╗███╗  ██╗ ██████╗ ███████╗ ██████╗ ███╗  ██╗
+   ██╔══██╗██║   ██║████╗ ██║██╔════╝ ██╔════╝██╔═══██╗████╗ ██║
+   ██║  ██║██║   ██║██╔██╗██║██║  ███╗█████╗  ██║   ██║██╔██╗██║
+   ██║  ██║██║   ██║██║╚████║██║   ██║██╔══╝  ██║   ██║██║╚████║
+   ██████╔╝╚██████╔╝██║ ╚███║╚██████╔╝███████╗╚██████╔╝██║ ╚███║
+   ╚═════╝  ╚═════╝ ╚═╝  ╚══╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚══╝
+         ～ ダンジョン探索 テキストRPG ～
+  </div>
+  <div style="text-align:center;margin:8px 0;">
+    <div style="color:#800000;font-size:12px;">⚔ Welcome to DUNGEON RPG ver1.0 ⚔</div>
+    <div style="color:#000080;font-size:11px;margin-top:4px;">昔懐かしCGI掲示板ゲーム風テキストRPG</div>
+  </div>
+  <hr class="hr">
+  <div style="text-align:center;padding:12px 0;">
+    <span class="btn btn-primary" onclick="G.phase='create';render()">▶ 新しく始める</span>
+    ${hasSave ? `<span class="btn" onclick="doLoad()">■ セーブを続ける</span>` : `<span class="btn btn-disabled">■ セーブなし</span>`}
+  </div>
+  <hr class="hr">
+  <div style="font-size:11px;color:#444;text-align:center;">
+    操作: 画面のボタンをクリック / ブラウザのみで動作<br>
+    ※ このゲームはブラウザのローカルストレージにセーブします
+  </div>`;
+}
+
+function doLoad() {
+  if (loadGame()) {
+    G.phase = "town";
+    log("セーブデータをロードしました。", "system");
+    render();
+  }
+}
+
+function renderCreate() {
+  return `
+  <h1>キャラクター作成</h1>
+  <p style="font-size:12px;">名前を入力し、職業を選んでください。</p>
+  <table>
+    <tr><th width="100">名前</th>
+      <td><input type="text" id="pc-name" maxlength="12" placeholder="勇者の名前" value=""></td>
+    </tr>
+    <tr><th>職業</th>
+      <td>
+        <select id="pc-cls" onchange="updateClassPreview()">
+          <option value="warrior">戦士</option>
+          <option value="mage">魔法使い</option>
+          <option value="priest">僧侶</option>
+          <option value="thief">盗賊</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+  <div id="cls-preview" style="margin-top:8px;"></div>
+  <div style="margin-top:10px;">
+    <span class="btn btn-primary" onclick="doCreate()">▶ 冒険を始める！</span>
+    <span class="btn" onclick="G.phase='title';render()">◀ 戻る</span>
+  </div>
+  <script>updateClassPreview();<\/script>`;
+}
+
+function updateClassPreview() {
+  const sel = document.getElementById("pc-cls");
+  if (!sel) return;
+  const cls = sel.value;
+  const c = CLASSES[cls];
+  const prev = document.getElementById("cls-preview");
+  if (!prev) return;
+  prev.innerHTML = `
+  <div class="battle-panel">
+    <b>【${c.name}】</b><br>
+    HP: ${c.hp}  MP: ${c.mp}  ATK: ${c.atk}  DEF: ${c.def}  SPD: ${c.spd}<br>
+    スキル: ${c.skills.join("、")}<br>
+    <span style="font-size:11px;color:#555;">${cls==="warrior"?"攻守バランス型。初心者向け。":cls==="mage"?"高火力魔法型。打たれ弱い。":cls==="priest"?"回復が得意。長期戦向き。":"素早い攻撃と盗みが得意。"}</span>
+  </div>`;
+}
+
+function doCreate() {
+  const nameEl = document.getElementById("pc-name");
+  const clsEl = document.getElementById("pc-cls");
+  const name = nameEl ? nameEl.value.trim() : "";
+  const cls = clsEl ? clsEl.value : "warrior";
+  if (!name) { alert("名前を入力してください"); return; }
+  G.player = newPlayer(name, cls);
+  G.phase = "town";
+  G.logs = [];
+  log(`${name}（${CLASSES[cls].name}）の冒険が始まった！`, "system");
+  log("コペルの町に到着した。ダンジョンを探索しよう。", "normal");
+  render();
+}
+
+function renderArea() {
+  const areaId = G.phase;
+  const area = AREAS.find(a => a.id === areaId) || AREAS[0];
+  const p = G.player;
+
+  let actionHtml = "";
+  for (const act of area.actions) {
+    if (act === "dungeon")        actionHtml += `<span class="btn" onclick="goTo('dungeon_entrance')">⬇ ダンジョンへ</span>`;
+    else if (act === "shop")      actionHtml += `<span class="btn btn-primary" onclick="goTo('shop')">🏪 ショップ</span>`;
+    else if (act === "inn")       actionHtml += `<span class="btn btn-primary" onclick="goTo('inn')">🏠 宿屋</span>`;
+    else if (act === "status")    actionHtml += `<span class="btn" onclick="goTo('status')">📊 ステータス</span>`;
+    else if (act === "save")      actionHtml += `<span class="btn" onclick="saveGame()">💾 セーブ</span>`;
+    else if (act === "explore_b1") actionHtml += `<span class="btn btn-danger" onclick="goTo('dungeon_b1')">⬇ B1Fへ進む</span>`;
+    else if (act === "back_town") actionHtml += `<span class="btn" onclick="goTo('town')">⬆ 町へ戻る</span>`;
+    else if (act === "explore_b2") actionHtml += `<span class="btn btn-danger" onclick="goTo('dungeon_b2')">⬇ B2Fへ進む（危険！）</span>`;
+    else if (act === "battle_random") {
+      const pool = areaId === "dungeon_b1" ? ENEMY_POOL_B1 : ENEMY_POOL_B2;
+      actionHtml += `<span class="btn btn-danger" onclick="doRandomBattle('${areaId}')">⚔ 探索する（バトル）</span>`;
+    }
+    else if (act === "back_entrance") actionHtml += `<span class="btn" onclick="goTo('dungeon_entrance')">⬆ 入口に戻る</span>`;
+    else if (act === "back_b1")   actionHtml += `<span class="btn" onclick="goTo('dungeon_b1')">⬆ B1Fへ戻る</span>`;
+    else if (act === "boss_battle") {
+      const boss = p && p.defeatedBoss.includes("ダークナイト") ? "ドラゴン" : "ダークナイト";
+      const defeated = p && p.defeatedBoss.includes(boss);
+      if (!defeated) actionHtml += `<span class="btn btn-danger" onclick="doBossBattle('${boss}','${areaId}')">💀 ボス部屋へ（${boss}）</span>`;
+      else actionHtml += `<span class="btn btn-disabled">✓ ボス討伐済</span>`;
+    }
+  }
+
+  return `
+  <div class="scene-title">${area.name}</div>
+  <div class="ascii-art">${area.ascii.join("<br>")}</div>
+  <p style="font-size:12px;white-space:pre-line;">${escHtml(area.desc)}</p>
+  <hr class="hr">
+  <div>${actionHtml}</div>`;
+}
+
+function goTo(phase) {
+  G.phase = phase;
+  render();
+}
+
+function doRandomBattle(fromPhase) {
+  const pool = fromPhase === "dungeon_b1" ? ENEMY_POOL_B1 : ENEMY_POOL_B2;
+  const eName = pool[rand(0, pool.length - 1)];
+  G.player._prevPhase = fromPhase;
+  startBattle(eName, false);
+}
+
+function doBossBattle(bossName, fromPhase) {
+  G.player._prevPhase = fromPhase;
+  log(`⚠ ボス ${bossName} が立ちはだかった！！`, "system");
+  startBattle(bossName, true);
+}
+
+function renderBattle() {
+  const p = G.player;
+  const e = G.battle;
+  if (!e) return "";
+  const hpPc = hpPct(e.hp, e.maxHp);
+
+  let skillBtns = p.skills.map(sk => {
+    const s = SKILLS[sk];
+    const disabled = p.mp < s.mp ? " btn-disabled" : "";
+    return `<span class="btn${disabled}" onclick="${disabled?'':`battleAction('skill','${sk}')`}">${sk}(MP:${s.mp})</span>`;
+  }).join("");
+
+  let itemBtns = Object.entries(p.items)
+    .filter(([,v]) => v > 0)
+    .map(([k,v]) => `<span class="btn" onclick="battleAction('item','${k}')">${k}(${v})</span>`)
+    .join("") || '<span class="btn btn-disabled">なし</span>';
+
+  return `
+  <div class="battle-panel">
+    <div style="text-align:center;">
+      <div class="ascii-art">${e.ascii.join("<br>")}</div>
+      <b style="font-size:14px;">${escHtml(e.name)}</b>
+      ${e.isBoss ? ' <span style="color:#cc0000;font-weight:bold;">[BOSS]</span>' : ""}
+      <br>HP: ${e.hp}/${e.maxHp} ${barHtml(hpPc,"hp")}
+    </div>
+    <hr class="hr">
+    <b>【攻撃】</b><br>
+    <span class="btn btn-danger" onclick="battleAction('attack')">⚔ たたかう</span>
+    ${skillBtns}
+    <br><b>【アイテム】</b><br>
+    ${itemBtns}
+    <br><b>【その他】</b><br>
+    <span class="btn" onclick="battleAction('run')">💨 にげる</span>
+  </div>`;
+}
+
+function renderShop() {
+  const p = G.player;
+
+  const itemRows = Object.entries(ITEMS).map(([k,v]) =>
+    `<tr class="shop-item"><td>${k}</td><td>${v.desc}</td><td>${v.price}G</td>
+     <td><span class="btn${p.gold<v.price?' btn-disabled':''}" onclick="${p.gold<v.price?'':``buyItem('${k}','item')``}">購入</span></td></tr>`
+  ).join("");
+
+  const weapRows = Object.entries(WEAPONS).map(([k,v]) =>
+    `<tr class="shop-item"><td>${k}</td><td>${v.desc}</td><td>ATK+${v.atk}</td><td>${v.price}G</td>
+     <td><span class="btn${p.gold<v.price?' btn-disabled':''}" onclick="${p.gold<v.price?'':``buyItem('${k}','weapon')``}">装備</span></td></tr>`
+  ).join("");
+
+  const armRows = Object.entries(ARMORS).map(([k,v]) =>
+    `<tr class="shop-item"><td>${k}</td><td>${v.desc}</td><td>DEF+${v.def}</td><td>${v.price}G</td>
+     <td><span class="btn${p.gold<v.price?' btn-disabled':''}" onclick="${p.gold<v.price?'':``buyItem('${k}','armor')``}">装備</span></td></tr>`
+  ).join("");
+
+  return `
+  <div class="scene-title">🏪 コペルの雑貨屋</div>
+  <p style="font-size:12px;">いらっしゃいませ！所持金: <b>${p.gold}G</b></p>
+  <h2>◆ アイテム</h2>
+  <table><tr><th>名前</th><th>説明</th><th>値段</th><th></th></tr>${itemRows}</table>
+  <h2>◆ 武器</h2>
+  <table><tr><th>名前</th><th>説明</th><th>ATK</th><th>値段</th><th></th></tr>${weapRows}</table>
+  <h2>◆ 防具</h2>
+  <table><tr><th>名前</th><th>説明</th><th>DEF</th><th>値段</th><th></th></tr>${armRows}</table>
+  <br><span class="btn" onclick="goTo('town')">◀ 町へ戻る</span>`;
+}
+
+function renderInn() {
+  const p = G.player;
+  const cost = p.lv * 20;
+  return `
+  <div class="scene-title">🏠 コペルの宿屋</div>
+  <div class="ascii-art">
+    ___________
+   |  INN  ☆  |
+   |  お宿    |
+   |___________|
+  </div>
+  <p style="font-size:12px;">
+    宿泊代: <b>${cost}G</b>（1泊）<br>
+    HP・MPが全回復します。毒も治ります。<br>
+    所持金: ${p.gold}G
+  </p>
+  <span class="btn btn-primary${p.gold<cost?' btn-disabled':''}" onclick="${p.gold<cost?'':`doInn(${cost})`}">💤 泊まる（${cost}G）</span>
+  <span class="btn" onclick="goTo('town')">◀ 戻る</span>`;
+}
+
+function doInn(cost) {
+  const p = G.player;
+  if (p.gold < cost) { log("お金が足りない！", "damage"); return; }
+  p.gold -= cost;
+  p.hp = p.maxHp;
+  p.mp = p.maxMp;
+  p.poison = false;
+  log(`ゆっくり休んだ。HP・MPが全回復した！`, "heal");
+  G.phase = "town";
+  render();
+}
+
+function renderStatus() {
+  const p = G.player;
+  return `
+  <div class="scene-title">📊 ステータス画面</div>
+  <table>
+    <tr><th>名前</th><td>${escHtml(p.name)}</td><th>職業</th><td>${CLASSES[p.cls].name}</td></tr>
+    <tr><th>レベル</th><td>${p.lv}</td><th>EXP</th><td>${p.exp} / ${p.expNext}</td></tr>
+    <tr><th>HP</th><td>${p.hp} / ${p.maxHp}</td><th>MP</th><td>${p.mp} / ${p.maxMp}</td></tr>
+    <tr><th>攻撃力</th><td>${calcAtk(p)}（基本:${p.baseAtk}）</td><th>防御力</th><td>${calcDef(p)}（基本:${p.baseDef}）</td></tr>
+    <tr><th>素早さ</th><td>${p.baseSpd}</td><th>状態</th><td>${p.poison?"【毒】":"正常"}</td></tr>
+    <tr><th>武器</th><td>${p.weapon || "なし"}</td><th>防具</th><td>${p.armor || "なし"}</td></tr>
+    <tr><th>所持金</th><td>${p.gold}G</td><th>討伐数</th><td>${p.kills}体</td></tr>
+    <tr><th>スキル</th><td colspan="3">${p.skills.join("、")}</td></tr>
+    <tr><th>アイテム</th><td colspan="3">${Object.entries(p.items).filter(([,v])=>v>0).map(([k,v])=>`${k}×${v}`).join("  /  ") || "なし"}</td></tr>
+    <tr><th>倒したボス</th><td colspan="3">${p.defeatedBoss.length ? p.defeatedBoss.join("、") : "まだいない"}</td></tr>
+  </table>
+  <br><span class="btn" onclick="goTo('town')">◀ 戻る</span>`;
+}
+
+function renderGameOver() {
+  return `
+  <div class="ascii-art" style="color:#cc0000;">
+   ██████╗  █████╗ ███╗   ███╗███████╗
+  ██╔════╝ ██╔══██╗████╗ ████║██╔════╝
+  ██║  ███╗███████║██╔████╔██║█████╗
+  ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝
+  ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗
+   ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+         O  V  E  R
+  </div>
+  <p style="text-align:center;color:#800000;">あなたは力尽きてしまった...</p>
+  <div style="text-align:center;">
+    <span class="btn btn-primary" onclick="G.phase='title';G.player=null;G.logs=[];render()">▶ タイトルへ</span>
+  </div>`;
+}
+
+function renderGameClear() {
+  const p = G.player;
+  return `
+  <div class="ascii-art" style="color:#000080;">
+   ██████╗ ██╗     ███████╗ █████╗ ██████╗ ██╗
+  ██╔════╝ ██║     ██╔════╝██╔══██╗██╔══██╗██║
+  ██║      ██║     █████╗  ███████║██████╔╝██║
+  ██║      ██║     ██╔══╝  ██╔══██║██╔══██╗╚═╝
+  ╚██████╗ ███████╗███████╗██║  ██║██║  ██║██╗
+   ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝
+  </div>
+  <div style="text-align:center;padding:8px;">
+    <b style="font-size:14px;">おめでとうございます！</b><br>
+    <br>
+    ${escHtml(p.name)} は全てのボスを倒し、<br>ダンジョンに平和をもたらした！<br>
+    <br>
+    レベル: ${p.lv} ／ 討伐数: ${p.kills}体 ／ 所持金: ${p.gold}G<br>
+    <br>
+    <span class="btn btn-primary" onclick="G.phase='title';G.player=null;G.logs=[];localStorage.removeItem('retro_rpg_save');render()">▶ タイトルへ戻る</span>
+  </div>`;
+}
+
+// =============================================
+// 起動
+// =============================================
+render();
+</script>
+</body>
+</html>
