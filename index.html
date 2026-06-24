@@ -160,7 +160,13 @@
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
 
   /* ── Common cards ── */
-  .hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 30;
+    margin: -12px -16px 12px; padding: 12px 16px 10px;
+    background: rgba(14,12,24,.86); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
   .hdr h2 { font-size: 21px; font-weight: 800; }
   .hdr .sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
   .card {
@@ -1007,6 +1013,34 @@
   .ms-sec { font-size: 12px; font-weight: 700; color: var(--gold); margin: 0 0 8px; }
   .ms-sec + div { margin-bottom: 14px; }
 
+  /* ── デイリー報酬ゲージ（段階報酬） ── */
+  .rg-card { background: var(--night2); border: 1px solid var(--line); border-radius: 14px; padding: 13px 14px 11px; margin-bottom: 16px; }
+  .rg-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .rg-top b { font-size: 13px; }
+  .rg-earned { font-size: 12px; font-weight: 800; color: var(--gold); }
+  .rg-track { position: relative; height: 8px; background: var(--night); border-radius: 5px; margin: 16px 0 8px; }
+  .rg-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 5px;
+    background: linear-gradient(90deg, var(--gold), var(--red)); transition: width .5s ease; }
+  .rg-node { position: absolute; top: 50%; transform: translate(-50%,-50%); z-index: 2; }
+  .rg-node .rg-dot {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--night2);
+    border: 2px solid var(--line); display: flex; align-items: center; justify-content: center;
+    font-size: 11px; line-height: 1;
+  }
+  .rg-node.reached .rg-dot { border-color: var(--gold); background: rgba(212,168,32,.2); }
+  .rg-node.claimed .rg-dot { border-color: var(--green); background: var(--green); }
+  .rg-node .rg-at { position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
+    font-size: 8.5px; color: var(--gray); white-space: nowrap; }
+  .rg-node.reached .rg-at { color: var(--gold); font-weight: 700; }
+  .rg-claim {
+    margin-top: 14px; width: 100%; padding: 11px; border-radius: 11px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--gold), var(--red)); color: #fff; font-size: 13px; font-weight: 800;
+    animation: rgGlow 1.6s infinite; transition: transform .1s;
+  }
+  .rg-claim:active { transform: scale(.97); }
+  @keyframes rgGlow { 0%,100% { box-shadow: 0 3px 12px rgba(212,168,32,.4); } 50% { box-shadow: 0 3px 20px rgba(212,168,32,.85); } }
+  .rg-allclaimed { margin-top: 12px; text-align: center; font-size: 11.5px; color: #6ee7a8; font-weight: 700; }
+
   /* ── 地域アラート ── */
   .alert-card {
     display: flex; gap: 11px; align-items: flex-start; padding: 11px 14px; cursor: pointer;
@@ -1324,6 +1358,7 @@ const I18N = {
     resolve_badge_title:'対処済み', resolve_badge_sub:'この記号は撤去・対処されました',
     patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'⚠️ マップを読み込めませんでした',
     patrol_done_title:'パトロール完了！', patrol_time:'所要時間', patrol_close:'閉じる',
+    reward_gauge_title:'今日の報酬ゲージ', reward_claim:'受け取る', reward_claimed:'🎁 ボーナス獲得！', reward_allclaimed:'本日の報酬はすべて受け取り済み',
     dm_title:'投稿詳細', dm_posted_by:'投稿:', dm_catalog:'探偵手帳で詳しく見る →',
     lvup_title:'レベルアップ！', lvup_to:'に昇進しました',
     just_now:'たった今', posted_suffix:'を投稿', your_new_post:'あなたの新規投稿',
@@ -1403,6 +1438,7 @@ const I18N = {
     resolve_badge_title:'Resolved', resolve_badge_sub:'This marking has been removed or addressed',
     patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'⚠️ Could not load the map',
     patrol_done_title:'Patrol complete!', patrol_time:'Time', patrol_close:'Close',
+    reward_gauge_title:"Today's reward gauge", reward_claim:'Claim', reward_claimed:'🎁 Bonus earned!', reward_allclaimed:"All of today's rewards claimed",
     dm_title:'Post detail', dm_posted_by:'By:', dm_catalog:'See details in the handbook →',
     lvup_title:'Level up!', lvup_to:'',
     just_now:'just now', posted_suffix:'', your_new_post:'Your new post',
@@ -1539,8 +1575,14 @@ const WEEKLY_POOL = [
   { id:'wresolve3',icon:'🔵', title:'対処済み処理班',   desc:'今週3件対処済みにする', title_en:'Resolution Crew',   desc_en:'Mark 3 posts resolved',      reward:250, goal:3,  metric:'resolve' },
   { id:'wpatrol3', icon:'🚶', title:'週間パトロール部', desc:'今週3回パトロール完了', title_en:'Patrol Squad',      desc_en:'Finish 3 patrols this week', reward:300, goal:3,  metric:'patrol'  },
 ];
-const DAILY = { date:'', picks:[], progress:{}, done:{} };
+const DAILY = { date:'', picks:[], progress:{}, done:{}, earned:0, claimed:[] };
 const WEEKLY = { week:'', picks:[], progress:{}, done:{} };
+// 段階報酬ティア（その日に稼いだポイントの累計で解放）
+const REWARD_TIERS = [
+  { at:100, bonus:30 },
+  { at:250, bonus:70 },
+  { at:500, bonus:150 },
+];
 const QUIZ = { date:'', answered:false, correct:false, markIdx:0 };
 let ONBOARDED = false;
 
@@ -1742,6 +1784,34 @@ function getLevelInfo(pts){
   return { cur, next, pct, rem };
 }
 
+// ── ポイント加算（全獲得ポイントを集約。デイリー報酬ゲージにも反映） ──
+function gainPoints(n){
+  if(!n) return;
+  STATE.points += n;
+  STATE.earned += n;
+  DAILY.earned = (DAILY.earned||0) + n;
+}
+// 受け取り可能な段階報酬の数
+function claimableTiers(){
+  const earned = DAILY.earned||0, claimed = DAILY.claimed||[];
+  return REWARD_TIERS.filter((tr,i)=> earned >= tr.at && !claimed.includes(i)).length;
+}
+// 指定ティアの段階報酬を受け取る（ボーナスはゲージに加算しない＝多重解放を防ぐ）
+function claimRewardTier(i){
+  const tr = REWARD_TIERS[i];
+  if(!tr) return;
+  if(!DAILY.claimed) DAILY.claimed = [];
+  if((DAILY.earned||0) < tr.at || DAILY.claimed.includes(i)) return;
+  DAILY.claimed.push(i);
+  STATE.points += tr.bonus; STATE.earned += tr.bonus;
+  showToast(`${t('reward_claimed')} +${tr.bonus}${t('pt')}`);
+  checkAchievements();
+  updateRankData(tr.bonus);
+  renderHome();
+  openMissionSheet(); // ゲージを再描画
+  saveState();
+}
+
 // ── 永続化（localStorage）──
 const SAVE_KEY = 'goto-tanteidan-save-v1';
 function saveState(){
@@ -1831,9 +1901,15 @@ function rollMissions(store, pool, n, keyField, keyVal){
   }
   store.picks = picks; store.progress = {}; store.done = {};
   picks.forEach(id=>{ store.progress[id]=0; store.done[id]=false; });
+  store.earned = 0; store.claimed = [];
 }
 function ensureDaily(){
-  if(DAILY.date === todayStr() && DAILY.picks.length) return;
+  if(DAILY.date === todayStr() && DAILY.picks.length){
+    // 旧セーブ互換（当日データに報酬ゲージ用フィールドが無い場合）
+    if(DAILY.earned === undefined) DAILY.earned = 0;
+    if(!DAILY.claimed) DAILY.claimed = [];
+    return;
+  }
   rollMissions(DAILY, DAILY_POOL, 3, 'date', todayStr());
   saveState();
 }
@@ -1869,7 +1945,7 @@ function bumpStore(store, pool, metric, toastKey){
     store.progress[id] = (store.progress[id]||0) + 1;
     if(store.progress[id] >= m.goal){
       store.done[id] = true;
-      STATE.points += m.reward; STATE.earned += m.reward;
+      gainPoints(m.reward);
       setTimeout(()=>showToast(`${t(toastKey)}${tx(m,'title')} +${m.reward}${t('pt')}`), 2300);
     }
   });
@@ -1951,6 +2027,7 @@ function openMissionSheet(){
       <button class="ms-close" onclick="document.getElementById('mission-sheet').classList.remove('open')">×</button>
     </div>
     <div class="ms-body">
+      ${rewardGaugeHtml()}
       <div class="ms-sec">${dailySec}</div>
       <div id="missions">${DAILY.picks.map(id=>missionCard(DAILY, DAILY_POOL, id, false)).join('')}</div>
       <div class="ms-sec">${weeklySec}</div>
@@ -1958,13 +2035,46 @@ function openMissionSheet(){
     </div>`;
   sheet.classList.add('open');
 }
+// 段階報酬ゲージのHTML
+function rewardGaugeHtml(){
+  const earned = DAILY.earned||0, claimed = DAILY.claimed||[];
+  const maxAt = REWARD_TIERS[REWARD_TIERS.length-1].at;
+  const pct = Math.min(100, Math.round(earned / maxAt * 100));
+  const nodes = REWARD_TIERS.map((tr,i)=>{
+    const reached = earned >= tr.at, isClaimed = claimed.includes(i);
+    const cls = isClaimed ? 'claimed' : (reached ? 'reached' : '');
+    const dot = isClaimed ? '✓' : (reached ? '🎁' : '');
+    const left = Math.min(100, tr.at / maxAt * 100);
+    return `<div class="rg-node ${cls}" style="left:${left}%">
+      <div class="rg-dot">${dot}</div>
+      <div class="rg-at">${tr.at}</div>
+    </div>`;
+  }).join('');
+  // 受け取り可能な最小ティア（手前から順に受け取り）
+  let claimBtn = '';
+  const nextClaim = REWARD_TIERS.findIndex((tr,i)=> earned >= tr.at && !claimed.includes(i));
+  if(nextClaim >= 0){
+    claimBtn = `<button class="rg-claim" onclick="claimRewardTier(${nextClaim})">🎁 ${t('reward_claim')} +${REWARD_TIERS[nextClaim].bonus}${t('pt')}</button>`;
+  } else if(claimed.length === REWARD_TIERS.length){
+    claimBtn = `<div class="rg-allclaimed">✓ ${t('reward_allclaimed')}</div>`;
+  }
+  return `<div class="rg-card">
+    <div class="rg-top"><b>🎁 ${t('reward_gauge_title')}</b><span class="rg-earned">${fmt(earned)} ${t('pt')}</span></div>
+    <div class="rg-track">
+      <div class="rg-fill" style="width:${pct}%"></div>
+      ${nodes}
+    </div>
+    ${claimBtn}
+  </div>`;
+}
 function updateMissionBadge(){
   const el = document.getElementById('mission-count');
   if(!el) return;
   const undone = DAILY.picks.filter(id=>!DAILY.done[id]).length
                + WEEKLY.picks.filter(id=>!WEEKLY.done[id]).length;
-  el.textContent = undone;
-  el.classList.toggle('show', undone > 0);
+  const count = undone + claimableTiers();
+  el.textContent = count;
+  el.classList.toggle('show', count > 0);
 }
 function showStatTip(el, key){
   const tip = el.querySelector('.stat-tip');
@@ -2340,7 +2450,7 @@ function openQuiz(){
         const correct = b.dataset.correct==='1';
         if(!correct) b.classList.add('wrong');
         QUIZ.answered = true; QUIZ.correct = correct;
-        if(correct){ STATE.points += 40; STATE.earned += 40; bumpDaily('quiz'); renderHome(); setTimeout(()=>showToast(`${t('toast_daily')}${t('quiz_reward')} +40${t('pt')}`), 400); }
+        if(correct){ gainPoints(40); bumpDaily('quiz'); renderHome(); setTimeout(()=>showToast(`${t('toast_daily')}${t('quiz_reward')} +40${t('pt')}`), 400); }
         saveState();
         reveal(correct);
       };
@@ -2611,7 +2721,7 @@ function resolveMarking(idx){
   // mark the corresponding MARKING as resolved
   const m = MARKINGS.find(mk => mk.mark===f.mark && mk.user===f.who);
   if(m) m.resolved = true;
-  STATE.points += 20; STATE.earned += 20;
+  gainPoints(20);
   STATE.resolved = (STATE.resolved||0) + 1;
   bumpDaily('resolve');
   checkAchievements();
@@ -2885,7 +2995,7 @@ function finishPatrol(){
   document.getElementById('patrol-fab').classList.remove('live');
   document.getElementById('pf-lbl').textContent = t('patrol_start');
   // 報酬付与
-  STATE.points += gained; STATE.earned += gained;
+  gainPoints(gained);
   STATE.patrols = (STATE.patrols||0) + 1;
   STATE.patrolKm = +(((STATE.patrolKm||0) + km).toFixed(2));
   bumpDaily('patrol');
@@ -3005,8 +3115,8 @@ function camResult(){
   document.getElementById('cam-done').onclick = () => {
     STATE.camCombo = comboCount;
     const oldLv = getLevelInfo(STATE.points).cur.lv;
-    STATE.points += totalGained; STATE.posts += 1; STATE.streak += 1;
-    STATE.myPosts += 1; STATE.earned += totalGained;
+    gainPoints(totalGained);
+    STATE.posts += 1; STATE.streak += 1; STATE.myPosts += 1;
     if(o.type==='danger') STATE.dangerFound += 1;
     recordPostToday();
     // フィードに先頭追加（日英両方を保存して言語切替に対応）
