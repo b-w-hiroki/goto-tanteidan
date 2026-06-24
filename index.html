@@ -1094,6 +1094,43 @@
   .hero.frame-violet  { border-color: #8B5CF6; box-shadow: 0 4px 24px rgba(139,92,246,.60); }
   .hero.frame-legend  { border-color: #FFD700; box-shadow: 0 0 32px rgba(255,215,0,.75), 0 4px 20px rgba(255,215,0,.4); }
 
+  /* ── デイリーチェックイン ── */
+  .ci-overlay {
+    position: absolute; inset: 0; z-index: 250;
+    background: rgba(10,8,20,.92); backdrop-filter: blur(8px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 28px;
+    animation: ciShow 3.2s forwards; pointer-events: none;
+  }
+  @keyframes ciShow { 0%{opacity:0} 8%{opacity:1} 72%{opacity:1} 100%{opacity:0} }
+  .ci-flame { font-size: 70px; animation: pop .5s .25s ease-out both; margin-bottom: 4px; line-height: 1; }
+  .ci-streak { font-size: 54px; font-weight: 800; color: var(--gold); line-height: 1.05; margin-bottom: 2px; }
+  .ci-streak-lbl { font-size: 13px; color: #C8B898; margin-bottom: 14px; }
+  .ci-pts {
+    background: linear-gradient(135deg, var(--gold), var(--red));
+    color: #fff; font-size: 16px; font-weight: 800; padding: 9px 22px; border-radius: 22px;
+    margin-bottom: 10px; display: inline-block;
+  }
+  .ci-milestone { font-size: 13px; font-weight: 800; color: var(--gold);
+    background: rgba(212,168,32,.15); border: 1px solid rgba(212,168,32,.35);
+    border-radius: 12px; padding: 9px 16px; margin-top: 4px; }
+
+  /* ── 今日の活動ミニバー ── */
+  .today-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;
+  }
+  .today-cell {
+    background: var(--night2); border: 1px solid var(--line); border-radius: 12px;
+    padding: 8px 5px; text-align: center; transition: border-color .25s;
+  }
+  .today-cell .tc-ic { font-size: 13px; line-height: 1; }
+  .today-cell b { display: block; font-size: 16px; font-weight: 800; color: var(--gray); margin: 2px 0 1px; }
+  .today-cell span { font-size: 9.5px; color: var(--gray); }
+  .today-cell.done { border-color: rgba(45,106,79,.5); }
+  .today-cell.done b { color: #6ee7a8; }
+  .today-cell.active { border-color: rgba(212,168,32,.4); }
+  .today-cell.active b { color: var(--gold); }
+
   /* ── 最新情報ビュー ── */
   .info-btn {
     position: relative; background: var(--night2); border: 1.5px solid var(--line);
@@ -1261,6 +1298,8 @@
         <div class="lvbar"><i id="lvbar"></i></div>
         <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint" data-i18n="perk_hint">特典を見る ›</span></div>
       </div>
+
+      <div id="today-row"></div>
 
       <div class="forecast" id="forecast"></div>
 
@@ -1487,6 +1526,12 @@ const I18N = {
     info_cat_all:'すべて', info_cat_police:'🚔 警察', info_cat_city:'🏛️ 区役所', info_cat_watch:'👥 自警団', info_cat_activity:'🚶 活動',
     info_unread:'未読', info_today_danger:'今日の危険', info_activities:'コミュ活動',
     info_no_alerts:'この分類のアラートはありません',
+    ci_streak_day:'日連続！',
+    ci_bonus:'チェックインボーナス',
+    ci_milestone_7:'🎉 7日連続達成！ボーナス +30pt',
+    ci_milestone_14:'🎉 2週間連続！ボーナス +50pt',
+    ci_milestone_30:'🎉 1ヶ月連続！ボーナス +100pt',
+    td_posts:'今日の投稿', td_patrol:'パトロール', td_missions:'完了ミッション',
   },
   en: {
     pitch_lead:'Citizens become "detectives," spotting and reporting street markings. AI judges them and the crime-prevention map grows in real time.',
@@ -1572,6 +1617,12 @@ const I18N = {
     info_cat_all:'All', info_cat_police:'🚔 Police', info_cat_city:'🏛️ City Hall', info_cat_watch:'👥 Watch', info_cat_activity:'🚶 Activity',
     info_unread:'Unread', info_today_danger:"Today's dangers", info_activities:'Activities',
     info_no_alerts:'No alerts in this category',
+    ci_streak_day:' day streak!',
+    ci_bonus:'Check-in bonus',
+    ci_milestone_7:'🎉 7-day streak! Bonus +30pt',
+    ci_milestone_14:'🎉 2-week streak! Bonus +50pt',
+    ci_milestone_30:'🎉 1-month streak! Bonus +100pt',
+    td_posts:"Today's posts", td_patrol:'Patrol', td_missions:'Missions done',
   }
 };
 function t(k){ return (I18N[LANG] && I18N[LANG][k]!=null) ? I18N[LANG][k] : (I18N.ja[k]!=null ? I18N.ja[k] : k); }
@@ -1601,7 +1652,7 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
-  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, patrols: 0, patrolKm: 0, history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
+  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, patrols: 0, patrolKm: 0, lastCheckin: '', history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
 
 const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'amber', frame: 'amber' };
 
@@ -2025,20 +2076,78 @@ function rollMissions(store, pool, n, keyField, keyVal){
   store.earned = 0; store.claimed = [];
 }
 function ensureDaily(){
-  if(DAILY.date === todayStr() && DAILY.picks.length){
-    // 旧セーブ互換（当日データに報酬ゲージ用フィールドが無い場合）
+  const today = todayStr();
+  if(DAILY.date === today && DAILY.picks.length){
     if(DAILY.earned === undefined) DAILY.earned = 0;
     if(!DAILY.claimed) DAILY.claimed = [];
-    return;
+    return false; // same day, no check-in needed
   }
-  rollMissions(DAILY, DAILY_POOL, 3, 'date', todayStr());
+  // New day — compute consecutive streak
+  const yest = new Date(); yest.setDate(yest.getDate()-1);
+  const yStr = yest.getFullYear()+'-'+(yest.getMonth()+1)+'-'+yest.getDate();
+  if(!STATE.lastCheckin){
+    // first ever check-in — keep preset streak value as-is
+  } else if(STATE.lastCheckin === yStr){
+    STATE.streak = (STATE.streak || 0) + 1;  // consecutive
+  } else if(STATE.lastCheckin !== today){
+    STATE.streak = 1; // streak broken
+  }
+  STATE.lastCheckin = today;
+  rollMissions(DAILY, DAILY_POOL, 3, 'date', today);
   saveState();
+  return true; // new day — trigger check-in
 }
 function ensureWeekly(){
   if(WEEKLY.week === weekStr() && WEEKLY.picks.length) return;
   rollMissions(WEEKLY, WEEKLY_POOL, 3, 'week', weekStr());
   saveState();
 }
+
+function todayRowHtml(){
+  const postsToday = STATE.history[todayStr()] || 0;
+  const patrolDone = DAILY.progress && (DAILY.progress['patrol'] || 0) > 0;
+  const mDone = Object.keys(DAILY.done||{}).filter(k=>DAILY.done[k]).length;
+  const mTotal = DAILY.picks ? DAILY.picks.length : 3;
+  return `<div class="today-row">
+    <div class="today-cell${postsToday>0?' active':''}">
+      <div class="tc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
+    </div>
+    <div class="today-cell${patrolDone?' done':''}">
+      <div class="tc-ic">🚶</div><b>${patrolDone?'✓':'—'}</b><span>${t('td_patrol')}</span>
+    </div>
+    <div class="today-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}">
+      <div class="tc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
+    </div>
+  </div>`;
+}
+
+function showCheckinOverlay(basePts, streakDay, milestone){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const phone = document.querySelector('.phone');
+  const el = document.createElement('div');
+  el.className = 'ci-overlay';
+  const streakLbl = LANG==='en' ? `${streakDay}${t('ci_streak_day')}` : `${streakDay}${t('ci_streak_day')}`;
+  const milestoneHtml = milestone ? `<div class="ci-milestone">${milestone}</div>` : '';
+  el.innerHTML = `<div class="ci-flame">🔥</div>
+    <div class="ci-streak">${streakDay}</div>
+    <div class="ci-streak-lbl">${streakLbl}</div>
+    <div class="ci-pts">+${basePts}pt ${t('ci_bonus')}</div>${milestoneHtml}`;
+  phone.appendChild(el);
+  if(milestone) launchConfetti();
+  setTimeout(()=>el.remove(), 3200);
+}
+
+function doCheckin(){
+  const day = STATE.streak || 1;
+  const milestoneMap = {7:t('ci_milestone_7'), 14:t('ci_milestone_14'), 30:t('ci_milestone_30')};
+  const milestone = milestoneMap[day] || null;
+  const bonusPts = day===30?100 : day===14?50 : day===7?30 : 0;
+  const basePts = 10 + bonusPts;
+  gainPoints(basePts);
+  showCheckinOverlay(basePts, day, milestone);
+  if(milestone) setTimeout(()=>showToast(milestone), 3400);
+}
+
 function missionCard(store, pool, id, weekly){
   const m = pool.find(x=>x.id===id);
   if(!m) return '';
@@ -2383,6 +2492,8 @@ function updateRankData(gained){
 
 function renderHome(){
   const info = getLevelInfo(STATE.points);
+  const trEl = document.getElementById('today-row');
+  if(trEl) trEl.innerHTML = todayRowHtml();
   document.getElementById('home-role').textContent = `${tx(info.cur,'title')} / Lv.${info.cur.lv}`;
   document.getElementById('home-name').textContent = `${txName(PROFILE.name)}${t('name_suffix')}`;
   document.getElementById('profile-btn').textContent = PROFILE.avatar;
@@ -3361,7 +3472,7 @@ function camResult(){
     STATE.camCombo = comboCount;
     const oldLv = getLevelInfo(STATE.points).cur.lv;
     gainPoints(totalGained);
-    STATE.posts += 1; STATE.streak += 1; STATE.myPosts += 1;
+    STATE.posts += 1; STATE.myPosts += 1;
     if(o.type==='danger') STATE.dangerFound += 1;
     recordPostToday();
     // フィードに先頭追加（日英両方を保存して言語切替に対応）
@@ -3659,7 +3770,7 @@ if ('serviceWorker' in navigator) {
 
 // init: 保存データの復元 → デイリー更新 → 言語適用 → 初回はオンボーディング
 loadState();
-ensureDaily();
+const isNewDay = ensureDaily();
 ensureWeekly();
 seedHistory();
 seedReactions();
@@ -3671,6 +3782,7 @@ if (ONBOARDED) {
   if (ob) ob.remove();
 }
 renderHome();
+if(isNewDay) setTimeout(doCheckin, 900);
 renderRank('week');
 renderMapOverlay();
 updateStatusTime();
