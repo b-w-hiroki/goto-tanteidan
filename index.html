@@ -214,6 +214,21 @@
   .chip.ok { background: rgba(45,106,79,.25); color: #6ee7a8; }
   .chip.warn { background: rgba(244,162,97,.22); color: var(--gold); }
   .chip.ng { background: rgba(100,116,139,.25); color: #9aa6ba; }
+  .chip.resolved { background: rgba(59,130,246,.2); color: #7dd3fc; }
+
+  /* ── Resolve feature ── */
+  .feed-item.resolved .thumb { opacity: .55; filter: grayscale(.45); }
+  .resolve-btn { width: 100%; margin-top: 14px; padding: 13px; background: rgba(59,130,246,.15);
+    border: 1.5px solid rgba(59,130,246,.4); border-radius: 12px; color: #7dd3fc;
+    font-size: 13px; font-weight: 800; cursor: pointer; transition: background .15s, transform .1s; }
+  .resolve-btn:active { background: rgba(59,130,246,.28); transform: scale(.97); }
+  .resolve-badge { display: flex; align-items: center; gap: 10px; margin-top: 14px;
+    padding: 12px 14px; background: rgba(59,130,246,.12); border-radius: 12px;
+    border: 1.5px solid rgba(59,130,246,.3); }
+  .resolve-badge .rb-ic { font-size: 22px; }
+  .resolve-badge .rb-tx { flex: 1; }
+  .resolve-badge .rb-tx b { font-size: 13px; color: #7dd3fc; display: block; }
+  .resolve-badge .rb-tx span { font-size: 11px; color: var(--gray); }
 
   /* ── Mission done state ── */
   .mission.done { opacity: .55; }
@@ -1217,6 +1232,8 @@ const I18N = {
     cam_conf:'AI信頼度', cam_added:'防犯マップに追加されます。', cam_got:'捜査ポイント獲得！', cam_bonus:' 初回ボーナス込み',
     cam_reflect:'マップに反映する', cam_again:'もう一度撮影', cam_share:'📤 結果をシェア',
     toast_posted:'✅ 投稿完了！+', toast_pt_got:'pt 獲得', toast_daily:'🎯 デイリー達成！', toast_weekly:'🏆 ウィークリー達成！', toast_ach:'🏆 実績解除！', toast_copy:'📋 クリップボードにコピーしました', toast_heat_err:'⚠️ ヒートマップを読み込めませんでした',
+    chip_resolved:'対処済み', resolve_btn:'✅ 対処済みとして報告する', toast_resolved:'🔵 対処済み報告 +20pt',
+    resolve_badge_title:'対処済み', resolve_badge_sub:'この記号は撤去・対処されました',
     dm_title:'投稿詳細', dm_posted_by:'投稿:', dm_catalog:'探偵手帳で詳しく見る →',
     lvup_title:'レベルアップ！', lvup_to:'に昇進しました',
     just_now:'たった今', posted_suffix:'を投稿', your_new_post:'あなたの新規投稿',
@@ -1292,6 +1309,8 @@ const I18N = {
     cam_conf:'AI confidence', cam_added:'It will be added to the map.', cam_got:'Investigation points earned!', cam_bonus:' incl. first-time bonus',
     cam_reflect:'Add to map', cam_again:'Shoot again', cam_share:'📤 Share result',
     toast_posted:'✅ Posted! +', toast_pt_got:' pts', toast_daily:'🎯 Daily done! ', toast_weekly:'🏆 Weekly done! ', toast_ach:'🏆 Unlocked! ', toast_copy:'📋 Copied to clipboard', toast_heat_err:'⚠️ Could not load the heatmap',
+    chip_resolved:'Resolved', resolve_btn:'✅ Report as resolved', toast_resolved:'🔵 Resolved! +20pt',
+    resolve_badge_title:'Resolved', resolve_badge_sub:'This marking has been removed or addressed',
     dm_title:'Post detail', dm_posted_by:'By:', dm_catalog:'See details in the handbook →',
     lvup_title:'Level up!', lvup_to:'',
     just_now:'just now', posted_suffix:'', your_new_post:'Your new post',
@@ -1337,13 +1356,13 @@ function txName(s){ if(LANG!=='en') return s; for(const k in NAMES) s = s.split(
 function txVerdict(v){ if(LANG!=='en') return v; return v==='マーキング濃厚'?'Marking likely':v==='要確認'?'Needs check':v==='偶然と判定'?'Coincidence':v; }
 function txAgo(a){ if(LANG!=='en') return a; if(a==='たった今') return 'just now'; if(a==='昨日') return 'yesterday';
   let m=a.match(/^(\d+)分前$/); if(m) return m[1]+' min ago'; m=a.match(/^(\d+)時間前$/); if(m) return m[1]+' hr ago'; return a; }
-function txChip(c0){ return c0==='ok'?t('ff_ok'):c0==='warn'?t('ff_warn'):t('ff_ng'); }
+function txChip(c0){ return c0==='ok'?t('ff_ok'):c0==='warn'?t('ff_warn'):c0==='ng'?t('ff_ng'):t('chip_resolved'); }
 function txArea(s){ if(LANG!=='en') return s; return s.replace('渋谷','Shibuya').replace('・',' · ').replace(/(\d+)件/,'$1 posts'); }
 function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f==='中頻度'?'Medium':f==='低頻度'?'Low':f; }
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
-  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
+  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
 
 const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'amber', frame: 'amber' };
 
@@ -1413,6 +1432,7 @@ const DAILY_POOL = [
   { id:'safe1',   icon:'🟢', title:'安全を確認',       desc:'偶然判定を1件記録',     title_en:'Confirm safety',   desc_en:'Log one coincidence',     reward:30, goal:1, metric:'safe'   },
   { id:'quiz1',   icon:'🧠', title:'クイズに挑戦',     desc:'防犯クイズに正解する',   title_en:'Take the quiz',    desc_en:'Answer the quiz correctly',reward:40, goal:1, metric:'quiz'  },
   { id:'check1',  icon:'✅', title:'外出前チェック',   desc:'チェックリストを完了',   title_en:'Pre-departure check',desc_en:'Finish the checklist',   reward:50, goal:5, metric:'check' },
+  { id:'resolve1',icon:'🔵', title:'対処済みを報告',   desc:'投稿を1件対処済みにする', title_en:'Report resolved',    desc_en:'Mark one post resolved', reward:60, goal:1, metric:'resolve' },
 ];
 // 週替わりのチャレンジ（目標が大きく、報酬も高い）
 const WEEKLY_POOL = [
@@ -1422,7 +1442,8 @@ const WEEKLY_POOL = [
   { id:'wshare3', icon:'📣', title:'情報拡散',         desc:'今週3回シェアする',     title_en:'Spread the Word',  desc_en:'Share 3 times this week',  reward:220, goal:3,  metric:'share' },
   { id:'wquiz5',  icon:'🧠', title:'防犯マスター',     desc:'今週クイズに5回正解',   title_en:'Safety Master',    desc_en:'Get 5 quizzes right',      reward:280, goal:5,  metric:'quiz'  },
   { id:'wmap5',   icon:'🗺️', title:'マップ巡回',       desc:'今週マップを5回確認',   title_en:'Map Rounds',       desc_en:'Open the map 5 times',     reward:180, goal:5,  metric:'map'   },
-  { id:'wsafe3',  icon:'🟢', title:'安全確認の達人',   desc:'今週偶然判定を3件記録', title_en:'Safety Verifier',  desc_en:'Log 3 coincidences',       reward:200, goal:3,  metric:'safe'  },
+  { id:'wsafe3',   icon:'🟢', title:'安全確認の達人',   desc:'今週偶然判定を3件記録', title_en:'Safety Verifier',   desc_en:'Log 3 coincidences',         reward:200, goal:3,  metric:'safe'    },
+  { id:'wresolve3',icon:'🔵', title:'対処済み処理班',   desc:'今週3件対処済みにする', title_en:'Resolution Crew',   desc_en:'Mark 3 posts resolved',      reward:250, goal:3,  metric:'resolve' },
 ];
 const DAILY = { date:'', picks:[], progress:{}, done:{} };
 const WEEKLY = { week:'', picks:[], progress:{}, done:{} };
@@ -1891,10 +1912,10 @@ function renderHome(){
   const items = FEED.map((f,i)=>({f,i})).filter(o => feedFilter==='all' || o.f.chip[0]===feedFilter);
   document.getElementById('feed').innerHTML = items.length
     ? items.map(({f,i}) => `
-      <div class="feed-item" onclick="openDetail(${i})">
+      <div class="feed-item${f.resolved?' resolved':''}" onclick="openDetail(${i})">
         <div class="thumb" style="background:${f.bg}">${f.mark}</div>
         <div class="ft"><b>${txName(f.who)}</b> <span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
-        <span class="chip ${f.chip[0]}">${txChip(f.chip[0])}</span>
+        <span class="chip ${f.resolved?'resolved':f.chip[0]}">${f.resolved?t('chip_resolved'):txChip(f.chip[0])}</span>
       </div>`).join('')
     : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
@@ -2423,10 +2444,10 @@ function openDetail(idx){
       <span style="font-size:16px;font-weight:800">${t('dm_title')}</span>
     </div>
     <div style="padding:0 18px 24px">
-      <div class="dm-mark">${f.mark}</div>
+      <div class="dm-mark" style="${f.resolved?'opacity:.6;filter:grayscale(.4)':''}">${f.mark}</div>
       <div class="dm-label">${txLabel(f.label)||tx(f,'act')}</div>
       <div class="dm-meta">
-        <span class="dm-badge" style="background:${badgeBg};color:${color}">${txVerdict(f.verdict)||txChip(f.chip[0])}</span>
+        <span class="dm-badge" style="background:${f.resolved?'rgba(59,130,246,.2)':badgeBg};color:${f.resolved?'#7dd3fc':color}">${f.resolved?t('chip_resolved'):(txVerdict(f.verdict)||txChip(f.chip[0]))}</span>
         <span style="font-size:11px;color:var(--gray);margin-left:8px">${t('dm_posted_by')} ${txName(f.who)} · ${txAgo(f.ago)}</span>
       </div>
       <div class="conf-row">
@@ -2440,9 +2461,34 @@ function openDetail(idx){
         <div class="cl-icon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(230,57,70,.15)">${cat.mark}</div>
         <div class="cl-info"><b>${tx(cat,'name')}</b><span>${t('dm_catalog')}</span></div>
       </div>` : ''}
+      ${f.resolved
+        ? `<div class="resolve-badge"><div class="rb-ic">🔵</div><div class="rb-tx"><b>${t('resolve_badge_title')}</b><span>${t('resolve_badge_sub')}</span></div></div>`
+        : `<button class="resolve-btn" onclick="resolveMarking(${idx})">${t('resolve_btn')}</button>`
+      }
     </div>`;
   modal.classList.add('open');
   bindReactions(idx);
+}
+
+function resolveMarking(idx){
+  const f = FEED[idx];
+  if(f.resolved) return;
+  f.resolved = true;
+  f.resolvedAt = new Date().toISOString();
+  // mark the corresponding MARKING as resolved
+  const m = MARKINGS.find(mk => mk.mark===f.mark && mk.user===f.who);
+  if(m) m.resolved = true;
+  STATE.points += 20; STATE.earned += 20;
+  STATE.resolved = (STATE.resolved||0) + 1;
+  bumpDaily('resolve');
+  checkAchievements();
+  updateRankData(20);
+  showToast(t('toast_resolved'));
+  renderHome();
+  // re-render map pins if map is open
+  if(typeof markerLayer!=='undefined' && markerLayer) refreshMapPins();
+  document.getElementById('detail-modal').classList.remove('open');
+  saveState();
 }
 
 const REACTIONS = [ {k:'up',emoji:'👍',key:'react_up'}, {k:'warn',emoji:'⚠️',key:'react_warn'}, {k:'check',emoji:'✅',key:'react_check'} ];
@@ -2618,14 +2664,24 @@ function initMap(){
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
   const useCluster = typeof L.markerClusterGroup === 'function';
   markerLayer = useCluster ? L.markerClusterGroup({ maxClusterRadius:50, disableClusteringAtZoom:17 }) : L.layerGroup();
-  MARKINGS.forEach(m => {
-    const color = TYPE_COLOR[m.type];
-    const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color}"><span>${m.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
-    L.marker([m.lat,m.lng], { icon }).addTo(markerLayer)
-      .bindPopup(`<b>${txLabel(m.label)}</b><br>${LANG==='en'?'Verdict':'判定'}: <span style="color:${color}">●</span> ${txVerdict(m.verdict)}<br>${t('dm_posted_by')} ${txName(m.user)} · ${txAgo(m.ago)}`);
-  });
+  addMarkingsToLayer(markerLayer);
   markerLayer.addTo(map);
   setTimeout(()=>map.invalidateSize(), 200);
+}
+function addMarkingsToLayer(layer){
+  MARKINGS.forEach(m => {
+    const color = m.resolved ? '#3B82F6' : TYPE_COLOR[m.type];
+    const opacity = m.resolved ? 'opacity:.55;filter:grayscale(.4)' : '';
+    const resolvedTag = m.resolved ? `<br><span style="color:#7dd3fc;font-size:11px">✅ ${LANG==='en'?'Resolved':'対処済み'}</span>` : '';
+    const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};${opacity}"><span>${m.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
+    L.marker([m.lat,m.lng], { icon }).addTo(layer)
+      .bindPopup(`<b>${txLabel(m.label)}</b><br>${LANG==='en'?'Verdict':'判定'}: <span style="color:${color}">●</span> ${txVerdict(m.verdict)}<br>${t('dm_posted_by')} ${txName(m.user)} · ${txAgo(m.ago)}${resolvedTag}`);
+  });
+}
+function refreshMapPins(){
+  if(!map || !markerLayer) return;
+  markerLayer.clearLayers();
+  addMarkingsToLayer(markerLayer);
 }
 
 // ── Camera flow ──
