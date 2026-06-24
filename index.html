@@ -358,6 +358,60 @@
   }
   .map-legend div { display: flex; align-items: center; gap: 7px; margin: 4px 0; }
   .map-legend .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ── Patrol（パトロール記録） ── */
+  .patrol-fab {
+    position: absolute; right: 14px; bottom: 96px; z-index: 1001;
+    width: 58px; height: 58px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--red), var(--red-dk));
+    border: 3px solid var(--night); cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,.45); color: #fff; line-height: 1;
+    transition: transform .12s ease;
+  }
+  .patrol-fab:active { transform: scale(.9); }
+  .patrol-fab .pf-ic { font-size: 22px; }
+  .patrol-fab .pf-lbl { font-size: 8px; font-weight: 800; margin-top: 1px; }
+  .patrol-fab.live { animation: pf-pulse 1.4s infinite; }
+  @keyframes pf-pulse {
+    0%,100% { box-shadow: 0 8px 20px rgba(230,57,70,.45); }
+    50% { box-shadow: 0 8px 28px rgba(230,57,70,.9); }
+  }
+  .patrol-hud {
+    position: absolute; top: 54px; left: 12px; right: 12px; z-index: 1002;
+    background: rgba(14,12,24,.94); backdrop-filter: blur(10px);
+    border: 1.5px solid var(--red); border-radius: 16px;
+    padding: 12px 10px; display: none; gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  }
+  .patrol-hud.show { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .ph-cell { text-align: center; }
+  .ph-cell .ph-ic { font-size: 15px; line-height: 1; }
+  .ph-cell b { display: block; font-size: 20px; font-weight: 800; color: #fff; line-height: 1.2; }
+  .ph-cell.pts b { color: var(--gold); }
+  .patrol-walker {
+    font-size: 22px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6));
+    transition: transform .5s linear;
+  }
+  /* パトロール完了オーバーレイ */
+  .patrol-done {
+    position: absolute; inset: 0; z-index: 1300;
+    background: rgba(12,12,28,.92); backdrop-filter: blur(8px);
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 28px; gap: 6px;
+  }
+  .patrol-done.show { display: flex; animation: fade .3s; }
+  .patrol-done .pd-ic { font-size: 60px; animation: pop .5s; }
+  .patrol-done h3 { font-size: 22px; font-weight: 800; }
+  .patrol-done .pd-stats { display: flex; gap: 22px; margin: 14px 0 6px; }
+  .patrol-done .pd-stat b { display: block; font-size: 26px; font-weight: 800; color: var(--gold); }
+  .patrol-done .pd-stat span { font-size: 11px; color: var(--gray); }
+  .patrol-done .pd-pts { font-size: 17px; font-weight: 800; color: #6ee7a8; margin-bottom: 16px; }
+  .patrol-done .pd-close {
+    background: var(--red); color: #fff; border: none; border-radius: 24px;
+    padding: 12px 34px; font-size: 14px; font-weight: 800; cursor: pointer;
+  }
+  @keyframes pop { 0% { transform: scale(.3); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
   .leaflet-popup-content-wrapper { background: var(--night2); color: #fff; border-radius: 12px; }
   .leaflet-popup-tip { background: var(--night2); }
   .leaflet-popup-content { margin: 12px 14px; font-size: 12px; }
@@ -1268,6 +1322,8 @@ const I18N = {
     toast_posted:'✅ 投稿完了！+', toast_pt_got:'pt 獲得', toast_daily:'🎯 デイリー達成！', toast_weekly:'🏆 ウィークリー達成！', toast_ach:'🏆 実績解除！', toast_copy:'📋 クリップボードにコピーしました', toast_heat_err:'⚠️ ヒートマップを読み込めませんでした',
     chip_resolved:'対処済み', resolve_btn:'✅ 対処済みとして報告する', toast_resolved:'🔵 対処済み報告 +20pt',
     resolve_badge_title:'対処済み', resolve_badge_sub:'この記号は撤去・対処されました',
+    patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'⚠️ マップを読み込めませんでした',
+    patrol_done_title:'パトロール完了！', patrol_time:'所要時間', patrol_close:'閉じる',
     dm_title:'投稿詳細', dm_posted_by:'投稿:', dm_catalog:'探偵手帳で詳しく見る →',
     lvup_title:'レベルアップ！', lvup_to:'に昇進しました',
     just_now:'たった今', posted_suffix:'を投稿', your_new_post:'あなたの新規投稿',
@@ -1345,6 +1401,8 @@ const I18N = {
     toast_posted:'✅ Posted! +', toast_pt_got:' pts', toast_daily:'🎯 Daily done! ', toast_weekly:'🏆 Weekly done! ', toast_ach:'🏆 Unlocked! ', toast_copy:'📋 Copied to clipboard', toast_heat_err:'⚠️ Could not load the heatmap',
     chip_resolved:'Resolved', resolve_btn:'✅ Report as resolved', toast_resolved:'🔵 Resolved! +20pt',
     resolve_badge_title:'Resolved', resolve_badge_sub:'This marking has been removed or addressed',
+    patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'⚠️ Could not load the map',
+    patrol_done_title:'Patrol complete!', patrol_time:'Time', patrol_close:'Close',
     dm_title:'Post detail', dm_posted_by:'By:', dm_catalog:'See details in the handbook →',
     lvup_title:'Level up!', lvup_to:'',
     just_now:'just now', posted_suffix:'', your_new_post:'Your new post',
@@ -1396,7 +1454,7 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
-  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
+  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, patrols: 0, patrolKm: 0, history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
 
 const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'amber', frame: 'amber' };
 
@@ -1467,6 +1525,7 @@ const DAILY_POOL = [
   { id:'quiz1',   icon:'🧠', title:'クイズに挑戦',     desc:'防犯クイズに正解する',   title_en:'Take the quiz',    desc_en:'Answer the quiz correctly',reward:40, goal:1, metric:'quiz'  },
   { id:'check1',  icon:'✅', title:'外出前チェック',   desc:'チェックリストを完了',   title_en:'Pre-departure check',desc_en:'Finish the checklist',   reward:50, goal:5, metric:'check' },
   { id:'resolve1',icon:'🔵', title:'対処済みを報告',   desc:'投稿を1件対処済みにする', title_en:'Report resolved',    desc_en:'Mark one post resolved', reward:60, goal:1, metric:'resolve' },
+  { id:'patrol1', icon:'🚶', title:'パトロールに出る', desc:'パトロールを1回完了する', title_en:'Go on patrol',       desc_en:'Finish one patrol',     reward:70, goal:1, metric:'patrol' },
 ];
 // 週替わりのチャレンジ（目標が大きく、報酬も高い）
 const WEEKLY_POOL = [
@@ -1478,6 +1537,7 @@ const WEEKLY_POOL = [
   { id:'wmap5',   icon:'🗺️', title:'マップ巡回',       desc:'今週マップを5回確認',   title_en:'Map Rounds',       desc_en:'Open the map 5 times',     reward:180, goal:5,  metric:'map'   },
   { id:'wsafe3',   icon:'🟢', title:'安全確認の達人',   desc:'今週偶然判定を3件記録', title_en:'Safety Verifier',   desc_en:'Log 3 coincidences',         reward:200, goal:3,  metric:'safe'    },
   { id:'wresolve3',icon:'🔵', title:'対処済み処理班',   desc:'今週3件対処済みにする', title_en:'Resolution Crew',   desc_en:'Mark 3 posts resolved',      reward:250, goal:3,  metric:'resolve' },
+  { id:'wpatrol3', icon:'🚶', title:'週間パトロール部', desc:'今週3回パトロール完了', title_en:'Patrol Squad',      desc_en:'Finish 3 patrols this week', reward:300, goal:3,  metric:'patrol'  },
 ];
 const DAILY = { date:'', picks:[], progress:{}, done:{} };
 const WEEKLY = { week:'', picks:[], progress:{}, done:{} };
@@ -2757,6 +2817,110 @@ function refreshMapPins(){
   addMarkingsToLayer(markerLayer);
 }
 
+// ── パトロール記録 ──
+// 渋谷周辺をぐるりと回る徒歩ルート（ダミーGPS）
+const PATROL_ROUTE = [
+  [35.6595,139.7010],[35.6600,139.7021],[35.6609,139.7028],[35.6617,139.7023],
+  [35.6622,139.7011],[35.6618,139.6999],[35.6610,139.6991],[35.6601,139.6995],
+  [35.6594,139.7001],[35.6589,139.7012],[35.6592,139.7024],[35.6599,139.7029],
+  [35.6606,139.7019],[35.6598,139.7011],
+];
+const PATROL_PT_PER_KM = 120;
+let patrolState = null; // { i, km, sec, line, walker, timer } | null
+function haversineKm(a, b){
+  const R = 6371, toR = Math.PI/180;
+  const dLat = (b[0]-a[0])*toR, dLng = (b[1]-a[1])*toR;
+  const la1 = a[0]*toR, la2 = b[0]*toR;
+  const h = Math.sin(dLat/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+function fmtTime(sec){ const m=Math.floor(sec/60), s=sec%60; return m+':'+String(s).padStart(2,'0'); }
+function patrolHud(){
+  const km = patrolState.km;
+  document.getElementById('ph-time').textContent = fmtTime(patrolState.sec);
+  document.getElementById('ph-dist').textContent = km.toFixed(2);
+  document.getElementById('ph-pts').textContent = Math.round(km*PATROL_PT_PER_KM);
+}
+function togglePatrol(){
+  if(patrolState) finishPatrol();
+  else startPatrol();
+}
+function startPatrol(){
+  if(!map || mapFailed){ showToast(t('patrol_need_map')); return; }
+  map.setView(PATROL_ROUTE[0], 16);
+  const line = L.polyline([PATROL_ROUTE[0]], { color:'#E63946', weight:5, opacity:.85 }).addTo(map);
+  const wIcon = L.divIcon({ className:'', html:'<div class="patrol-walker">🚶</div>', iconSize:[24,24], iconAnchor:[12,12] });
+  const walker = L.marker(PATROL_ROUTE[0], { icon:wIcon, zIndexOffset:1000 }).addTo(map);
+  patrolState = { i:0, km:0, sec:0, line, walker, timer:null };
+  document.getElementById('patrol-hud').classList.add('show');
+  document.getElementById('patrol-fab').classList.add('live');
+  document.getElementById('pf-lbl').textContent = t('patrol_stop');
+  patrolHud();
+  patrolState.timer = setInterval(patrolTick, 750);
+}
+function patrolTick(){
+  if(!patrolState) return;
+  const next = patrolState.i + 1;
+  if(next >= PATROL_ROUTE.length){ finishPatrol(); return; }
+  const from = PATROL_ROUTE[patrolState.i], to = PATROL_ROUTE[next];
+  patrolState.km += haversineKm(from, to);
+  patrolState.sec += Math.round(haversineKm(from, to)*1000/1.3); // ~1.3m/s 徒歩換算
+  patrolState.i = next;
+  patrolState.line.addLatLng(to);
+  patrolState.walker.setLatLng(to);
+  map.panTo(to, { animate:true, duration:.6 });
+  patrolHud();
+}
+function finishPatrol(){
+  if(!patrolState) return;
+  clearInterval(patrolState.timer);
+  const km = patrolState.km, sec = patrolState.sec;
+  const gained = Math.max(10, Math.round(km*PATROL_PT_PER_KM));
+  // クリーンアップ
+  if(patrolState.walker) map.removeLayer(patrolState.walker);
+  const finishedLine = patrolState.line;
+  setTimeout(()=>{ if(finishedLine && map) map.removeLayer(finishedLine); }, 4000);
+  patrolState = null;
+  document.getElementById('patrol-hud').classList.remove('show');
+  document.getElementById('patrol-fab').classList.remove('live');
+  document.getElementById('pf-lbl').textContent = t('patrol_start');
+  // 報酬付与
+  STATE.points += gained; STATE.earned += gained;
+  STATE.patrols = (STATE.patrols||0) + 1;
+  STATE.patrolKm = +(((STATE.patrolKm||0) + km).toFixed(2));
+  bumpDaily('patrol');
+  checkAchievements();
+  updateRankData(gained);
+  showPatrolDone(km, sec, gained);
+  renderHome();
+  saveState();
+}
+function cancelPatrol(){
+  if(!patrolState) return;
+  clearInterval(patrolState.timer);
+  if(patrolState.walker && map) map.removeLayer(patrolState.walker);
+  if(patrolState.line && map) map.removeLayer(patrolState.line);
+  patrolState = null;
+  const hud = document.getElementById('patrol-hud'); if(hud) hud.classList.remove('show');
+  const fab = document.getElementById('patrol-fab'); if(fab) fab.classList.remove('live');
+  const lbl = document.getElementById('pf-lbl'); if(lbl) lbl.textContent = t('patrol_start');
+}
+function showPatrolDone(km, sec, gained){
+  const el = document.getElementById('patrol-done');
+  if(!el) return;
+  el.innerHTML = `
+    <div class="pd-ic">🎉</div>
+    <h3>${t('patrol_done_title')}</h3>
+    <div class="pd-stats">
+      <div class="pd-stat"><b>${km.toFixed(2)}</b><span>km</span></div>
+      <div class="pd-stat"><b>${fmtTime(sec)}</b><span>${t('patrol_time')}</span></div>
+    </div>
+    <div class="pd-pts">+${fmt(gained)} ${t('pt')}</div>
+    <button class="pd-close" onclick="document.getElementById('patrol-done').classList.remove('show')">${t('patrol_close')}</button>`;
+  el.classList.add('show');
+  launchConfetti();
+}
+
 // ── Camera flow ──
 // 撮影対象（毎回ランダムでリプレイ感を出す）
 const CAM_SUBJECTS = [
@@ -2968,6 +3132,7 @@ function switchView(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelector(`.tab[data-view="${name}"]`).classList.add('active');
+  if (name!=='map') cancelPatrol();
   if (name==='map') { initMap(); bumpDaily('map'); saveState(); }
   if (name==='cam') camIdle();
   if (name==='book') renderBook();
@@ -2984,8 +3149,17 @@ function switchView(name){
 // inject map container into map view once
 document.getElementById('view-map').innerHTML = `
   <div id="map"></div>
+  <div class="patrol-hud" id="patrol-hud">
+    <div class="ph-cell"><span class="ph-ic">⏱</span><b id="ph-time">0:00</b></div>
+    <div class="ph-cell"><span class="ph-ic">📏</span><b id="ph-dist">0.00</b></div>
+    <div class="ph-cell pts"><span class="ph-ic">⭐</span><b id="ph-pts">0</b></div>
+  </div>
   <div class="map-overlay" id="map-overlay"></div>
+  <button class="patrol-fab" id="patrol-fab" onclick="togglePatrol()" aria-label="パトロールを開始">
+    <span class="pf-ic">🚶</span><span class="pf-lbl" id="pf-lbl">START</span>
+  </button>
   <div class="map-legend" id="map-legend"></div>
+  <div class="patrol-done" id="patrol-done"></div>
   <div class="area-sheet" id="area-sheet"></div>`;
 
 function isRecent(ago){ return /分前|時間前|たった今/.test(ago); }
