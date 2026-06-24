@@ -1094,6 +1094,105 @@
   .hero.frame-violet  { border-color: #8B5CF6; box-shadow: 0 4px 24px rgba(139,92,246,.60); }
   .hero.frame-legend  { border-color: #FFD700; box-shadow: 0 0 32px rgba(255,215,0,.75), 0 4px 20px rgba(255,215,0,.4); }
 
+  /* ── 最新情報ビュー ── */
+  .info-btn {
+    position: relative; background: var(--night2); border: 1.5px solid var(--line);
+    border-radius: 12px; padding: 7px 11px; font-size: 17px; cursor: pointer;
+    color: #fff; line-height: 1; transition: background .15s;
+  }
+  .info-btn:active { background: var(--navy); }
+  .info-badge {
+    position: absolute; top: -5px; right: -5px;
+    background: var(--red); color: #fff; font-size: 9px; font-weight: 800;
+    border-radius: 10px; padding: 1px 4px; min-width: 15px; text-align: center;
+    line-height: 1.4; display: none; border: 2px solid var(--night);
+  }
+  .info-badge.show { display: block; }
+  .info-view {
+    position: absolute; inset: 0; z-index: 160;
+    background: var(--night); overflow-y: auto;
+    transform: translateY(100%); transition: transform .32s cubic-bezier(.4,0,.2,1);
+  }
+  .info-view.open { transform: translateY(0); }
+  .info-view::-webkit-scrollbar { width: 0; }
+  .iv-hdr {
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 10;
+    padding: 52px 18px 12px;
+    background: rgba(14,12,24,.9); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .iv-back {
+    background: none; border: none; color: #fff; font-size: 22px; cursor: pointer;
+    padding: 4px 2px; flex-shrink: 0; line-height: 1;
+  }
+  .iv-hdr-tx { flex: 1; }
+  .iv-hdr-tx h2 { font-size: 20px; font-weight: 800; }
+  .iv-hdr-tx .sub { font-size: 11px; color: var(--gray); margin-top: 1px; }
+  .iv-body { padding: 14px 16px 32px; }
+  .iv-strip {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px; margin-bottom: 14px;
+  }
+  .iv-strip-cell {
+    background: var(--night2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 10px 6px; text-align: center;
+  }
+  .iv-strip-cell b { display: block; font-size: 20px; font-weight: 800; }
+  .iv-strip-cell span { font-size: 10px; color: var(--gray); }
+  .iv-breaking {
+    background: linear-gradient(135deg, rgba(230,57,70,.18), rgba(230,57,70,.06));
+    border: 1.5px solid rgba(230,57,70,.38); border-radius: 14px;
+    padding: 13px 14px; margin-bottom: 14px; cursor: default;
+  }
+  .iv-breaking-label { font-size: 10px; font-weight: 800; color: var(--red); letter-spacing: .08em; margin-bottom: 7px; }
+  .iv-breaking-title { font-size: 13.5px; font-weight: 800; margin-bottom: 5px; line-height: 1.4; }
+  .iv-breaking-body { font-size: 12px; color: #C0B090; line-height: 1.68; }
+  .iv-cats {
+    display: flex; gap: 8px; margin-bottom: 14px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  .iv-cats::-webkit-scrollbar { height: 0; }
+  .iv-cat {
+    flex-shrink: 0; padding: 7px 14px; border-radius: 16px; font-size: 12px; font-weight: 700;
+    border: 1px solid var(--line); background: var(--night2); color: var(--gray);
+    cursor: pointer; font-family: inherit; white-space: nowrap;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .iv-cat.active { background: var(--red); border-color: var(--red); color: #fff; }
+  .iv-alert {
+    background: var(--night2); border: 1px solid var(--line); border-radius: 14px;
+    padding: 13px 14px; margin-bottom: 10px;
+  }
+  .iv-alert-top { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 8px; }
+  .iv-alert-src {
+    width: 40px; height: 40px; border-radius: 12px; font-size: 20px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .iv-alert-src.police { background: rgba(230,57,70,.18); }
+  .iv-alert-src.city   { background: rgba(69,123,157,.18); }
+  .iv-alert-src.watch  { background: rgba(45,106,79,.18); }
+  .iv-alert-info { flex: 1; min-width: 0; }
+  .iv-alert-info b { font-size: 13px; display: block; line-height: 1.38; margin-bottom: 4px; }
+  .iv-alert-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .iv-alert-body { font-size: 12.5px; color: #C0B090; line-height: 1.7; }
+  .iv-act-item {
+    display: flex; gap: 11px; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--line);
+  }
+  .iv-act-item:last-child { border: none; }
+  .iv-act-ic {
+    width: 36px; height: 36px; border-radius: 10px; font-size: 17px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .iv-act-ic.patrol  { background: rgba(69,123,157,.22); }
+  .iv-act-ic.resolve { background: rgba(59,130,246,.18); }
+  .iv-act-ic.post    { background: rgba(230,57,70,.18); }
+  .iv-act-tx { flex: 1; min-width: 0; }
+  .iv-act-tx b { font-size: 12.5px; display: block; }
+  .iv-act-tx span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; }
+  .iv-act-pts { font-size: 12px; font-weight: 800; color: var(--gold); white-space: nowrap; }
+
   /* ── 称号フレームコレクション（マイページ内） ── */
   .frame-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
   .frame-cell {
@@ -1148,6 +1247,7 @@
       <div class="hdr">
         <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
         <div style="display:flex;gap:8px;align-items:center">
+          <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く">🔔<span class="info-badge" id="info-badge"></span></button>
           <button class="mission-btn" onclick="openMissionSheet()" aria-label="ミッションを開く">📋<span class="mission-count" id="mission-count"></span></button>
           <button class="avatar-btn" id="profile-btn" style="font-size:28px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
         </div>
@@ -1271,6 +1371,7 @@
   <div class="safety-sheet" id="safety-sheet"></div>
   <div class="alert-sheet" id="alert-sheet"></div>
   <div class="mission-sheet" id="mission-sheet"></div>
+  <div class="info-view" id="info-view"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -1381,6 +1482,11 @@ const I18N = {
     alert_cat_police:'警察署', alert_cat_city:'区役所', alert_cat_watch:'自警団',
     alerts_viewall:'すべてのアラートを見る →',
     alerts_title:'📢 地域アラート',
+    info_title:'最新情報', info_sub:'地域のアラート・活動',
+    info_breaking:'⚡ 速報', info_community:'🚶 コミュニティ活動',
+    info_cat_all:'すべて', info_cat_police:'🚔 警察', info_cat_city:'🏛️ 区役所', info_cat_watch:'👥 自警団', info_cat_activity:'🚶 活動',
+    info_unread:'未読', info_today_danger:'今日の危険', info_activities:'コミュ活動',
+    info_no_alerts:'この分類のアラートはありません',
   },
   en: {
     pitch_lead:'Citizens become "detectives," spotting and reporting street markings. AI judges them and the crime-prevention map grows in real time.',
@@ -1461,6 +1567,11 @@ const I18N = {
     alert_cat_police:'Police', alert_cat_city:'City Hall', alert_cat_watch:'Neighborhood Watch',
     alerts_viewall:'View all alerts →',
     alerts_title:'📢 Area Alerts',
+    info_title:'Latest Info', info_sub:'Area alerts & community',
+    info_breaking:'⚡ Breaking', info_community:'🚶 Community Activity',
+    info_cat_all:'All', info_cat_police:'🚔 Police', info_cat_city:'🏛️ City Hall', info_cat_watch:'👥 Watch', info_cat_activity:'🚶 Activity',
+    info_unread:'Unread', info_today_danger:"Today's dangers", info_activities:'Activities',
+    info_no_alerts:'No alerts in this category',
   }
 };
 function t(k){ return (I18N[LANG] && I18N[LANG][k]!=null) ? I18N[LANG][k] : (I18N.ja[k]!=null ? I18N.ja[k] : k); }
@@ -1702,6 +1813,16 @@ const EMERGENCY = [
   { label:'警察（事件・事故）', label_en:'Police (crime / accident)', num:'110' },
   { label:'警察相談専用ダイヤル', label_en:'Police consultation line', num:'#9110' },
   { label:'消防・救急', label_en:'Fire / ambulance', num:'119' },
+];
+
+// コミュニティ活動フィード（他の探偵団メンバーの最近の活動）
+const COMMUNITY_ACTIVITY = [
+  { type:'patrol',  user:'タカシ',  user_en:'Takashi', icon:'🚶', desc:'代々木公園周辺パトロール完了',     desc_en:'Completed patrol around Yoyogi Park',        pts:173, ago:'8分前'  },
+  { type:'resolve', user:'ミク',    user_en:'Miku',    icon:'🔵', desc:'マーキングの対処済み報告',          desc_en:'Reported a marking as resolved',              pts:20,  ago:'15分前' },
+  { type:'post',    user:'ソウタ',  user_en:'Sota',    icon:'📸', desc:'南平台で要確認の記号を投稿',        desc_en:'Posted a check-needed marking in Minamidai',  pts:30,  ago:'22分前' },
+  { type:'patrol',  user:'アヤ',    user_en:'Aya',     icon:'🚶', desc:'松濤エリアパトロール完了',           desc_en:'Completed patrol in Shouto area',             pts:128, ago:'1時間前' },
+  { type:'post',    user:'ケン',    user_en:'Ken',     icon:'📸', desc:'渋谷駅付近で濃厚マーキング検出',    desc_en:'Detected strong marking near Shibuya Sta.',   pts:50,  ago:'2時間前' },
+  { type:'resolve', user:'ハナ',    user_en:'Hana',    icon:'🔵', desc:'対処済み報告が確認された',          desc_en:'Resolve report confirmed',                    pts:20,  ago:'3時間前' },
 ];
 
 // 地域アラート（自治体・警察・自警団からのお知らせ）
@@ -2014,6 +2135,129 @@ function openAlertSheet(){
   sheet.classList.add('open');
 }
 
+// ── 最新情報ビュー ──
+let infoCat = 'all';
+let _infoUnreadShown = false;
+
+function openInfoView(cat){
+  cat = cat || 'all';
+  infoCat = cat;
+  renderInfoView(cat);
+  document.getElementById('info-view').classList.add('open');
+  // clear badge once opened
+  if(!_infoUnreadShown){
+    _infoUnreadShown = true;
+    updateInfoBadge();
+  }
+}
+function closeInfoView(){
+  document.getElementById('info-view').classList.remove('open');
+}
+function renderInfoView(cat){
+  cat = cat || infoCat || 'all';
+  infoCat = cat;
+  const view = document.getElementById('info-view');
+  if(!view) return;
+
+  const newCount = _infoUnreadShown ? 0 : ALERTS.filter(a => a.isNew).length;
+  const dangerCount = MARKINGS.filter(m => m.type === 'danger').length;
+
+  const breakingAlert = ALERTS.find(a => a.isNew) || ALERTS[0];
+  const breakingTitle = LANG==='en' ? (breakingAlert.title_en||breakingAlert.title) : breakingAlert.title;
+  const breakingBody  = LANG==='en' ? (breakingAlert.body_en||breakingAlert.body)   : breakingAlert.body;
+  const breakingOrg   = LANG==='en' ? (breakingAlert.org_en||breakingAlert.org)     : breakingAlert.org;
+
+  const cats = [
+    { id:'all',      label:t('info_cat_all') },
+    { id:'police',   label:t('info_cat_police') },
+    { id:'city',     label:t('info_cat_city') },
+    { id:'watch',    label:t('info_cat_watch') },
+    { id:'activity', label:t('info_cat_activity') },
+  ];
+  const catHtml = cats.map(c =>
+    `<button class="iv-cat${cat===c.id?' active':''}" onclick="renderInfoView('${c.id}')">${c.label}</button>`
+  ).join('');
+
+  const filteredAlerts = (cat === 'all')      ? ALERTS
+                       : (cat === 'activity') ? []
+                       : ALERTS.filter(a => a.cat === cat);
+
+  const alertCardsHtml = filteredAlerts.map(a => {
+    const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
+    const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
+    const bodyTx  = LANG==='en' ? (a.body_en||a.body)   : a.body;
+    const newPill = a.isNew
+      ? ` <span style="background:var(--red);color:#fff;font-size:9px;padding:2px 6px;border-radius:8px;font-weight:800;vertical-align:middle;margin-left:3px">NEW</span>`
+      : '';
+    return `<div class="iv-alert">
+      <div class="iv-alert-top">
+        <div class="iv-alert-src ${a.cat}">${a.src}</div>
+        <div class="iv-alert-info">
+          <b>${titleTx}${newPill}</b>
+          <div class="iv-alert-meta">
+            <span class="alert-chip ${a.cat}">${alertCatLabel(a.cat)}</span>
+            <span style="font-size:11px;color:var(--gray)">${orgTx} · ${a.date.slice(5).replace('-','/')}</span>
+          </div>
+        </div>
+      </div>
+      <div class="iv-alert-body">${bodyTx}</div>
+    </div>`;
+  }).join('');
+
+  const showBreaking  = (cat === 'all');
+  const showAlerts    = filteredAlerts.length > 0;
+  const showActivity  = (cat === 'all' || cat === 'activity');
+
+  const breakingHtml = showBreaking ? `
+    <div class="iv-breaking">
+      <div class="iv-breaking-label">${t('info_breaking')} · ${breakingOrg}</div>
+      <div class="iv-breaking-title">${breakingTitle}</div>
+      <div class="iv-breaking-body">${breakingBody}</div>
+    </div>` : '';
+
+  const alertsSectionHtml = showAlerts
+    ? `<div class="sec-title">${t('sec_alerts')}</div>${alertCardsHtml}`
+    : (cat !== 'activity' ? `<div style="padding:20px 0;text-align:center;color:var(--gray);font-size:12px">${t('info_no_alerts')}</div>` : '');
+
+  const activityHtml = showActivity ? `
+    <div class="sec-title" style="margin-top:${filteredAlerts.length?'6px':'0'}">${t('info_community')}</div>
+    <div class="card" style="padding:8px 12px">
+      ${COMMUNITY_ACTIVITY.map(a => {
+        const userTx = LANG==='en' ? (a.user_en||a.user) : a.user;
+        const descTx = LANG==='en' ? (a.desc_en||a.desc) : a.desc;
+        return `<div class="iv-act-item">
+          <div class="iv-act-ic ${a.type}">${a.icon}</div>
+          <div class="iv-act-tx"><b>${userTx}</b><span>${descTx} · ${txAgo(a.ago)}</span></div>
+          <div class="iv-act-pts">+${a.pts}pt</div>
+        </div>`;
+      }).join('')}
+    </div>` : '';
+
+  view.innerHTML = `
+    <div class="iv-hdr">
+      <button class="iv-back" onclick="closeInfoView()">←</button>
+      <div class="iv-hdr-tx"><h2>${t('info_title')}</h2><div class="sub">${t('info_sub')}</div></div>
+    </div>
+    <div class="iv-body">
+      <div class="iv-strip">
+        <div class="iv-strip-cell"><b style="color:var(--red)">${newCount}</b><span>${t('info_unread')}</span></div>
+        <div class="iv-strip-cell"><b style="color:var(--gold)">${dangerCount}</b><span>${t('info_today_danger')}</span></div>
+        <div class="iv-strip-cell"><b style="color:var(--blue)">${COMMUNITY_ACTIVITY.length}</b><span>${t('info_activities')}</span></div>
+      </div>
+      <div class="iv-cats">${catHtml}</div>
+      ${breakingHtml}
+      ${alertsSectionHtml}
+      ${activityHtml}
+    </div>`;
+}
+function updateInfoBadge(){
+  const badge = document.getElementById('info-badge');
+  if(!badge) return;
+  const count = _infoUnreadShown ? 0 : ALERTS.filter(a => a.isNew).length;
+  badge.textContent = count;
+  badge.classList.toggle('show', count > 0);
+}
+
 // ── ミッションシート ──
 function openMissionSheet(){
   const sheet = document.getElementById('mission-sheet');
@@ -2162,6 +2406,7 @@ function renderHome(){
     : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
   updateMissionBadge();
+  updateInfoBadge();
   renderAlerts();
   renderForecast();
   // 時間帯グリーティング＋称号フレーム
@@ -3250,6 +3495,7 @@ function switchView(name){
   if (name==='rank' && rankTab==='team') renderTeam();
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
+  document.getElementById('info-view').classList.remove('open');
   ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet','mission-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
