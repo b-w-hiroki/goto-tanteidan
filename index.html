@@ -315,11 +315,29 @@
   .catalog-link .cl-info span { font-size: 11px; color: var(--gray); }
 
   /* ── Book (handbook) tab ── */
-  .book-card { display: flex; gap: 14px; align-items: flex-start; background: var(--night2); border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--line); }
-  .book-mark { font-size: 30px; width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .book-info b { font-size: 14px; display: block; margin-bottom: 5px; }
-  .book-info p { font-size: 12px; color: #C0B090; line-height: 1.6; margin-bottom: 6px; }
-  .book-freq { font-size: 10px; color: var(--gray); }
+  .book-row { display:flex; gap:12px; align-items:center; background:var(--night2); border-radius:14px; padding:11px 14px; margin-bottom:8px; border:1px solid var(--line); cursor:pointer; transition:background .15s; }
+  .book-row:active { background:var(--navy); }
+  .book-row-mark { font-size:26px; width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .book-row-info { flex:1; min-width:0; }
+  .book-row-info b { font-size:13px; display:block; margin-bottom:3px; }
+  .book-row-freq { font-size:10px; color:var(--gray); }
+  .book-row-arr { color:var(--gray); font-size:18px; flex-shrink:0; }
+  .book-sheet { position:absolute; left:0; right:0; bottom:78px; z-index:1100; background:rgba(18,18,42,.98); backdrop-filter:blur(14px); border-top:1px solid var(--line); border-radius:20px 20px 0 0; padding:14px 20px 28px; transform:translateY(110%); transition:transform .3s ease; box-shadow:0 -10px 30px rgba(0,0,0,.5); max-height:80%; display:flex; flex-direction:column; }
+  .book-sheet.open { transform:translateY(0); }
+  .book-sheet .grab { width:40px; height:4px; border-radius:3px; background:#3a3a55; margin:0 auto 16px; flex-shrink:0; }
+  .bs-head { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
+  .bs-icon { font-size:42px; width:68px; height:68px; border-radius:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .bs-title { flex:1; }
+  .bs-title b { font-size:17px; font-weight:800; display:block; margin-bottom:5px; }
+  .bs-close { background:none; border:none; color:var(--gray); font-size:22px; cursor:pointer; padding:4px; line-height:1; align-self:flex-start; }
+  .bs-body { overflow-y:auto; flex:1; }
+  .bs-body::-webkit-scrollbar { width:0; }
+  .bs-section { margin-bottom:14px; }
+  .bs-label { font-size:10px; font-weight:800; color:var(--gray); letter-spacing:.1em; margin-bottom:6px; }
+  .bs-text { font-size:13px; color:#C0B090; line-height:1.7; }
+  .bs-examples { display:flex; flex-wrap:wrap; gap:6px; }
+  .bs-ex-chip { font-size:11px; background:var(--night); border:1px solid var(--line); border-radius:8px; padding:4px 10px; color:var(--fg); }
+  .bs-cam-btn { width:100%; margin-top:16px; background:var(--gold); color:#12122a; font-weight:800; font-size:14px; border:none; border-radius:14px; padding:14px; cursor:pointer; }
 
   /* ── Map ── */
   #map { position: absolute; top: 44px; bottom: 78px; left: 0; right: 0; }
@@ -724,11 +742,11 @@
   .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
 
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet, .mission-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet, .mission-sheet, .book-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open, .mission-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open, .mission-sheet.open, .book-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -1456,6 +1474,7 @@
         <button class="ff-chip" data-bfilter="safe" data-i18n="bf_safe">偶然</button>
       </div>
       <div id="book-list"></div>
+      <div class="book-sheet" id="book-sheet"></div>
     </section>
 
   </div>
@@ -3336,27 +3355,64 @@ function bindReactions(idx){
 let bookQuery = '', bookFilter = 'all';
 function renderBook(){
   const q = bookQuery.trim().toLowerCase();
-  const list = MARK_CATALOG.filter(m=>{
+  const allList = MARK_CATALOG.map((m,i)=>({m,i}));
+  const list = allList.filter(({m})=>{
     if(bookFilter !== 'all' && m.color !== bookFilter) return false;
     if(!q) return true;
     const hay = (m.name + ' ' + m.meaning + ' ' + m.examples.join(' ') + ' ' +
       (m.name_en||'') + ' ' + (m.meaning_en||'') + ' ' + m.examples.map(txLabel).join(' ')).toLowerCase();
     return hay.includes(q);
   });
-  const sep = LANG==='en' ? ', ' : '、';
-  document.getElementById('book-list').innerHTML = list.length ? list.map(m=>{
+  document.getElementById('book-list').innerHTML = list.length ? list.map(({m,i})=>{
     const chipCls = m.color==='danger'?'ok':m.color==='warn'?'warn':'ng';
     const chipLbl = m.color==='danger'?t('chip_danger'):m.color==='warn'?t('chip_warn'):t('chip_safe');
     const bg = m.color==='danger'?'rgba(230,57,70,.18)':m.color==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
-    return `<div class="book-card">
-      <div class="book-mark" style="background:${bg}">${m.mark}</div>
-      <div class="book-info">
+    return `<div class="book-row" onclick="openBookSheet(${i})">
+      <div class="book-row-mark" style="background:${bg}">${m.mark}</div>
+      <div class="book-row-info">
         <b>${tx(m,'name')} <span class="chip ${chipCls}" style="font-size:9px">${chipLbl}</span></b>
-        <p>${tx(m,'meaning')}</p>
-        <div class="book-freq">${t('book_freq')}: ${txFreq(m.frequency)}　${t('book_ex')}: ${m.examples.map(txLabel).join(sep)}</div>
+        <div class="book-row-freq">${txFreq(m.frequency)}</div>
       </div>
+      <div class="book-row-arr">›</div>
     </div>`;
   }).join('') : `<div class="book-empty">${t('book_empty')}</div>`;
+}
+function openBookSheet(idx){
+  const m = MARK_CATALOG[idx];
+  if(!m) return;
+  const chipCls = m.color==='danger'?'ok':m.color==='warn'?'warn':'ng';
+  const chipLbl = m.color==='danger'?t('chip_danger'):m.color==='warn'?t('chip_warn'):t('chip_safe');
+  const bg = m.color==='danger'?'rgba(230,57,70,.18)':m.color==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
+  const sep = LANG==='en' ? ', ' : '、';
+  document.getElementById('book-sheet').innerHTML = `
+    <div class="grab"></div>
+    <div class="bs-head">
+      <div class="bs-icon" style="background:${bg}">${m.mark}</div>
+      <div class="bs-title">
+        <b>${tx(m,'name')}</b>
+        <span class="chip ${chipCls}">${chipLbl}</span>
+      </div>
+      <button class="bs-close" onclick="closeBookSheet()">×</button>
+    </div>
+    <div class="bs-body">
+      <div class="bs-section">
+        <div class="bs-label">${LANG==='en'?'WHAT IT MEANS':'意味・特徴'}</div>
+        <div class="bs-text">${tx(m,'meaning')}</div>
+      </div>
+      <div class="bs-section">
+        <div class="bs-label">${LANG==='en'?'FREQUENCY':'出現頻度'}</div>
+        <div class="bs-text">${txFreq(m.frequency)}</div>
+      </div>
+      <div class="bs-section">
+        <div class="bs-label">${LANG==='en'?'WHERE IT APPEARS':'よく見られる場所'}</div>
+        <div class="bs-examples">${m.examples.map(e=>`<span class="bs-ex-chip">${txLabel(e)}</span>`).join('')}</div>
+      </div>
+      <button class="bs-cam-btn" onclick="closeBookSheet(); switchView('cam')">📸 ${LANG==='en'?'Shoot this mark':'このマークを撮影する'}</button>
+    </div>`;
+  document.getElementById('book-sheet').classList.add('open');
+}
+function closeBookSheet(){
+  document.getElementById('book-sheet').classList.remove('open');
 }
 
 let currentSeg = 'week';
