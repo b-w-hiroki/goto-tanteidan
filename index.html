@@ -352,6 +352,24 @@
   }
   .map-pill .dot { width: 9px; height: 9px; border-radius: 50%; }
   .map-pill.active { background: var(--red); border-color: var(--red); color: #fff; }
+  .map-pill.filter-danger.on { background:rgba(230,57,70,.88); border-color:#E63946; color:#fff; }
+  .map-pill.filter-warn.on   { background:rgba(244,162,97,.88); border-color:#F4A261; color:#12122a; }
+  .map-pill.filter-safe.on   { background:rgba(100,116,139,.88); border-color:#64748B; color:#fff; }
+  .mark-sheet { position:absolute; left:0; right:0; bottom:78px; z-index:1100; background:rgba(18,18,42,.98); backdrop-filter:blur(14px); border-top:1px solid var(--line); border-radius:20px 20px 0 0; padding:14px 18px 24px; transform:translateY(110%); transition:transform .3s ease; box-shadow:0 -10px 30px rgba(0,0,0,.5); max-height:76%; display:flex; flex-direction:column; }
+  .mark-sheet.open { transform:translateY(0); }
+  .mark-sheet .grab { width:40px; height:4px; border-radius:3px; background:#3a3a55; margin:0 auto 14px; flex-shrink:0; }
+  .ms-head { display:flex; align-items:center; gap:14px; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+  .ms-icon { font-size:34px; width:60px; height:60px; border-radius:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ms-info { flex:1; min-width:0; }
+  .ms-info b { font-size:15px; font-weight:800; display:block; margin-bottom:4px; }
+  .ms-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:4px; }
+  .ms-close { background:none; border:none; color:var(--gray); font-size:22px; cursor:pointer; padding:4px; line-height:1; align-self:flex-start; flex-shrink:0; }
+  .ms-body { overflow-y:auto; flex:1; }
+  .ms-body::-webkit-scrollbar { width:0; }
+  .ms-who { font-size:11px; color:var(--gray); margin-bottom:10px; }
+  .ms-resolve-btn { width:100%; margin-top:14px; padding:13px; background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.35); border-radius:14px; color:#7dd3fc; font-size:14px; font-weight:700; cursor:pointer; }
+  .ms-resolve-btn:active { background:rgba(59,130,246,.28); }
+  .ms-resolved-badge { display:flex; align-items:center; gap:10px; margin-top:14px; background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.25); border-radius:14px; padding:12px 14px; }
 
   /* ── Area stats bottom sheet ── */
   .area-sheet {
@@ -742,11 +760,11 @@
   .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
 
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet, .mission-sheet, .book-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet, .mission-sheet, .book-sheet, .mark-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open, .mission-sheet.open, .book-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open, .mission-sheet.open, .book-sheet.open, .mark-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -1520,6 +1538,7 @@
   <div class="info-view" id="info-view"></div>
   <div class="hq-view" id="hq-view"></div>
   <div class="detail-modal" id="detail-modal"></div>
+  <div class="mark-sheet" id="mark-sheet"></div>
   <div class="toast" id="toast"></div>
 
   <!-- Tab bar -->
@@ -3542,15 +3561,63 @@ function initMap(){
   markerLayer.addTo(map);
   setTimeout(()=>map.invalidateSize(), 200);
 }
+let mapTypeFilter = 'all';
 function addMarkingsToLayer(layer){
   MARKINGS.forEach(m => {
+    if(mapTypeFilter !== 'all' && m.type !== mapTypeFilter) return;
     const color = m.resolved ? '#3B82F6' : TYPE_COLOR[m.type];
     const opacity = m.resolved ? 'opacity:.55;filter:grayscale(.4)' : '';
-    const resolvedTag = m.resolved ? `<br><span style="color:#7dd3fc;font-size:11px">✅ ${LANG==='en'?'Resolved':'対処済み'}</span>` : '';
     const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};${opacity}"><span>${m.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
     L.marker([m.lat,m.lng], { icon }).addTo(layer)
-      .bindPopup(`<b>${txLabel(m.label)}</b><br>${LANG==='en'?'Verdict':'判定'}: <span style="color:${color}">●</span> ${txVerdict(m.verdict)}<br>${t('dm_posted_by')} ${txName(m.user)} · ${txAgo(m.ago)}${resolvedTag}`);
+      .on('click', () => openMarkingSheet(m));
   });
+}
+function openMarkingSheet(m){
+  const color = m.resolved ? '#3B82F6' : (m.type==='danger'?'#E63946':m.type==='warn'?'#F4A261':'#64748B');
+  const badgeBg = m.resolved ? 'rgba(59,130,246,.2)' : (m.type==='danger'?'rgba(230,57,70,.2)':m.type==='warn'?'rgba(244,162,97,.2)':'rgba(100,116,139,.2)');
+  const iconBg = m.type==='danger'?'rgba(230,57,70,.18)':m.type==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
+  const verdictLbl = m.resolved ? (LANG==='en'?'Resolved':'対処済み') : txVerdict(m.verdict);
+  const feedEntry = FEED.find(f => f.who===m.user && f.mark===m.mark);
+  const conf = feedEntry ? feedEntry.conf : null;
+  const aiComment = feedEntry ? tx(feedEntry,'aiComment') : null;
+  const feedIdx = feedEntry ? FEED.indexOf(feedEntry) : -1;
+  const resolvedSection = m.resolved
+    ? `<div class="ms-resolved-badge"><span style="font-size:22px">🔵</span><div><b style="font-size:13px">${LANG==='en'?'Resolved':'対処済み'}</b><div style="font-size:11px;color:var(--gray)">${LANG==='en'?'This marking has been addressed.':'このマーキングは対処済みです。'}</div></div></div>`
+    : `<button class="ms-resolve-btn" id="ms-resolve-btn">✅ ${LANG==='en'?'Mark as resolved':'対処済みにする'}</button>`;
+  document.getElementById('mark-sheet').innerHTML = `
+    <div class="grab"></div>
+    <div class="ms-head">
+      <div class="ms-icon" style="background:${iconBg}">${m.mark}</div>
+      <div class="ms-info">
+        <b>${txLabel(m.label)}</b>
+        <div class="ms-meta">
+          <span class="chip ${m.type==='danger'?'ok':m.type==='warn'?'warn':'ng'}" style="font-size:10px">${verdictLbl}</span>
+        </div>
+      </div>
+      <button class="ms-close" onclick="closeMarkingSheet()">×</button>
+    </div>
+    <div class="ms-body">
+      <div class="ms-who">📍 ${txName(m.user)} · ${txAgo(m.ago)}</div>
+      ${conf !== null ? `<div class="conf-row"><span class="conf-lbl">${t('cam_conf')}</span><div class="conf-bar"><i style="width:${conf}%;background:${color}"></i></div><span class="conf-val" style="color:${color}">${conf}%</span></div>` : ''}
+      ${aiComment ? `<div class="ai-comment">🤖 ${aiComment}</div>` : ''}
+      ${resolvedSection}
+    </div>`;
+  const resolveBtn = document.getElementById('ms-resolve-btn');
+  if(resolveBtn){
+    resolveBtn.onclick = () => {
+      m.resolved = true;
+      if(feedIdx >= 0){ FEED[feedIdx].resolved = true; }
+      STATE.resolved = (STATE.resolved||0) + 1;
+      gainPoints(20); bumpDaily('resolve'); checkAchievements(); updateRankData(20);
+      showToast(t('toast_resolved'));
+      renderHome(); refreshMapPins(); saveState();
+      closeMarkingSheet();
+    };
+  }
+  document.getElementById('mark-sheet').classList.add('open');
+}
+function closeMarkingSheet(){
+  document.getElementById('mark-sheet').classList.remove('open');
 }
 function refreshMapPins(){
   if(!map || !markerLayer) return;
@@ -4028,18 +4095,27 @@ document.getElementById('view-map').innerHTML = `
   <div class="area-sheet" id="area-sheet"></div>`;
 
 function isRecent(ago){ return /分前|時間前|たった今/.test(ago); }
+function setMapFilter(type){
+  mapTypeFilter = mapTypeFilter === type ? 'all' : type;
+  refreshMapPins();
+  renderMapOverlay();
+}
 function renderMapOverlay(){
   const danger = MARKINGS.filter(m=>m.type==='danger').length;
   const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  const safe   = MARKINGS.filter(m=>m.type==='safe').length;
   const recent = MARKINGS.filter(m=>isRecent(m.ago)).length;
   const ov = document.getElementById('map-overlay');
   if(ov){
     ov.innerHTML = `
-      <div class="map-pill"><span class="dot" style="background:#E63946"></span>${t('ov_danger')} ${danger}</div>
-      <div class="map-pill"><span class="dot" style="background:#F4A261"></span>${t('ov_warn')} ${warn}</div>
-      <div class="map-pill">🔄 ${t('ov_recent')} ${recent}${t('ov_count')}</div>
+      <div class="map-pill filter-danger${mapTypeFilter==='danger'?' on':''}" id="pill-danger"><span class="dot" style="background:#E63946"></span>${t('ov_danger')} ${danger}</div>
+      <div class="map-pill filter-warn${mapTypeFilter==='warn'?' on':''}" id="pill-warn"><span class="dot" style="background:#F4A261"></span>${t('ov_warn')} ${warn}</div>
+      <div class="map-pill filter-safe${mapTypeFilter==='safe'?' on':''}" id="pill-safe"><span class="dot" style="background:#64748B"></span>${LANG==='en'?'Safe':'偶然'} ${safe}</div>
       <div class="map-pill${heatOn?' active':''}" id="pill-heat">${t('ov_heat')}</div>
       <div class="map-pill" id="pill-stats">${t('ov_stats')}</div>`;
+    document.getElementById('pill-danger').onclick = () => setMapFilter('danger');
+    document.getElementById('pill-warn').onclick   = () => setMapFilter('warn');
+    document.getElementById('pill-safe').onclick   = () => setMapFilter('safe');
     document.getElementById('pill-heat').onclick = toggleHeat;
     document.getElementById('pill-stats').onclick = openAreaSheet;
   }
