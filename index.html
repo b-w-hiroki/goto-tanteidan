@@ -242,6 +242,12 @@
   /* ── Mission done state ── */
   .mission.done { opacity: .55; }
   .mission.done .mi { background: rgba(45,106,79,.25) !important; }
+  .m-action { background:var(--gold); color:#12122a; border:none; border-radius:8px; padding:5px 10px; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; flex-shrink:0; margin-left:6px; }
+  .m-action:active { opacity:.75; }
+  .al-detail-date { font-size:11px; color:var(--gray); margin-bottom:14px; }
+  .al-detail-body { font-size:13px; color:#C0B090; line-height:1.75; }
+  .al-detail-share { width:100%; margin-top:16px; background:rgba(212,168,32,.12); border:1px solid rgba(212,168,32,.3); color:var(--gold); border-radius:12px; padding:11px; font-size:13px; font-weight:700; cursor:pointer; }
+  .al-detail-all { width:100%; margin-top:8px; background:none; border:1px solid var(--line); color:var(--gray); border-radius:12px; padding:11px; font-size:13px; cursor:pointer; }
   .done-badge { font-size: 12px; font-weight: 800; color: #6ee7a8; white-space: nowrap; }
 
   /* ── Level up overlay ── */
@@ -2275,6 +2281,25 @@ function doCheckin(){
   if(milestone) setTimeout(()=>showToast(milestone), 3400);
 }
 
+function missionActionLabel(metric){
+  if(metric==='posts'||metric==='danger'||metric==='safe') return LANG==='en'?'📸 Shoot':'📸 撮影';
+  if(metric==='patrol') return LANG==='en'?'🚶 Patrol':'🚶 出発';
+  if(metric==='quiz')   return LANG==='en'?'🧠 Quiz':'🧠 クイズ';
+  if(metric==='map')    return LANG==='en'?'🗺 Map':'🗺 マップ';
+  if(metric==='check')  return LANG==='en'?'✅ Check':'✅ チェック';
+  if(metric==='resolve') return LANG==='en'?'🔵 Resolve':'🔵 確認';
+  return '→';
+}
+function missionAction(metric){
+  const sheet = document.getElementById('mission-sheet');
+  if(sheet) sheet.classList.remove('open');
+  if(metric==='posts'||metric==='danger'||metric==='safe'||metric==='share') switchView('cam');
+  else if(metric==='patrol') { switchView('map'); }
+  else if(metric==='quiz') { switchView('book'); setTimeout(()=>{ const qb=document.getElementById('quiz-btn'); if(qb) qb.click(); },300); }
+  else if(metric==='map') switchView('map');
+  else if(metric==='check') { switchView('home'); }
+  else if(metric==='resolve') switchView('home');
+}
 function missionCard(store, pool, id, weekly){
   const m = pool.find(x=>x.id===id);
   if(!m) return '';
@@ -2282,10 +2307,11 @@ function missionCard(store, pool, id, weekly){
   const prog = Math.min(store.progress[id]||0, m.goal);
   const progTxt = m.goal>1 ? ` <span style="color:var(--gray);font-weight:600">(${prog}/${m.goal})</span>` : '';
   const barHtml = (m.goal>1 && !done) ? `<div class="m-bar"><i style="width:${Math.round(prog/m.goal*100)}%"></i></div>` : '';
+  const actionBtn = !done ? `<button class="m-action" onclick="event.stopPropagation();missionAction('${m.metric}')">${missionActionLabel(m.metric)}</button>` : '';
   return `<div class="card mission${weekly?' weekly':''}${done?' done':''}">
     <div class="mi">${done?'✅':m.icon}</div>
     <div class="mt"><b>${tx(m,'title')}${progTxt}</b><span>${tx(m,'desc')}</span>${barHtml}</div>
-    ${done?`<span class="done-badge">${LANG==='en'?'Done!':'完了！'}</span>`:`<div class="mr">+${m.reward}${t('pt')}</div>`}
+    ${done?`<span class="done-badge">${LANG==='en'?'Done!':'完了！'}</span>`:actionBtn+'<div class="mr">+'+m.reward+t('pt')+'</div>'}
   </div>`;
 }
 function renderMissions(){
@@ -2321,10 +2347,10 @@ function renderAlerts(){
   if(!el) return;
   const shown = ALERTS.slice(0,3);
   el.innerHTML = `<div class="card" style="padding:0;overflow:hidden">${
-    shown.map(a=>{
+    shown.map((a,i)=>{
       const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
       const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
-      return `<div class="alert-card" onclick="openAlertSheet()">
+      return `<div class="alert-card" onclick="openAlertDetail(${i})">
         <div class="alert-src-ic ${a.cat}">${a.src}</div>
         <div class="alert-tx">
           <b>${titleTx}</b>
@@ -2340,6 +2366,33 @@ function renderAlerts(){
   }<div style="padding:8px 14px 10px;border-top:1px solid var(--line)">
     <button class="panel-btn" onclick="openAlertSheet()" style="margin:0;padding:10px;font-size:12px">${t('alerts_viewall')}</button>
   </div></div>`;
+}
+function openAlertDetail(idx){
+  const a = ALERTS[idx];
+  if(!a) return;
+  const sheet = document.getElementById('alert-sheet');
+  if(!sheet) return;
+  const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
+  const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
+  const bodyTx  = LANG==='en' ? (a.body_en||a.body)   : a.body;
+  if(a.isNew){ a.isNew = false; renderAlerts(); }
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="al-hd">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="alert-src-ic ${a.cat}" style="flex-shrink:0">${a.src}</div>
+        <span class="alert-chip ${a.cat}">${alertCatLabel(a.cat)}</span>
+      </div>
+      <button class="al-close" id="al-close">×</button>
+    </div>
+    <div class="al-body">
+      <b style="font-size:16px;font-weight:800;line-height:1.4;display:block;margin-bottom:8px">${titleTx}</b>
+      <div class="al-detail-date">${orgTx} · ${a.date}</div>
+      <div class="al-detail-body">${bodyTx}</div>
+      <button class="al-detail-all" onclick="openAlertSheet()">${LANG==='en'?'📋 View all alerts':'📋 すべてのアラートを見る'}</button>
+    </div>`;
+  document.getElementById('al-close').onclick = ()=>sheet.classList.remove('open');
+  sheet.classList.add('open');
 }
 function openAlertSheet(){
   const sheet = document.getElementById('alert-sheet');
@@ -3852,7 +3905,7 @@ function camResult(){
     MARKINGS.push(m);
     if (map && markerLayer){
       const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};animation:none"><span>${o.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
-      L.marker([m.lat,m.lng],{icon}).addTo(markerLayer).bindPopup(`<b>${m.label}</b><br>${LANG==='en'?'Verdict':'判定'}: <span style="color:${color}">●</span> ${txVerdict(m.verdict)}<br>${t('dm_posted_by')} ${txName(PROFILE.name)} · ${t('just_now')}`);
+      L.marker([m.lat,m.lng],{icon}).addTo(markerLayer).on('click', ()=>openMarkingSheet(m));
     }
     renderMapOverlay();
     refreshHeat();
