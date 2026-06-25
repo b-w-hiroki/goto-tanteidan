@@ -1246,6 +1246,51 @@
   .frame-cell.sel .frame-lbl { color: var(--gold); font-weight: 700; }
   .frame-cell .frame-lock { position: absolute; top: 3px; right: 4px; font-size: 9px; color: var(--gray); }
   .frame-cell .frame-equipped { position: absolute; top: 3px; left: 4px; font-size: 8px; color: var(--gold); font-weight: 800; }
+
+  /* ── 捜査本部ブリーフィング ── */
+  .hq-btn { background:none; border:none; font-size:22px; cursor:pointer; padding:4px 3px; line-height:1; }
+  .hq-btn:active { opacity:.65; }
+  .hq-view { position:absolute; inset:0; z-index:170; background:var(--night); overflow-y:auto; transform:translateY(100%); transition:transform .32s cubic-bezier(.4,0,.2,1); }
+  .hq-view.open { transform:translateY(0); }
+  .hq-view::-webkit-scrollbar { width:0; }
+  .hq-hdr { display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:10; padding:52px 18px 12px; background:rgba(14,12,24,.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
+  .hq-back { background:none; border:none; color:var(--gray); font-size:22px; cursor:pointer; padding:4px; line-height:1; }
+  .hq-title { flex:1; }
+  .hq-title b { display:block; font-size:15px; font-weight:800; color:var(--gold); }
+  .hq-title span { font-size:11px; color:var(--gray); }
+  .hq-badge { font-size:9px; font-weight:800; background:var(--red); color:#fff; padding:3px 8px; border-radius:6px; letter-spacing:.05em; flex-shrink:0; }
+  .hq-body { padding:4px 18px 100px; }
+  .hq-sec { margin:16px 0 0; }
+  .hq-sec-title { font-size:10px; font-weight:800; color:var(--gray); letter-spacing:.12em; margin-bottom:8px; }
+  .hq-threat { background:var(--night2); border:1px solid var(--line); border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:14px; }
+  .hq-threat-bar { flex:1; }
+  .hq-threat-lv { font-size:20px; font-weight:800; }
+  .hq-threat-sub { font-size:11px; color:var(--gray); margin-top:2px; }
+  .hq-threat-track { height:6px; background:rgba(255,255,255,.08); border-radius:4px; margin-top:10px; overflow:hidden; }
+  .hq-threat-fill { height:100%; border-radius:4px; transition:width .6s .3s ease; }
+  .hq-threat-ic { font-size:42px; line-height:1; }
+  .hq-zone { background:var(--night2); border:1px solid var(--line); border-radius:12px; padding:10px 14px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+  .hq-zone-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+  .hq-zone-info { flex:1; }
+  .hq-zone-info b { display:block; font-size:13px; font-weight:700; margin-bottom:1px; }
+  .hq-zone-info span { font-size:11px; color:var(--gray); }
+  .hq-zone-cnt { font-size:22px; font-weight:800; color:var(--gold); }
+  .hq-comm-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  .hq-comm-cell { background:var(--night2); border:1px solid var(--line); border-radius:12px; padding:10px 6px; text-align:center; }
+  .hq-comm-cell b { display:block; font-size:20px; font-weight:800; color:var(--gold); }
+  .hq-comm-cell span { font-size:9.5px; color:var(--gray); }
+  .hq-action { background:var(--night2); border:1px solid var(--line); border-radius:12px; padding:10px 14px; margin-bottom:8px; display:flex; align-items:flex-start; gap:10px; cursor:pointer; }
+  .hq-action:active { background:var(--navy); }
+  .hq-action-ic { font-size:22px; line-height:1.2; }
+  .hq-action-body { flex:1; }
+  .hq-action-body b { display:block; font-size:13px; font-weight:700; margin-bottom:2px; }
+  .hq-action-body span { font-size:11px; color:var(--gray); line-height:1.4; }
+  .hq-action-arr { color:var(--gray); font-size:16px; align-self:center; }
+  .hq-score { background:linear-gradient(135deg,rgba(212,168,32,.1),rgba(230,57,70,.07)); border:1px solid rgba(212,168,32,.22); border-radius:14px; padding:12px 16px; }
+  .hq-score-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--line); }
+  .hq-score-row:last-child { border:none; padding-bottom:0; }
+  .hq-score-lbl { font-size:12px; color:var(--gray); }
+  .hq-score-val { font-size:13px; font-weight:700; color:var(--gold); }
 </style>
 </head>
 <body>
@@ -1284,6 +1329,7 @@
       <div class="hdr">
         <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
         <div style="display:flex;gap:8px;align-items:center">
+          <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く">🗂</button>
           <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く">🔔<span class="info-badge" id="info-badge"></span></button>
           <button class="mission-btn" onclick="openMissionSheet()" aria-label="ミッションを開く">📋<span class="mission-count" id="mission-count"></span></button>
           <button class="avatar-btn" id="profile-btn" style="font-size:28px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
@@ -1411,6 +1457,7 @@
   <div class="alert-sheet" id="alert-sheet"></div>
   <div class="mission-sheet" id="mission-sheet"></div>
   <div class="info-view" id="info-view"></div>
+  <div class="hq-view" id="hq-view"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="toast" id="toast"></div>
 
@@ -2245,6 +2292,135 @@ function openAlertSheet(){
 }
 
 // ── 最新情報ビュー ──
+// ── 捜査本部ブリーフィング ──
+function openHQBriefing(){ renderHQBriefing(); document.getElementById('hq-view').classList.add('open'); }
+function closeHQBriefing(){ document.getElementById('hq-view').classList.remove('open'); }
+
+function renderHQBriefing(){
+  const el = document.getElementById('hq-view');
+  if(!el) return;
+
+  const danger = MARKINGS.filter(m=>m.type==='danger').length;
+  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  const score  = danger * 3 + warn;
+  const lvIdx  = score>60?4 : score>40?3 : score>25?2 : score>12?1 : 0;
+  const lvNum  = lvIdx + 1;
+  const tColors = ['#2D6A4F','#6EE7A8','#F4A261','#E63946','#B00020'];
+  const tLabels = LANG==='en'
+    ? ['Low','Guarded','Elevated','High','Critical']
+    : ['低','警戒','中程度','高','危険'];
+  const tIcons  = ['🟢','🟡','🟠','🔴','🚨'];
+  const tc   = tColors[lvIdx];
+  const tPct = Math.round((lvNum/5)*100);
+
+  const zones = [
+    { name:LANG==='en'?'South Shibuya':'渋谷南部',   cnt:Math.max(4, Math.floor(danger*.35)), type:'danger' },
+    { name:LANG==='en'?'Udagawacho':'宇田川町',       cnt:Math.max(3, Math.floor(warn*.3)),   type:'warn'   },
+    { name:LANG==='en'?'Dogenzaka':'道玄坂',           cnt:Math.max(2, Math.floor(danger*.2)), type:'warn'   },
+  ];
+
+  const postsToday    = (COMMUNITY_ACTIVITY.filter(a=>a.type==='post').length)   + (STATE.history[todayStr()]||0);
+  const patrolsToday  = (COMMUNITY_ACTIVITY.filter(a=>a.type==='patrol').length) + (STATE.patrols||0);
+  const resolvedToday = (COMMUNITY_ACTIVITY.filter(a=>a.type==='resolve').length)+ (STATE.resolved||0);
+
+  const mDone  = Object.keys(DAILY.done||{}).filter(k=>DAILY.done[k]).length;
+  const mTotal = DAILY.picks ? DAILY.picks.length : 3;
+
+  const actions = [
+    { ic:'🚶', title:LANG==='en'?'Patrol South Shibuya':'渋谷南部をパトロール',
+      desc:LANG==='en'?'3 markings confirmed — early patrol recommended':'マーキング3件確認済み・早期パトロール推奨',
+      fn:`switchTab(1)` },
+    { ic:'📸', title:LANG==='en'?'Post a marking':'マーキングを投稿',
+      desc:LANG==='en'?'Help keep the map up to date':'今日の情報でマップを更新しよう',
+      fn:`document.getElementById('cam-btn').click()` },
+    { ic:'📋', title:LANG==='en'?'Daily missions':'デイリーミッション',
+      desc:LANG==='en'?`${mDone}/${mTotal} done`:`${mDone}/${mTotal}件完了`,
+      fn:`openMissionSheet()` },
+  ];
+
+  const personalScore = Math.min(100, Math.round(
+    ((STATE.myPosts||0)*4 + (STATE.patrols||0)*8 + (STATE.resolved||0)*6 + (STATE.streak||0)*3) / 3
+  ));
+
+  const dateStr = (() => {
+    const d = new Date();
+    return LANG==='en'
+      ? d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+      : `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+  })();
+
+  const zoneHtml = zones.map(z=>`
+    <div class="hq-zone">
+      <div class="hq-zone-dot" style="background:${z.type==='danger'?'var(--red)':'var(--gold)'}"></div>
+      <div class="hq-zone-info">
+        <b>${z.name}</b>
+        <span>${z.type==='danger'?(LANG==='en'?'Marking likely':'マーキング濃厚'):(LANG==='en'?'Needs check':'要確認')}</span>
+      </div>
+      <div class="hq-zone-cnt">${z.cnt}</div>
+    </div>`).join('');
+
+  const actHtml = actions.map(a=>`
+    <div class="hq-action" onclick="${a.fn};closeHQBriefing()">
+      <div class="hq-action-ic">${a.ic}</div>
+      <div class="hq-action-body"><b>${a.title}</b><span>${a.desc}</span></div>
+      <div class="hq-action-arr">›</div>
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div class="hq-hdr">
+      <button class="hq-back" onclick="closeHQBriefing()">✕</button>
+      <div class="hq-title">
+        <b>🗂 ${LANG==='en'?'HQ Briefing':'捜査本部'}</b>
+        <span>${dateStr}</span>
+      </div>
+      <span class="hq-badge">${LANG==='en'?'TOP SECRET':'機密情報'}</span>
+    </div>
+    <div class="hq-body">
+
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'THREAT LEVEL':'脅威レベル'}</div>
+        <div class="hq-threat">
+          <div class="hq-threat-bar">
+            <div class="hq-threat-lv" style="color:${tc}">Lv.${lvNum} &nbsp;${tLabels[lvIdx]}</div>
+            <div class="hq-threat-sub">${LANG==='en'?'Shibuya area · now':'渋谷エリア · 現在'}</div>
+            <div class="hq-threat-track"><div class="hq-threat-fill" style="width:${tPct}%;background:${tc}"></div></div>
+          </div>
+          <div class="hq-threat-ic">${tIcons[lvIdx]}</div>
+        </div>
+      </div>
+
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'PRIORITY ZONES':'重点監視エリア'}</div>
+        ${zoneHtml}
+      </div>
+
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'COMMUNITY TODAY':'コミュニティ活動'}</div>
+        <div class="hq-comm-grid">
+          <div class="hq-comm-cell"><b>${postsToday}</b><span>${LANG==='en'?'Posts':'投稿数'}</span></div>
+          <div class="hq-comm-cell"><b>${patrolsToday}</b><span>${LANG==='en'?'Patrols':'パトロール'}</span></div>
+          <div class="hq-comm-cell"><b>${resolvedToday}</b><span>${LANG==='en'?'Resolved':'対処済み'}</span></div>
+        </div>
+      </div>
+
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'RECOMMENDED':'推奨アクション'}</div>
+        ${actHtml}
+      </div>
+
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'YOUR SCORE':'捜査スコア'}</div>
+        <div class="hq-score">
+          <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Streak':'連続記録'}</span><span class="hq-score-val">${STATE.streak||0}${LANG==='en'?' days':'日'}</span></div>
+          <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Posts today':'今日の投稿'}</span><span class="hq-score-val">${STATE.history[todayStr()]||0}</span></div>
+          <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Total patrols':'総パトロール'}</span><span class="hq-score-val">${STATE.patrols||0}</span></div>
+          <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Investigation score':'捜査スコア'}</span><span class="hq-score-val">${personalScore}<span style="font-size:10px;color:var(--gray)">/100</span></span></div>
+        </div>
+      </div>
+
+    </div>`;
+}
+
 let infoCat = 'all';
 let _infoUnreadShown = false;
 
