@@ -315,11 +315,29 @@
   .catalog-link .cl-info span { font-size: 11px; color: var(--gray); }
 
   /* ── Book (handbook) tab ── */
-  .book-card { display: flex; gap: 14px; align-items: flex-start; background: var(--night2); border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--line); }
-  .book-mark { font-size: 30px; width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .book-info b { font-size: 14px; display: block; margin-bottom: 5px; }
-  .book-info p { font-size: 12px; color: #C0B090; line-height: 1.6; margin-bottom: 6px; }
-  .book-freq { font-size: 10px; color: var(--gray); }
+  .book-row { display:flex; gap:12px; align-items:center; background:var(--night2); border-radius:14px; padding:11px 14px; margin-bottom:8px; border:1px solid var(--line); cursor:pointer; transition:background .15s; }
+  .book-row:active { background:var(--navy); }
+  .book-row-mark { font-size:26px; width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .book-row-info { flex:1; min-width:0; }
+  .book-row-info b { font-size:13px; display:block; margin-bottom:3px; }
+  .book-row-freq { font-size:10px; color:var(--gray); }
+  .book-row-arr { color:var(--gray); font-size:18px; flex-shrink:0; }
+  .book-sheet { position:absolute; left:0; right:0; bottom:78px; z-index:1100; background:rgba(18,18,42,.98); backdrop-filter:blur(14px); border-top:1px solid var(--line); border-radius:20px 20px 0 0; padding:14px 20px 28px; transform:translateY(110%); transition:transform .3s ease; box-shadow:0 -10px 30px rgba(0,0,0,.5); max-height:80%; display:flex; flex-direction:column; }
+  .book-sheet.open { transform:translateY(0); }
+  .book-sheet .grab { width:40px; height:4px; border-radius:3px; background:#3a3a55; margin:0 auto 16px; flex-shrink:0; }
+  .bs-head { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
+  .bs-icon { font-size:42px; width:68px; height:68px; border-radius:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .bs-title { flex:1; }
+  .bs-title b { font-size:17px; font-weight:800; display:block; margin-bottom:5px; }
+  .bs-close { background:none; border:none; color:var(--gray); font-size:22px; cursor:pointer; padding:4px; line-height:1; align-self:flex-start; }
+  .bs-body { overflow-y:auto; flex:1; }
+  .bs-body::-webkit-scrollbar { width:0; }
+  .bs-section { margin-bottom:14px; }
+  .bs-label { font-size:10px; font-weight:800; color:var(--gray); letter-spacing:.1em; margin-bottom:6px; }
+  .bs-text { font-size:13px; color:#C0B090; line-height:1.7; }
+  .bs-examples { display:flex; flex-wrap:wrap; gap:6px; }
+  .bs-ex-chip { font-size:11px; background:var(--night); border:1px solid var(--line); border-radius:8px; padding:4px 10px; color:var(--fg); }
+  .bs-cam-btn { width:100%; margin-top:16px; background:var(--gold); color:#12122a; font-weight:800; font-size:14px; border:none; border-radius:14px; padding:14px; cursor:pointer; }
 
   /* ── Map ── */
   #map { position: absolute; top: 44px; bottom: 78px; left: 0; right: 0; }
@@ -724,11 +742,11 @@
   .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
 
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet, .mission-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet, .mission-sheet, .book-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open, .mission-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open, .mission-sheet.open, .book-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -1245,9 +1263,43 @@
   .frame-cell.sel { background: rgba(200,150,10,.14); }
   .frame-cell.sel .frame-lbl { color: var(--gold); font-weight: 700; }
   .frame-cell .frame-lock { position: absolute; top: 3px; right: 4px; font-size: 9px; color: var(--gray); }
-  .frame-cell .frame-equipped { position: absolute; top: 3px; left: 4px; font-size: 8px; color: var(--gold); font-weight: 800; }
-
-  /* ── 捜査本部ブリーフィング ── */
+  /* ── アカウントセットアップ ── */
+  .setup-view { position:absolute; inset:0; z-index:310; background:var(--night); display:flex; flex-direction:column; transform:translateX(100%); transition:transform .36s cubic-bezier(.4,0,.2,1); }
+  .setup-view.open { transform:translateX(0); }
+  .setup-hdr { padding:52px 24px 18px; text-align:center; }
+  .setup-progress { display:flex; gap:6px; justify-content:center; margin-bottom:18px; }
+  .setup-prog-dot { height:4px; border-radius:3px; background:var(--line); transition:all .3s; width:28px; }
+  .setup-prog-dot.on { background:var(--gold); width:44px; }
+  .setup-title { font-size:22px; font-weight:800; line-height:1.35; }
+  .setup-sub { font-size:13px; color:var(--gray); margin-top:8px; line-height:1.6; }
+  .setup-body { flex:1; overflow-y:auto; padding:0 24px 8px; }
+  .setup-foot { padding:12px 24px 36px; }
+  .setup-av-ic { font-size:72px; text-align:center; margin-bottom:20px; line-height:1; display:block; }
+  .setup-name-inp { width:100%; background:var(--night2); border:1.5px solid var(--line); border-radius:14px; color:#fff; font-size:20px; font-weight:700; text-align:center; padding:16px 12px; outline:none; transition:border-color .2s; box-sizing:border-box; }
+  .setup-name-inp:focus { border-color:var(--gold); }
+  .setup-name-inp.err { border-color:var(--red); }
+  .setup-name-hint { font-size:12px; color:var(--gray); text-align:center; margin-top:10px; }
+  .setup-av-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .setup-av-cell { background:var(--night2); border:2px solid transparent; border-radius:16px; font-size:34px; padding:14px 8px; text-align:center; cursor:pointer; transition:all .2s; line-height:1; }
+  .setup-av-cell.sel { border-color:var(--gold); background:rgba(212,168,32,.12); transform:scale(1.06); }
+  .setup-av-cell:active { transform:scale(.93); }
+  .setup-team-item { background:var(--night2); border:1.5px solid var(--line); border-radius:14px; padding:12px 16px; margin-bottom:10px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all .2s; }
+  .setup-team-item.sel { border-color:var(--gold); background:rgba(212,168,32,.08); }
+  .setup-team-item:active { background:var(--navy); }
+  .setup-team-ic { font-size:28px; line-height:1; }
+  .setup-team-name { flex:1; }
+  .setup-team-name b { display:block; font-size:14px; font-weight:700; margin-bottom:2px; }
+  .setup-team-name span { font-size:11px; color:var(--gray); }
+  .setup-team-chk { font-size:18px; opacity:0; transition:opacity .2s; }
+  .setup-team-item.sel .setup-team-chk { opacity:1; }
+  .setup-skip { background:none; border:none; color:var(--gray); font-size:13px; cursor:pointer; width:100%; padding:12px 0 0; text-align:center; display:block; }
+  /* ── ランキング: 自分の貢献カード ── */
+  .my-contrib { background:linear-gradient(135deg,rgba(212,168,32,.1),rgba(230,57,70,.07)); border:1px solid rgba(212,168,32,.22); border-radius:14px; padding:14px 16px; margin-top:12px; }
+  .my-contrib-title { font-size:10px; font-weight:800; color:var(--gray); letter-spacing:.1em; margin-bottom:10px; }
+  .my-contrib-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .mc-cell { background:rgba(0,0,0,.18); border-radius:10px; padding:9px 12px; }
+  .mc-cell b { display:block; font-size:20px; font-weight:800; color:var(--gold); }
+  .mc-cell span { font-size:10px; color:var(--gray); }
   .hq-btn { background:none; border:none; font-size:22px; cursor:pointer; padding:4px 3px; line-height:1; }
   .hq-btn:active { opacity:.65; }
   .hq-view { position:absolute; inset:0; z-index:170; background:var(--night); overflow-y:auto; transform:translateY(100%); transition:transform .32s cubic-bezier(.4,0,.2,1); }
@@ -1394,6 +1446,7 @@
           <button data-seg="all" data-i18n="seg_all">総合</button>
         </div>
         <div class="card" id="rank-list"></div>
+        <div id="my-contrib-wrap"></div>
       </div>
       <div id="rank-team" style="display:none">
         <div id="myteam-card"></div>
@@ -1404,7 +1457,14 @@
 
     <!-- BOOK -->
     <section class="view" id="view-book">
-      <div class="hdr"><div><h2 data-i18n="book_title">探偵手帳</h2><div class="sub" data-i18n="book_sub">マーキング図鑑</div></div><div style="font-size:26px">📖</div></div>
+      <div class="hdr">
+        <div><h2 data-i18n="book_title">探偵手帳</h2><div class="sub" data-i18n="book_sub">マーキング図鑑</div></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="hq-btn" id="quiz-btn" aria-label="今日の防犯クイズ" title="今日の防犯クイズ">🧠</button>
+          <button class="hq-btn" id="safety-btn" aria-label="防犯Tips・緊急" title="防犯Tips・緊急">🛡</button>
+          <div style="font-size:26px">📖</div>
+        </div>
+      </div>
       <p style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.6" data-i18n="book_desc">侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。</p>
       <input class="book-search" id="book-search" type="text" data-i18n-ph="book_search_ph" placeholder="🔎 記号名・意味で検索…" />
       <div class="book-filter" id="book-filter">
@@ -1413,12 +1473,13 @@
         <button class="ff-chip" data-bfilter="warn" data-i18n="bf_warn">要確認</button>
         <button class="ff-chip" data-bfilter="safe" data-i18n="bf_safe">偶然</button>
       </div>
-      <button class="panel-btn accent" id="quiz-btn" data-i18n="quiz_btn">🧠 今日の防犯クイズ</button>
-      <button class="panel-btn" id="safety-btn" data-i18n="safety_btn" style="margin-top:-4px">🛡 防犯Tips・緊急</button>
       <div id="book-list"></div>
+      <div class="book-sheet" id="book-sheet"></div>
     </section>
 
   </div>
+
+  <div class="setup-view" id="setup-view"></div>
 
   <div class="onboard" id="onboard">
     <div class="ob-wrap">
@@ -3294,33 +3355,71 @@ function bindReactions(idx){
 let bookQuery = '', bookFilter = 'all';
 function renderBook(){
   const q = bookQuery.trim().toLowerCase();
-  const list = MARK_CATALOG.filter(m=>{
+  const allList = MARK_CATALOG.map((m,i)=>({m,i}));
+  const list = allList.filter(({m})=>{
     if(bookFilter !== 'all' && m.color !== bookFilter) return false;
     if(!q) return true;
     const hay = (m.name + ' ' + m.meaning + ' ' + m.examples.join(' ') + ' ' +
       (m.name_en||'') + ' ' + (m.meaning_en||'') + ' ' + m.examples.map(txLabel).join(' ')).toLowerCase();
     return hay.includes(q);
   });
-  const sep = LANG==='en' ? ', ' : '、';
-  document.getElementById('book-list').innerHTML = list.length ? list.map(m=>{
+  document.getElementById('book-list').innerHTML = list.length ? list.map(({m,i})=>{
     const chipCls = m.color==='danger'?'ok':m.color==='warn'?'warn':'ng';
     const chipLbl = m.color==='danger'?t('chip_danger'):m.color==='warn'?t('chip_warn'):t('chip_safe');
     const bg = m.color==='danger'?'rgba(230,57,70,.18)':m.color==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
-    return `<div class="book-card">
-      <div class="book-mark" style="background:${bg}">${m.mark}</div>
-      <div class="book-info">
+    return `<div class="book-row" onclick="openBookSheet(${i})">
+      <div class="book-row-mark" style="background:${bg}">${m.mark}</div>
+      <div class="book-row-info">
         <b>${tx(m,'name')} <span class="chip ${chipCls}" style="font-size:9px">${chipLbl}</span></b>
-        <p>${tx(m,'meaning')}</p>
-        <div class="book-freq">${t('book_freq')}: ${txFreq(m.frequency)}　${t('book_ex')}: ${m.examples.map(txLabel).join(sep)}</div>
+        <div class="book-row-freq">${txFreq(m.frequency)}</div>
       </div>
+      <div class="book-row-arr">›</div>
     </div>`;
   }).join('') : `<div class="book-empty">${t('book_empty')}</div>`;
+}
+function openBookSheet(idx){
+  const m = MARK_CATALOG[idx];
+  if(!m) return;
+  const chipCls = m.color==='danger'?'ok':m.color==='warn'?'warn':'ng';
+  const chipLbl = m.color==='danger'?t('chip_danger'):m.color==='warn'?t('chip_warn'):t('chip_safe');
+  const bg = m.color==='danger'?'rgba(230,57,70,.18)':m.color==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
+  const sep = LANG==='en' ? ', ' : '、';
+  document.getElementById('book-sheet').innerHTML = `
+    <div class="grab"></div>
+    <div class="bs-head">
+      <div class="bs-icon" style="background:${bg}">${m.mark}</div>
+      <div class="bs-title">
+        <b>${tx(m,'name')}</b>
+        <span class="chip ${chipCls}">${chipLbl}</span>
+      </div>
+      <button class="bs-close" onclick="closeBookSheet()">×</button>
+    </div>
+    <div class="bs-body">
+      <div class="bs-section">
+        <div class="bs-label">${LANG==='en'?'WHAT IT MEANS':'意味・特徴'}</div>
+        <div class="bs-text">${tx(m,'meaning')}</div>
+      </div>
+      <div class="bs-section">
+        <div class="bs-label">${LANG==='en'?'FREQUENCY':'出現頻度'}</div>
+        <div class="bs-text">${txFreq(m.frequency)}</div>
+      </div>
+      <div class="bs-section">
+        <div class="bs-label">${LANG==='en'?'WHERE IT APPEARS':'よく見られる場所'}</div>
+        <div class="bs-examples">${m.examples.map(e=>`<span class="bs-ex-chip">${txLabel(e)}</span>`).join('')}</div>
+      </div>
+      <button class="bs-cam-btn" onclick="closeBookSheet(); switchView('cam')">📸 ${LANG==='en'?'Shoot this mark':'このマークを撮影する'}</button>
+    </div>`;
+  document.getElementById('book-sheet').classList.add('open');
+}
+function closeBookSheet(){
+  document.getElementById('book-sheet').classList.remove('open');
 }
 
 let currentSeg = 'week';
 function renderRank(seg){
   currentSeg = seg;
   const list = RANKS[seg];
+  renderMyContrib();
   document.getElementById('rank-list').innerHTML = list.map((r,i)=>{
     const cls = i===0?'g':i===1?'s':i===2?'b':'';
     const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
@@ -3747,6 +3846,132 @@ function closeNotifSheet(){
 }
 
 // ── Onboarding ──
+// ── アカウントセットアップ ──
+let _setupName = '', _setupAv = '', _setupTeam = '';
+
+function showSetup(){
+  _setupName = ''; _setupAv = PROFILE.avatar || '🕵️'; _setupTeam = PROFILE.team || 'shibuya';
+  renderSetupStep(1);
+  document.getElementById('setup-view').classList.add('open');
+  const ob = document.getElementById('onboard');
+  if(ob){ ob.classList.add('gone'); setTimeout(()=>{ if(ob.parentNode) ob.remove(); }, 450); }
+}
+
+function renderSetupStep(step){
+  const el = document.getElementById('setup-view');
+  const dots = [1,2,3].map(i=>`<div class="setup-prog-dot${i===step?' on':''}"></div>`).join('');
+  const prog = `<div class="setup-progress">${dots}</div>`;
+
+  if(step === 1){
+    el.innerHTML = `
+      <div class="setup-hdr">${prog}
+        <div class="setup-title">${LANG==='en'?'Choose your<br>detective name':'探偵名を<br>つけてください'}</div>
+        <div class="setup-sub">${LANG==='en'?'This is the name shown in rankings':'ランキングに表示される名前です'}</div>
+      </div>
+      <div class="setup-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:8px">
+        <span class="setup-av-ic">${_setupAv}</span>
+        <input class="setup-name-inp" id="su-name" type="text" maxlength="12"
+          placeholder="${LANG==='en'?'e.g. Takashi':'例：タカシ'}" value="${_setupName}"
+          autocomplete="off" inputmode="text" />
+        <div class="setup-name-hint">${LANG==='en'?'Up to 12 characters':'最大12文字'}</div>
+      </div>
+      <div class="setup-foot">
+        <button class="btn primary" onclick="suNext1()">${LANG==='en'?'Next →':'次へ →'}</button>
+      </div>`;
+    setTimeout(()=>{ const i=document.getElementById('su-name'); if(i) i.focus(); }, 120);
+
+  } else if(step === 2){
+    const avHtml = AVATARS.map(a=>
+      `<div class="setup-av-cell${a===_setupAv?' sel':''}" onclick="suPickAv(this,'${a}')">${a}</div>`
+    ).join('');
+    el.innerHTML = `
+      <div class="setup-hdr">${prog}
+        <div class="setup-title">${LANG==='en'?'Choose your<br>avatar':'アバターを<br>選んでください'}</div>
+      </div>
+      <div class="setup-body"><div class="setup-av-grid">${avHtml}</div></div>
+      <div class="setup-foot">
+        <button class="btn primary" onclick="renderSetupStep(3)">${LANG==='en'?'Next →':'次へ →'}</button>
+      </div>`;
+
+  } else if(step === 3){
+    const teamHtml = TEAMS.map(tm=>`
+      <div class="setup-team-item${tm.id===_setupTeam?' sel':''}" onclick="suPickTeam(this,'${tm.id}')">
+        <div class="setup-team-ic">${tm.emoji}</div>
+        <div class="setup-team-name">
+          <b>${tx(tm,'name')}</b>
+          <span>${tm.members}${LANG==='en'?'':' '}${LANG==='en'?'members':'名'} · ${Math.round(teamDisplayPt(tm)/1000)}K pt</span>
+        </div>
+        <div class="setup-team-chk">✓</div>
+      </div>`).join('');
+    el.innerHTML = `
+      <div class="setup-hdr">${prog}
+        <div class="setup-title">${LANG==='en'?'Join a squad':'探偵団に<br>参加しますか？'}</div>
+        <div class="setup-sub">${LANG==='en'?'You can change this later in your profile':'あとでマイページから変更できます'}</div>
+      </div>
+      <div class="setup-body">${teamHtml}</div>
+      <div class="setup-foot">
+        <button class="btn primary" onclick="finishSetup()">${LANG==='en'?'Start! 🔍':'はじめる 🔍'}</button>
+        <button class="setup-skip" onclick="finishSetup()">${LANG==='en'?'Skip for now':'あとで設定する'}</button>
+      </div>`;
+  }
+}
+
+function suNext1(){
+  const inp = document.getElementById('su-name');
+  const name = inp ? inp.value.trim() : '';
+  if(!name){ if(inp){ inp.classList.add('err'); inp.placeholder = LANG==='en'?'Please enter a name':'名前を入力してください'; } return; }
+  _setupName = name;
+  renderSetupStep(2);
+}
+function suPickAv(el, av){
+  _setupAv = av;
+  document.querySelectorAll('.setup-av-cell').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+  // Update the avatar preview on step 1 via _setupAv (only on step 2 so no-op needed)
+}
+function suPickTeam(el, team){
+  _setupTeam = team;
+  document.querySelectorAll('.setup-team-item').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function finishSetup(){
+  if(_setupName) PROFILE.name = _setupName;
+  if(_setupAv)   PROFILE.avatar = _setupAv;
+  if(_setupTeam) PROFILE.team = _setupTeam;
+  ONBOARDED = true; saveState();
+  syncProfileToRanks(); renderHome();
+  const sv = document.getElementById('setup-view');
+  sv.classList.remove('open');
+  const ob = document.getElementById('onboard');
+  if(ob){ ob.classList.add('gone'); setTimeout(()=>ob.remove(), 450); }
+  setTimeout(()=>sv.remove(), 450);
+  const welcome = LANG==='en'
+    ? `🔍 Welcome, ${PROFILE.name}!`
+    : `🔍 ようこそ、${PROFILE.name}${t('name_suffix')}`;
+  setTimeout(()=>showToast(welcome), 700);
+}
+
+// ── ランキング: 自分の貢献カード ──
+function renderMyContrib(){
+  const el = document.getElementById('my-contrib-wrap');
+  if(!el) return;
+  const postsThisWeek = Object.values(STATE.history||{}).reduce((s,v)=>s+v,0);
+  const score = Math.min(999, Math.round(
+    (STATE.myPosts||0)*15 + (STATE.patrols||0)*25 + (STATE.resolved||0)*20 + (STATE.streak||0)*5
+  ));
+  const title = LANG==='en' ? 'YOUR CONTRIBUTION' : 'あなたの今週の貢献';
+  el.innerHTML = `
+    <div class="my-contrib">
+      <div class="my-contrib-title">${title}</div>
+      <div class="my-contrib-grid">
+        <div class="mc-cell"><b>${STATE.myPosts||0}</b><span>${LANG==='en'?'Posts':'投稿数'}</span></div>
+        <div class="mc-cell"><b>${STATE.patrols||0}</b><span>${LANG==='en'?'Patrols':'パトロール'}</span></div>
+        <div class="mc-cell"><b>${STATE.resolved||0}</b><span>${LANG==='en'?'Resolved':'対処済み'}</span></div>
+        <div class="mc-cell"><b>${score}</b><span>${LANG==='en'?'Week score':'週間スコア'}</span></div>
+      </div>
+    </div>`;
+}
+
 let obStep = 0;
 function obGo(step){
   const slides = document.querySelectorAll('.ob-slide');
@@ -3761,10 +3986,7 @@ document.getElementById('ob-next').onclick = () => {
   if (obStep < slides.length - 1) {
     obGo(obStep + 1);
   } else {
-    const ob = document.getElementById('onboard');
-    ob.classList.add('gone');
-    setTimeout(() => ob.remove(), 450);
-    ONBOARDED = true; saveState();
+    showSetup();
   }
 };
 
