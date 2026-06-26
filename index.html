@@ -155,7 +155,7 @@
   }
   .tab.cam .cambtn svg { width: 26px; height: 26px; stroke: #fff; }
 
-  .view { display: none; padding: 12px 16px 20px; animation: fade .25s; }
+  .view { display: none; padding: 10px 14px 16px; animation: fade .25s; }
   .view.active { display: block; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
 
@@ -163,44 +163,45 @@
   .hdr {
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 30;
-    margin: -12px -16px 12px; padding: 12px 16px 10px;
+    margin: -10px -14px 10px; padding: 10px 14px 9px;
     background: rgba(14,12,24,.86); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
   }
-  .hdr h2 { font-size: 21px; font-weight: 800; }
-  .hdr .sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+  .hdr h2 { font-size: 20px; font-weight: 800; }
+  .hdr .sub { font-size: 11px; color: var(--gray); margin-top: 1px; }
   .card {
-    background: var(--night2); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px;
+    background: var(--night2); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px;
     border: 1px solid var(--line);
   }
 
   /* ── Home hero ── */
   .hero {
     background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
-    border-radius: 18px; padding: 15px 16px; margin-bottom: 12px; position: relative; overflow: hidden;
+    border-radius: 16px; padding: 13px 14px; margin-bottom: 10px; position: relative; overflow: hidden;
     cursor: pointer; border: 2px solid transparent;
     transition: border-color .4s ease, box-shadow .4s ease;
   }
-  .hero .glasswm { position: absolute; right: -10px; top: -16px; font-size: 110px; opacity: .14; }
-  .hero .role { font-size: 12px; opacity: .85; }
-  .hero .name { font-size: 19px; font-weight: 800; margin: 2px 0 10px; }
-  .hero .ptrow { display: flex; align-items: baseline; gap: 8px; }
-  .hero .pt { font-size: 38px; font-weight: 800; line-height: 1; }
-  .hero .ptlbl { font-size: 13px; opacity: .9; }
-  .hero .lvbar { height: 7px; background: rgba(255,255,255,.25); border-radius: 5px; margin-top: 11px; overflow: hidden; }
+  .hero .glasswm { position: absolute; right: -10px; top: -14px; font-size: 88px; opacity: .12; }
+  .hero .role { font-size: 11px; opacity: .8; }
+  .hero .name { font-size: 17px; font-weight: 800; margin: 2px 0 8px; }
+  .hero .ptrow { display: flex; align-items: baseline; gap: 6px; }
+  .hero .pt { font-size: 34px; font-weight: 800; line-height: 1; }
+  .hero .ptlbl { font-size: 12px; opacity: .85; }
+  .hero .lvbar { height: 6px; background: rgba(255,255,255,.25); border-radius: 5px; margin-top: 9px; overflow: hidden; }
   .hero .lvbar i { display: block; height: 100%; width: 68%; background: #fff; border-radius: 5px; }
-  .hero .lvtx { font-size: 11px; opacity: .92; margin-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .hero .lvtx .perk-hint { font-weight: 700; opacity: .95; white-space: nowrap; }
+  .hero .lvtx { font-size: 11px; opacity: .88; margin-top: 5px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .hero .lvtx .perk-hint { font-weight: 700; opacity: .9; white-space: nowrap; font-size: 10px; }
 
-  .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .stat { background: var(--night2); border-radius: 14px; padding: 10px 6px; text-align: center; border: 1px solid var(--line); cursor: pointer; position: relative; overflow: hidden; }
-  .stat b { display: block; font-size: 21px; font-weight: 800; color: var(--red); }
+  .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-bottom: 10px; background: var(--night2); border-radius: 14px; border: 1px solid var(--line); overflow: hidden; }
+  .stat { background: none; border: none; border-right: 1px solid var(--line); padding: 11px 6px; text-align: center; cursor: pointer; position: relative; overflow: hidden; border-radius: 0; }
+  .stat:last-child { border-right: none; }
+  .stat b { display: block; font-size: 20px; font-weight: 800; color: var(--red); }
   .stat .stat-ic { display: block; font-size: 13px; margin-bottom: 1px; }
   .stat-tip { font-size: 9.5px; color: var(--gold); text-align: center; max-height: 0; overflow: hidden;
     transition: max-height .25s ease; pointer-events: none; }
   .stat-tip.show { max-height: 16px; }
 
-  .sec-title { font-size: 13px; font-weight: 700; color: #aab4c8; margin: 2px 0 8px; display: flex; align-items: center; gap: 6px; }
+  .sec-title { font-size: 12px; font-weight: 700; color: #aab4c8; margin: 0 0 6px; display: flex; align-items: center; gap: 5px; }
 
   .mission { display: flex; align-items: center; gap: 11px; padding: 11px 14px; }
   .mission .mi { width: 38px; height: 38px; border-radius: 11px; background: rgba(69,123,157,.2); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
@@ -213,8 +214,9 @@
   .mission.weekly .mi { background: rgba(244,162,97,.2); }
   .mission.weekly .m-bar i { background: linear-gradient(90deg, var(--gold), var(--red)); }
 
-  .feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
-  .feed-item:last-child { border: none; }
+  #feed { border-top: 1px solid var(--line); margin-bottom: 8px; }
+  .feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .feed-item:last-child { border-bottom: none; }
   .feed-item .thumb { width: 48px; height: 48px; border-radius: 10px; font-size: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .feed-item .ft { flex: 1; }
   .feed-item .ft b { font-size: 13px; }
@@ -624,7 +626,7 @@
   .marker-cluster div { background: rgba(230,57,70,.85) !important; color:#fff !important; font-weight:800; font-size:13px; }
 
   /* ── Feed filter chips ── */
-  .feed-filter { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .feed-filter { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
   .ff-chip {
     font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 16px;
     border: 1px solid var(--line); background: var(--night2); color: var(--gray);
@@ -843,16 +845,16 @@
 
   /* ── 危険度予報ウィジェット ── */
   .forecast {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
-    padding: 11px 14px; border-radius: 14px; border: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line);
     background: var(--night2);
   }
-  .forecast .fc-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
+  .forecast .fc-icon { font-size: 20px; line-height: 1; flex-shrink: 0; }
   .forecast .fc-tx { flex: 1; min-width: 0; }
-  .forecast .fc-tx b { font-size: 13px; display: block; }
+  .forecast .fc-tx b { font-size: 12px; display: block; }
   .forecast .fc-tx b .fc-lv { font-weight: 800; margin-left: 4px; }
-  .forecast .fc-tx span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; line-height: 1.45; }
-  .forecast .fc-meter { width: 46px; height: 46px; flex-shrink: 0; }
+  .forecast .fc-tx span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; line-height: 1.4; }
+  .forecast .fc-meter { width: 38px; height: 38px; flex-shrink: 0; }
 
   /* ── クイズ / 戦績カード ボタン ── */
   .panel-btn {
@@ -1014,7 +1016,7 @@
   /* ── レベルアップナッジ ── */
   .lv-nudge {
     display: flex; align-items: center; gap: 8px; cursor: pointer;
-    padding: 10px 14px; border-radius: 12px; margin-bottom: 12px;
+    padding: 8px 12px; border-radius: 10px; margin-bottom: 10px;
     background: linear-gradient(135deg, rgba(244,162,97,.16), rgba(230,57,70,.10));
     border: 1px solid rgba(244,162,97,.3); font-size: 12.5px; font-weight: 700; color: #F1D6BE;
     transition: transform .12s ease;
@@ -1024,11 +1026,11 @@
 
   /* ── Mission button (header) ── */
   .mission-btn {
-    position: relative; background: var(--night2); border: 1.5px solid var(--line);
-    border-radius: 12px; padding: 7px 11px; font-size: 17px; cursor: pointer;
-    color: #fff; line-height: 1; transition: background .15s;
+    position: relative; background: none; border: none;
+    border-radius: 8px; padding: 5px; font-size: 19px; cursor: pointer;
+    color: #fff; line-height: 1; transition: opacity .15s;
   }
-  .mission-btn:active { background: var(--navy); }
+  .mission-btn:active { opacity: .6; }
   .mission-count {
     position: absolute; top: -5px; right: -5px;
     background: var(--red); color: #fff; font-size: 9px; font-weight: 800;
@@ -1159,12 +1161,15 @@
 
   /* ── 今日の活動ミニバー ── */
   .today-row {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-bottom: 10px;
+    background: var(--night2); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
   }
   .today-cell {
-    background: var(--night2); border: 1px solid var(--line); border-radius: 12px;
-    padding: 8px 5px; text-align: center; transition: border-color .25s;
+    background: none; border: none; border-right: 1px solid var(--line); border-radius: 0;
+    padding: 8px 5px; text-align: center; transition: border-color .25s, background .15s;
   }
+  .today-cell:last-child { border-right: none; }
+  .today-cell:active { background: rgba(255,255,255,.04); }
   .today-cell .tc-ic { font-size: 13px; line-height: 1; }
   .today-cell b { display: block; font-size: 16px; font-weight: 800; color: var(--gray); margin: 2px 0 1px; }
   .today-cell span { font-size: 9.5px; color: var(--gray); }
@@ -1175,11 +1180,11 @@
 
   /* ── 最新情報ビュー ── */
   .info-btn {
-    position: relative; background: var(--night2); border: 1.5px solid var(--line);
-    border-radius: 12px; padding: 7px 11px; font-size: 17px; cursor: pointer;
-    color: #fff; line-height: 1; transition: background .15s;
+    position: relative; background: none; border: none;
+    border-radius: 8px; padding: 5px; font-size: 19px; cursor: pointer;
+    color: #fff; line-height: 1; transition: opacity .15s;
   }
-  .info-btn:active { background: var(--navy); }
+  .info-btn:active { opacity: .6; }
   .info-badge {
     position: absolute; top: -5px; right: -5px;
     background: var(--red); color: #fff; font-size: 9px; font-weight: 800;
@@ -1324,8 +1329,8 @@
   .mc-cell { background:rgba(0,0,0,.18); border-radius:10px; padding:9px 12px; }
   .mc-cell b { display:block; font-size:20px; font-weight:800; color:var(--gold); }
   .mc-cell span { font-size:10px; color:var(--gray); }
-  .hq-btn { background:none; border:none; font-size:22px; cursor:pointer; padding:4px 3px; line-height:1; }
-  .hq-btn:active { opacity:.65; }
+  .hq-btn { background:none; border:none; font-size:19px; cursor:pointer; padding:5px; line-height:1; }
+  .hq-btn:active { opacity:.6; }
   .hq-view { position:absolute; inset:0; z-index:170; background:var(--night); overflow-y:auto; transform:translateY(100%); transition:transform .32s cubic-bezier(.4,0,.2,1); }
   .hq-view.open { transform:translateY(0); }
   .hq-view::-webkit-scrollbar { width:0; }
@@ -1404,11 +1409,11 @@
     <section class="view active" id="view-home">
       <div class="hdr">
         <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
-        <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;gap:4px;align-items:center">
           <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く">🗂</button>
           <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く">🔔<span class="info-badge" id="info-badge"></span></button>
           <button class="mission-btn" onclick="openMissionSheet()" aria-label="ミッションを開く">📋<span class="mission-count" id="mission-count"></span></button>
-          <button class="avatar-btn" id="profile-btn" style="font-size:28px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
+          <button class="avatar-btn" id="profile-btn" style="font-size:24px;padding:5px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
         </div>
       </div>
 
@@ -1443,7 +1448,7 @@
         <button class="ff-chip" data-filter="warn" data-i18n="ff_warn">要確認</button>
         <button class="ff-chip" data-filter="ng" data-i18n="ff_ng">偶然</button>
       </div>
-      <div class="card" id="feed"></div>
+      <div id="feed"></div>
     </section>
 
     <!-- MAP -->
@@ -2242,13 +2247,13 @@ function todayRowHtml(){
   const mDone = Object.keys(DAILY.done||{}).filter(k=>DAILY.done[k]).length;
   const mTotal = DAILY.picks ? DAILY.picks.length : 3;
   return `<div class="today-row">
-    <div class="today-cell${postsToday>0?' active':''}">
+    <div class="today-cell${postsToday>0?' active':''}" onclick="switchView('cam')" style="cursor:pointer">
       <div class="tc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
     </div>
-    <div class="today-cell${patrolDone?' done':''}">
+    <div class="today-cell${patrolDone?' done':''}" onclick="switchView('map')" style="cursor:pointer">
       <div class="tc-ic">🚶</div><b>${patrolDone?'✓':'—'}</b><span>${t('td_patrol')}</span>
     </div>
-    <div class="today-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}">
+    <div class="today-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()" style="cursor:pointer">
       <div class="tc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
     </div>
   </div>`;
@@ -2346,7 +2351,7 @@ function renderAlerts(){
   const el = document.getElementById('alerts-list');
   if(!el) return;
   const shown = ALERTS.slice(0,3);
-  el.innerHTML = `<div class="card" style="padding:0;overflow:hidden">${
+  el.innerHTML = `<div style="border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:10px">${
     shown.map((a,i)=>{
       const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
       const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
@@ -2363,8 +2368,8 @@ function renderAlerts(){
         ${a.isNew?'<div class="alert-new-dot"></div>':''}
       </div>`;
     }).join('')
-  }<div style="padding:8px 14px 10px;border-top:1px solid var(--line)">
-    <button class="panel-btn" onclick="openAlertSheet()" style="margin:0;padding:10px;font-size:12px">${t('alerts_viewall')}</button>
+  }<div style="padding:6px 14px 8px;border-top:1px solid var(--line)">
+    <button class="panel-btn" onclick="openAlertSheet()" style="margin:0;padding:8px;font-size:12px">${t('alerts_viewall')}</button>
   </div></div>`;
 }
 function openAlertDetail(idx){
@@ -2898,7 +2903,7 @@ function renderForecast(){
   const dash = 2*Math.PI*18, off = dash*(1-score/100);
   el.innerHTML = `
     <div class="fc-icon">${lvl.ic}</div>
-    <div class="fc-tx"><b>${t('fc_label')}<span class="fc-lv" style="color:${lvl.c}">${t('fc_'+lvl.k)}</span></b><span>${t('fc_'+lvl.k+'_msg')}</span></div>
+    <div class="fc-tx"><b>${t('fc_label')}<span class="fc-lv" style="color:${lvl.c}"> ${t('fc_'+lvl.k)}</span></b></div>
     <svg class="fc-meter" viewBox="0 0 44 44" aria-hidden="true">
       <circle cx="22" cy="22" r="18" fill="none" stroke="var(--line)" stroke-width="5"/>
       <circle cx="22" cy="22" r="18" fill="none" stroke="${lvl.c}" stroke-width="5" stroke-linecap="round"
