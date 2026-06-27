@@ -748,29 +748,37 @@
   .mp-hd .mp-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
   .mp-body { overflow-y: auto; flex: 1; }
   .mp-body::-webkit-scrollbar { width: 0; }
-  .mp-sec { font-size: 12px; font-weight: 800; color: #aab4c8; margin: 6px 0 8px; }
-  .mp-avgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 12px; }
+  .mp-sec {
+    font-size: 10px; font-weight: 800; color: var(--gold);
+    margin: 12px 0 8px; letter-spacing: .1em; text-transform: uppercase;
+    padding-left: 10px; position: relative;
+  }
+  .mp-sec::before {
+    content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 12px; background: var(--gold); border-radius: 2px;
+  }
+  .mp-avgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 10px; }
   .mp-av {
-    aspect-ratio: 1; border-radius: 12px; font-size: 22px; cursor: pointer;
+    aspect-ratio: 1; border-radius: 10px; font-size: 20px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    background: var(--night2); border: 1px solid var(--line);
+    background: var(--night2); border: 1px solid rgba(212,168,32,.14);
   }
   .mp-av.sel { background: rgba(230,57,70,.2); border-color: var(--red); }
-  .accent-row { display: flex; gap: 12px; }
+  .accent-row { display: flex; gap: 10px; }
   .accent-dot {
-    width: 38px; height: 38px; border-radius: 50%; border: 3px solid transparent;
+    width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent;
     cursor: pointer; padding: 0; transition: transform .12s ease;
   }
   .accent-dot:active { transform: scale(.9); }
   .accent-dot.sel { border-color: #fff; box-shadow: 0 0 0 2px var(--night); }
   .mp-name {
-    width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 15px; font-family: inherit;
-    background: var(--night2); border: 1px solid var(--line); color: #fff; margin-bottom: 16px;
+    width: 100%; padding: 11px 14px; border-radius: 12px; font-size: 15px; font-family: inherit;
+    background: var(--night2); border: 1px solid rgba(212,168,32,.16); color: #fff; margin-bottom: 14px;
   }
   .mp-name:focus { outline: none; border-color: var(--red); }
-  .mp-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .mp-scell { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-  .mp-scell b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); line-height: 1.1; }
+  .mp-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .mp-scell { background: var(--night2); border: 1px solid rgba(212,168,32,.16); border-radius: 12px; padding: 11px 12px; }
+  .mp-scell b { display: block; font-size: 20px; font-weight: 800; color: var(--gold); line-height: 1.1; }
   .mp-scell span { font-size: 11px; color: var(--gray); }
   .mp-achgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
   .mp-ach { display: flex; gap: 10px; align-items: center; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 11px; }
@@ -1637,11 +1645,11 @@ const I18N = {
     next_rank:'次のランク', to_next:'まで あと', pt:'pt', max_rank:'最高ランク到達！',
     perks_title:'🎖 ランク特典', now_lv:'現在', next_is:'次は', promote_in:'で昇格', reach_max:'最高ランクに到達！', all_unlocked:'すべての特典が解放されています',
     st_done:'達成済み', st_cur:'現在', st_left:'あと',
-    mypage:'👤 マイページ', mp_avatar:'アバター', mp_name:'探偵名', mp_team:'🛡 所属探偵団',
-    mp_summary:'📊 今週のまとめ', mp_week_posts:'今週の投稿', mp_earned:'獲得ポイント', mp_week_rank:'週間ランキング', mp_streak:'連続記録',
-    mp_badges:'🏆 実績バッジ', mp_reset:'🗑 データをリセット', mp_reset_confirm:'すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？',
-    mp_lang:'🌐 言語 / Language', rank_suffix:'位', mp_accent:'🎨 アクセントカラー',
-    mp_frames:'🖼 称号フレーム', frame_equipped:'装備中', frame_lv_need:'Lv.{0}で解放',
+    mypage:'マイページ', mp_avatar:'アバター', mp_name:'探偵名', mp_team:'所属探偵団',
+    mp_summary:'今週のまとめ', mp_week_posts:'今週の投稿', mp_earned:'獲得ポイント', mp_week_rank:'週間ランキング', mp_streak:'連続記録',
+    mp_badges:'実績バッジ', mp_reset:'データをリセット', mp_reset_confirm:'すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？',
+    mp_lang:'言語 / Language', rank_suffix:'位', mp_accent:'アクセントカラー',
+    mp_frames:'称号フレーム', frame_equipped:'装備中', frame_lv_need:'Lv.{0}で解放',
     notif_title:'🔔 新着通知',
     recent_posts:'📌 最近の投稿', detected_danger:'濃厚 検出', detected_warn:'要確認',
     my_team_sub:'あなたの所属する探偵団', team_total:'団の総ポイント', team_members:'団員数', your_contrib:'あなたの貢献',
@@ -1728,11 +1736,11 @@ const I18N = {
     next_rank:'Next rank', to_next:'— left:', pt:'pt', max_rank:'Max rank reached!',
     perks_title:'🎖 Rank Perks', now_lv:'Now', next_is:'Next:', promote_in:'to promote', reach_max:'Max rank reached!', all_unlocked:'All perks are unlocked',
     st_done:'Achieved', st_cur:'Current', st_left:'left:',
-    mypage:'👤 My Page', mp_avatar:'Avatar', mp_name:'Detective name', mp_team:'🛡 Your squad',
-    mp_summary:'📊 This week', mp_week_posts:'Posts this week', mp_earned:'Points earned', mp_week_rank:'Weekly rank', mp_streak:'Streak',
-    mp_badges:'🏆 Achievements', mp_reset:'🗑 Reset data', mp_reset_confirm:'This will reset all records (points, posts, achievements). Are you sure?',
-    mp_lang:'🌐 言語 / Language', rank_suffix:'', mp_accent:'🎨 Accent color',
-    mp_frames:'🖼 Title Frames', frame_equipped:'Equipped', frame_lv_need:'Unlocks at Lv.{0}',
+    mypage:'My Page', mp_avatar:'Avatar', mp_name:'Detective name', mp_team:'Your squad',
+    mp_summary:'This week', mp_week_posts:'Posts this week', mp_earned:'Points earned', mp_week_rank:'Weekly rank', mp_streak:'Streak',
+    mp_badges:'Achievements', mp_reset:'Reset data', mp_reset_confirm:'This will reset all records (points, posts, achievements). Are you sure?',
+    mp_lang:'言語 / Language', rank_suffix:'', mp_accent:'Accent color',
+    mp_frames:'Title Frames', frame_equipped:'Equipped', frame_lv_need:'Unlocks at Lv.{0}',
     notif_title:'🔔 New notifications',
     recent_posts:'📌 Recent posts', detected_danger:'Likely found', detected_warn:'To check',
     my_team_sub:'The squad you belong to', team_total:'Squad total pts', team_members:'Members', your_contrib:'Your contribution',
