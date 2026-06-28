@@ -1402,6 +1402,72 @@
   .hq-score-row:last-child { border:none; padding-bottom:0; }
   .hq-score-lbl { font-size:12px; color:var(--gray); }
   .hq-score-val { font-size:13px; font-weight:700; color:var(--gold); }
+
+  /* ── Modal presentation for former bottom sheets ── */
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet,
+  .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet,
+  .mission-sheet, .book-sheet, .mark-sheet {
+    top: 50%;
+    left: 18px;
+    right: 18px;
+    bottom: auto;
+    width: auto;
+    max-height: calc(100% - 138px);
+    border: 1px solid rgba(212,168,32,.18);
+    border-radius: 22px;
+    padding: 18px 18px 22px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(-50% + 20px)) scale(.96);
+    transition: opacity .2s ease, transform .24s cubic-bezier(.2,.8,.2,1);
+    box-shadow:
+      0 22px 70px rgba(0,0,0,.62),
+      0 0 0 999px rgba(3,2,10,.62);
+  }
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open,
+  .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open,
+  .safety-sheet.open, .alert-sheet.open, .mission-sheet.open,
+  .book-sheet.open, .mark-sheet.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+  }
+  .notif-sheet .grab, .rank-sheet .grab, .area-sheet .grab, .level-sheet .grab,
+  .mypage-sheet .grab, .quiz-sheet .grab, .card-sheet .grab, .stats-sheet .grab,
+  .safety-sheet .grab, .alert-sheet .grab, .mission-sheet .grab,
+  .book-sheet .grab, .mark-sheet .grab {
+    display: none;
+  }
+
+  .detail-modal {
+    inset: auto 18px auto 18px;
+    top: 50%;
+    max-height: calc(100% - 138px);
+    border: 1px solid rgba(212,168,32,.18);
+    border-radius: 22px;
+    background: rgba(14,12,24,.98);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(-50% + 20px)) scale(.96);
+    transition: opacity .2s ease, transform .24s cubic-bezier(.2,.8,.2,1);
+    box-shadow:
+      0 22px 70px rgba(0,0,0,.62),
+      0 0 0 999px rgba(3,2,10,.62);
+  }
+  .detail-modal.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+  }
+  .dm-head { padding: 18px 0 0; }
+
+  @media (max-height: 720px) {
+    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet,
+    .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet,
+    .mission-sheet, .book-sheet, .mark-sheet, .detail-modal {
+      max-height: calc(100% - 104px);
+    }
+  }
 </style>
 </head>
 <body>
@@ -4160,7 +4226,7 @@ function switchView(name){
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
   document.getElementById('info-view').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet','mission-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet','mission-sheet','book-sheet','mark-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
