@@ -177,30 +177,37 @@
   /* ── Home hero ── */
   .hero {
     background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
-    border-radius: 18px; padding: 15px 16px; margin-bottom: 12px; position: relative; overflow: hidden;
+    border-radius: 18px; padding: 12px 16px; margin-bottom: 12px; position: relative; overflow: hidden;
     cursor: pointer; border: 2px solid transparent;
     transition: border-color .4s ease, box-shadow .4s ease;
   }
-  .hero .glasswm { position: absolute; right: -10px; top: -16px; font-size: 110px; opacity: .14; }
-  .hero .role { font-size: 12px; opacity: .85; }
-  .hero .name { font-size: 19px; font-weight: 800; margin: 2px 0 10px; }
-  .hero .ptrow { display: flex; align-items: baseline; gap: 8px; }
-  .hero .pt { font-size: 38px; font-weight: 800; line-height: 1; }
-  .hero .ptlbl { font-size: 13px; opacity: .9; }
-  .hero .lvbar { height: 7px; background: rgba(255,255,255,.25); border-radius: 5px; margin-top: 11px; overflow: hidden; }
+  .hero .glasswm { position: absolute; right: -10px; top: -16px; font-size: 90px; opacity: .12; }
+  .hero .hero-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .hero .hero-id { display: flex; flex-direction: column; }
+  .hero .role { font-size: 11px; opacity: .8; }
+  .hero .name { font-size: 16px; font-weight: 800; margin-top: 1px; }
+  .hero .ptrow { display: flex; align-items: baseline; gap: 6px; }
+  .hero .pt { font-size: 32px; font-weight: 800; line-height: 1; }
+  .hero .ptlbl { font-size: 12px; opacity: .9; }
+  .hero .lvbar { height: 6px; background: rgba(255,255,255,.25); border-radius: 5px; margin-top: 8px; overflow: hidden; }
   .hero .lvbar i { display: block; height: 100%; width: 68%; background: #fff; border-radius: 5px; }
-  .hero .lvtx { font-size: 11px; opacity: .92; margin-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .hero .lvtx { font-size: 10.5px; opacity: .92; margin-top: 5px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .hero .lvtx .perk-hint { font-weight: 700; opacity: .95; white-space: nowrap; }
 
   .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .stat { background: var(--night2); border-radius: 14px; padding: 10px 6px; text-align: center; border: 1px solid var(--line); cursor: pointer; position: relative; overflow: hidden; }
+  .stat { background: var(--night2); border-radius: 14px; padding: 10px 6px 8px; text-align: center; border: 1px solid var(--line); cursor: pointer; position: relative; overflow: hidden; }
   .stat b { display: block; font-size: 21px; font-weight: 800; color: var(--red); }
   .stat .stat-ic { display: block; font-size: 13px; margin-bottom: 1px; }
+  .stat .stat-lbl { display: block; font-size: 9.5px; color: var(--gray); margin-top: 3px; line-height: 1; }
   .stat-tip { font-size: 9.5px; color: var(--gold); text-align: center; max-height: 0; overflow: hidden;
     transition: max-height .25s ease; pointer-events: none; }
   .stat-tip.show { max-height: 16px; }
 
-  .sec-title { font-size: 13px; font-weight: 700; color: #aab4c8; margin: 2px 0 8px; display: flex; align-items: center; gap: 6px; }
+  .sec-title {
+    font-size: 12px; font-weight: 800; color: #8a8faa; margin: 14px 0 8px;
+    display: flex; align-items: center; gap: 6px; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .sec-title::before { content:''; display:inline-block; width:3px; height:14px; border-radius:2px; background:var(--red); flex-shrink:0; }
 
   .mission { display: flex; align-items: center; gap: 11px; padding: 11px 14px; }
   .mission .mi { width: 38px; height: 38px; border-radius: 11px; background: rgba(69,123,157,.2); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
@@ -1318,12 +1325,20 @@
   .setup-team-item.sel .setup-team-chk { opacity:1; }
   .setup-skip { background:none; border:none; color:var(--gray); font-size:13px; cursor:pointer; width:100%; padding:12px 0 0; text-align:center; display:block; }
   /* ── ランキング: 自分の貢献カード ── */
-  .my-contrib { background:linear-gradient(135deg,rgba(212,168,32,.1),rgba(230,57,70,.07)); border:1px solid rgba(212,168,32,.22); border-radius:14px; padding:14px 16px; margin-top:12px; }
-  .my-contrib-title { font-size:10px; font-weight:800; color:var(--gray); letter-spacing:.1em; margin-bottom:10px; }
-  .my-contrib-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .mc-cell { background:rgba(0,0,0,.18); border-radius:10px; padding:9px 12px; }
-  .mc-cell b { display:block; font-size:20px; font-weight:800; color:var(--gold); }
-  .mc-cell span { font-size:10px; color:var(--gray); }
+  .my-contrib {
+    background: linear-gradient(135deg, rgba(212,168,32,.14), rgba(230,57,70,.08));
+    border: 1px solid rgba(212,168,32,.3); border-radius: 16px; padding: 14px 16px; margin-top: 12px;
+    box-shadow: 0 4px 16px rgba(212,168,32,.08);
+  }
+  .my-contrib-title {
+    font-size: 10px; font-weight: 800; color: var(--gold); letter-spacing: .1em;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .my-contrib-title::before { content: '⭐'; font-size: 12px; }
+  .my-contrib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mc-cell { background: rgba(0,0,0,.22); border-radius: 12px; padding: 10px 12px; border: 1px solid rgba(212,168,32,.12); }
+  .mc-cell b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); }
+  .mc-cell span { font-size: 10px; color: var(--gray); }
   .hq-btn { background:none; border:none; font-size:22px; cursor:pointer; padding:4px 3px; line-height:1; }
   .hq-btn:active { opacity:.65; }
   .hq-view { position:absolute; inset:0; z-index:170; background:var(--night); overflow-y:auto; transform:translateY(100%); transition:transform .32s cubic-bezier(.4,0,.2,1); }
@@ -1414,9 +1429,13 @@
 
       <div class="hero" id="home-hero">
         <div class="glasswm">🔍</div>
-        <div class="role" id="home-role">特級探偵 / Lv.7</div>
-        <div class="name" id="home-name">ユウキ さん</div>
-        <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
+        <div class="hero-top">
+          <div class="hero-id">
+            <div class="role" id="home-role">特級探偵 / Lv.7</div>
+            <div class="name" id="home-name">ユウキ さん</div>
+          </div>
+          <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
+        </div>
         <div class="lvbar"><i id="lvbar"></i></div>
         <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint" data-i18n="perk_hint">特典を見る ›</span></div>
       </div>
@@ -1426,9 +1445,9 @@
       <div class="forecast" id="forecast"></div>
 
       <div class="statgrid">
-        <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic">📸</span><b id="stat-posts">38</b><div class="stat-tip"></div></div>
-        <div class="stat" onclick="showStatTip(this,'stat_areas')"><span class="stat-ic">🔓</span><b>12</b><div class="stat-tip"></div></div>
-        <div class="stat" onclick="showStatTip(this,'stat_streak')"><span class="stat-ic">🔥</span><b id="stat-streak">5</b><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic">📸</span><b id="stat-posts">38</b><span class="stat-lbl" data-i18n="stat_posts_lbl">投稿数</span><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_areas')"><span class="stat-ic">🔓</span><b>12</b><span class="stat-lbl" data-i18n="stat_areas_lbl">エリア</span><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_streak')"><span class="stat-ic">🔥</span><b id="stat-streak">5</b><span class="stat-lbl" data-i18n="stat_streak_lbl">連続日</span><div class="stat-tip"></div></div>
       </div>
 
       <div class="lv-nudge" id="lv-nudge" style="display:none" onclick="openLevelSheet()" tabindex="0" role="button" aria-label="レベルアップ詳細"></div>
@@ -1489,7 +1508,6 @@
           <div style="font-size:26px">📖</div>
         </div>
       </div>
-      <p style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.6" data-i18n="book_desc">侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。</p>
       <input class="book-search" id="book-search" type="text" data-i18n-ph="book_search_ph" placeholder="🔎 記号名・意味で検索…" />
       <div class="book-filter" id="book-filter">
         <button class="ff-chip active" data-bfilter="all" data-i18n="bf_all">すべて</button>
@@ -1589,6 +1607,7 @@ const I18N = {
     pts_label:'捜査ポイント', perk_hint:'特典を見る ›', name_suffix:' さん',
     aria_cam:'カメラで撮影する', aria_profile:'マイページを開く', aria_notif:'新着通知を開く',
     stat_posts:'投稿数', stat_areas:'解放エリア', stat_streak:'連続記録',
+    stat_posts_lbl:'投稿数', stat_areas_lbl:'エリア', stat_streak_lbl:'連続日',
     sec_missions:'📋 今日のミッション', sec_weekly:'🗓 今週のチャレンジ', sec_feed:'🕐 みんなの捜査ログ',
     ff_all:'すべて', ff_ok:'濃厚', ff_warn:'要確認', ff_ng:'偶然',
     feed_empty:'該当する投稿はありません',
@@ -1680,6 +1699,7 @@ const I18N = {
     pts_label:'investigation pts', perk_hint:'See perks ›', name_suffix:'',
     aria_cam:'Open camera', aria_profile:'Open my page', aria_notif:'Open notifications',
     stat_posts:'Posts', stat_areas:'Areas', stat_streak:'Streak',
+    stat_posts_lbl:'posts', stat_areas_lbl:'areas', stat_streak_lbl:'days',
     sec_missions:'📋 Today\'s Missions', sec_weekly:'🗓 Weekly Challenges', sec_feed:'🕐 Community Log',
     ff_all:'All', ff_ok:'Likely', ff_warn:'Check', ff_ng:'Coincidence',
     feed_empty:'No matching posts',
