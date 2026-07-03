@@ -782,6 +782,18 @@
     transition: transform .3s ease, visibility 0s;
   }
 
+  /* ── シート共通UX：背景タップ＆下スワイプで閉じる ── */
+  .sheet-backdrop {
+    position: absolute; inset: 0; z-index: 1090;
+    background: rgba(6,4,14,.45);
+    opacity: 0; pointer-events: none; transition: opacity .3s ease;
+  }
+  .sheet-backdrop.show { opacity: 1; pointer-events: auto; }
+  .sheet-dragging { transition: none !important; }
+
+  /* タップ可能な行の共通シェブロン */
+  .row-arr { color: var(--gray); opacity: .55; font-size: 18px; flex-shrink: 0; align-self: center; line-height: 1; }
+
   @media (max-width: 820px) { .pitch { display: none; } }
 
   /* ── 実機（スマホ）では電話枠を外して全画面表示 ── */
@@ -1549,6 +1561,7 @@
     </div>
   </div>
 
+  <div class="sheet-backdrop" id="sheet-backdrop" aria-hidden="true"></div>
   <div class="notif-sheet" id="notif-sheet"></div>
   <div class="rank-sheet" id="rank-sheet"></div>
   <div class="level-sheet" id="level-sheet"></div>
@@ -2381,6 +2394,7 @@ function renderAlerts(){
           </div>
         </div>
         ${a.isNew?'<div class="alert-new-dot"></div>':''}
+        <div class="row-arr">›</div>
       </div>`;
     }).join('')
   }<div style="padding:8px 14px 10px;border-top:1px solid var(--line)">
@@ -2842,6 +2856,7 @@ function renderHome(){
         <div class="thumb" style="background:${f.bg}">${f.mark}</div>
         <div class="ft"><b>${txName(f.who)}</b> <span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
         <span class="chip ${f.resolved?'resolved':f.chip[0]}">${f.resolved?t('chip_resolved'):txChip(f.chip[0])}</span>
+        <div class="row-arr">›</div>
       </div>`).join('')
     : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
@@ -3520,6 +3535,7 @@ function renderRank(seg){
       <div class="av" style="background:${r.bg}">${r.av}</div>
       <div class="rn"><b>${txName(r.name)}</b><span>${txArea(r.area)}</span></div>
       <div class="rp">${fmt(r.pt)}</div>
+      <div class="row-arr">›</div>
     </div>`;
   }).join('');
 }
@@ -3627,6 +3643,7 @@ function initMap(){
     return;
   }
   map = L.map('map', { zoomControl:false, attributionControl:false }).setView([35.6595, 139.7010], 16);
+  map.on('click', () => closeMarkingSheet());
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
   const useCluster = typeof L.markerClusterGroup === 'function';
   markerLayer = useCluster ? L.markerClusterGroup({ maxClusterRadius:50, disableClusteringAtZoom:17 }) : L.layerGroup();
@@ -4145,7 +4162,7 @@ function switchView(name){
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
   document.getElementById('info-view').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet','mission-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet','mission-sheet','book-sheet','mark-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
@@ -4334,6 +4351,51 @@ renderRank('week');
 renderMapOverlay();
 updateStatusTime();
 setInterval(updateStatusTime, 30000);
+
+// ── シート共通UX：背景タップ＆下スワイプで閉じる ──
+const SHEET_SELECTOR = '.notif-sheet,.rank-sheet,.area-sheet,.level-sheet,.mypage-sheet,.quiz-sheet,.card-sheet,.stats-sheet,.safety-sheet,.alert-sheet,.mission-sheet,.book-sheet,.mark-sheet';
+// マップ上のシートは地図操作を妨げない非モーダル扱い（背景暗転なし）
+const NONMODAL_SHEETS = ['mark-sheet', 'area-sheet'];
+function openModalSheets(){
+  return [...document.querySelectorAll(SHEET_SELECTOR)]
+    .filter(s => s.classList.contains('open') && !NONMODAL_SHEETS.includes(s.id));
+}
+function syncSheetBackdrop(){
+  document.getElementById('sheet-backdrop').classList.toggle('show', openModalSheets().length > 0);
+}
+function initSheetUX(){
+  const sheets = document.querySelectorAll(SHEET_SELECTOR);
+  const mo = new MutationObserver(syncSheetBackdrop);
+  sheets.forEach(s => mo.observe(s, { attributes: true, attributeFilter: ['class'] }));
+  document.getElementById('sheet-backdrop').onclick = () => {
+    openModalSheets().forEach(s => s.classList.remove('open'));
+  };
+  sheets.forEach(sheet => {
+    let startY = null, dy = 0, dragging = false;
+    sheet.addEventListener('touchstart', e => {
+      // 中身がスクロール済みなら引き下げジェスチャーは発火させない
+      let el = e.target;
+      while (el && el !== sheet){ if (el.scrollTop > 0) return; el = el.parentElement; }
+      startY = e.touches[0].clientY; dy = 0; dragging = true;
+      sheet.classList.add('sheet-dragging');
+    }, { passive: true });
+    sheet.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      dy = e.touches[0].clientY - startY;
+      if (dy > 0) sheet.style.transform = `translateY(${dy}px)`;
+    }, { passive: true });
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      sheet.classList.remove('sheet-dragging');
+      sheet.style.transform = '';
+      if (dy > 90) sheet.classList.remove('open');
+    };
+    sheet.addEventListener('touchend', endDrag);
+    sheet.addEventListener('touchcancel', endDrag);
+  });
+}
+initSheetUX();
 </script>
 </body>
 </html>
