@@ -861,17 +861,35 @@
   }
 
   /* ── 危険度予報ウィジェット ── */
-  .forecast {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
-    padding: 11px 14px; border-radius: 14px; border: 1px solid var(--line);
-    background: var(--night2);
+  /* ── 警戒度サマリー行（ホーム）：詳細はマップへ ── */
+  .safety-line {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line);
+    background: var(--night2); cursor: pointer;
   }
-  .forecast .fc-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
-  .forecast .fc-tx { flex: 1; min-width: 0; }
-  .forecast .fc-tx b { font-size: 13px; display: block; }
-  .forecast .fc-tx b .fc-lv { font-weight: 800; margin-left: 4px; }
-  .forecast .fc-tx span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; line-height: 1.45; }
-  .forecast .fc-meter { width: 46px; height: 46px; flex-shrink: 0; }
+  .safety-line .sl-ic { font-size: 20px; line-height: 1; flex-shrink: 0; }
+  .safety-line .sl-tx { flex: 1; min-width: 0; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .safety-line .sl-tx b { font-weight: 800; }
+  .safety-line .sl-sep { color: var(--gray); margin: 0 7px; }
+  .safety-line.has-new { border-color: rgba(230,57,70,.4); }
+
+  /* ── 警戒度ブリーフ（マップ上部） ── */
+  .map-brief {
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    background: rgba(18,18,42,.92); backdrop-filter: blur(8px);
+    border: 1px solid var(--line); border-radius: 14px; padding: 9px 13px; cursor: pointer;
+  }
+  .map-brief .mb-ic { font-size: 22px; line-height: 1; flex-shrink: 0; }
+  .map-brief .mb-tx { flex: 1; min-width: 0; }
+  .map-brief .mb-tx b { font-size: 12.5px; display: block; }
+  .map-brief .mb-tx > span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ── フィード「すべて見る」 ── */
+  .feed-more {
+    width: 100%; background: none; border: none; border-top: 1px solid var(--line);
+    color: #aab4c8; padding: 12px 0 5px; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit; text-align: center;
+  }
 
   /* ── クイズ / 戦績カード ボタン ── */
   .panel-btn {
@@ -1103,20 +1121,11 @@
   .rg-allclaimed { margin-top: 12px; text-align: center; font-size: 11.5px; color: #6ee7a8; font-weight: 700; }
 
   /* ── 地域アラート ── */
-  .alert-card {
-    display: flex; gap: 11px; align-items: flex-start; padding: 11px 14px; cursor: pointer;
-    border-bottom: 1px solid var(--line); transition: background .15s;
-  }
-  .alert-card:last-child { border: none; }
-  .alert-card:active { background: rgba(255,255,255,.04); }
   .alert-src-ic { width: 38px; height: 38px; border-radius: 11px; font-size: 19px;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .alert-src-ic.police { background: rgba(230,57,70,.18); }
   .alert-src-ic.city   { background: rgba(69,123,157,.18); }
   .alert-src-ic.watch  { background: rgba(45,106,79,.18); }
-  .alert-tx { flex: 1; min-width: 0; }
-  .alert-tx b { font-size: 13px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .alert-tx .alert-meta { font-size: 11px; color: var(--gray); margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .alert-chip { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 700; white-space: nowrap; }
   .alert-chip.police { background: rgba(230,57,70,.2); color: #ff9aa3; }
   .alert-chip.city   { background: rgba(69,123,157,.2); color: #93c5e8; }
@@ -1454,7 +1463,7 @@
 
       <div id="today-row"></div>
 
-      <div class="forecast" id="forecast"></div>
+      <div class="safety-line" id="safety-line" onclick="switchView('map')" role="button" tabindex="0" aria-label="警戒度とアラートをマップで確認"></div>
 
       <div class="statgrid">
         <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic">📸</span><b id="stat-posts">38</b><span class="stat-lbl" data-i18n="stat_posts_lbl">投稿数</span><div class="stat-tip"></div></div>
@@ -1463,9 +1472,6 @@
       </div>
 
       <div class="lv-nudge" id="lv-nudge" style="display:none" onclick="openLevelSheet()" tabindex="0" role="button" aria-label="レベルアップ詳細"></div>
-
-      <div class="sec-title" data-i18n="sec_alerts">📢 地域アラート</div>
-      <div id="alerts-list"></div>
 
       <div class="sec-title" data-i18n="sec_feed">🕐 みんなの捜査ログ</div>
       <div class="feed-filter" id="feed-filter">
@@ -2373,60 +2379,31 @@ function bumpDaily(metric){
   updateMissionBadge();
 }
 
-// ── 地域アラート ──
+// ── 地域アラート・警戒度 ──
 function alertCatLabel(cat){ return t('alert_cat_'+cat); }
-function renderAlerts(){
-  const el = document.getElementById('alerts-list');
-  if(!el) return;
-  const shown = ALERTS.slice(0,3);
-  el.innerHTML = `<div class="card" style="padding:0;overflow:hidden">${
-    shown.map((a,i)=>{
-      const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
-      const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
-      return `<div class="alert-card" onclick="openAlertDetail(${i})">
-        <div class="alert-src-ic ${a.cat}">${a.src}</div>
-        <div class="alert-tx">
-          <b>${titleTx}</b>
-          <div class="alert-meta">
-            <span class="alert-chip ${a.cat}">${alertCatLabel(a.cat)}</span>
-            <span>${orgTx}</span>
-            <span>${a.date.slice(5).replace('-','/')}</span>
-          </div>
-        </div>
-        ${a.isNew?'<div class="alert-new-dot"></div>':''}
-        <div class="row-arr">›</div>
-      </div>`;
-    }).join('')
-  }<div style="padding:8px 14px 10px;border-top:1px solid var(--line)">
-    <button class="panel-btn" onclick="openAlertSheet()" style="margin:0;padding:10px;font-size:12px">${t('alerts_viewall')}</button>
-  </div></div>`;
+function forecastLevel(){
+  const danger = MARKINGS.filter(m=>m.type==='danger').length;
+  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
+  const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'#E63946'}
+            : score>=32 ? {k:'caution', ic:'⛅', c:'#F4A261'}
+            : {k:'safe', ic:'☀️', c:'#6ee7a8'};
+  return { score, ...lvl };
 }
-function openAlertDetail(idx){
-  const a = ALERTS[idx];
-  if(!a) return;
-  const sheet = document.getElementById('alert-sheet');
-  if(!sheet) return;
-  const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
-  const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
-  const bodyTx  = LANG==='en' ? (a.body_en||a.body)   : a.body;
-  if(a.isNew){ a.isNew = false; renderAlerts(); }
-  sheet.innerHTML = `
-    <div class="grab"></div>
-    <div class="al-hd">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div class="alert-src-ic ${a.cat}" style="flex-shrink:0">${a.src}</div>
-        <span class="alert-chip ${a.cat}">${alertCatLabel(a.cat)}</span>
-      </div>
-      <button class="al-close" id="al-close">×</button>
-    </div>
-    <div class="al-body">
-      <b style="font-size:16px;font-weight:800;line-height:1.4;display:block;margin-bottom:8px">${titleTx}</b>
-      <div class="al-detail-date">${orgTx} · ${a.date}</div>
-      <div class="al-detail-body">${bodyTx}</div>
-      <button class="al-detail-all" onclick="openAlertSheet()">${LANG==='en'?'📋 View all alerts':'📋 すべてのアラートを見る'}</button>
-    </div>`;
-  document.getElementById('al-close').onclick = ()=>sheet.classList.remove('open');
-  sheet.classList.add('open');
+// ホームの1行サマリー（詳細はマップに集約）
+function renderSafetyLine(){
+  const el = document.getElementById('safety-line');
+  if(!el) return;
+  const lvl = forecastLevel();
+  const newAlerts = ALERTS.filter(a=>a.isNew).length;
+  const alertTx = newAlerts>0
+    ? (LANG==='en' ? `${newAlerts} new alert${newAlerts>1?'s':''}` : `新着アラート${newAlerts}件`)
+    : (LANG==='en' ? `${ALERTS.length} alerts` : `アラート${ALERTS.length}件`);
+  el.innerHTML = `
+    <span class="sl-ic">${lvl.ic}</span>
+    <span class="sl-tx">${LANG==='en'?'Risk: ':'警戒度：'}<b style="color:${lvl.c}">${t('fc_'+lvl.k)}</b><span class="sl-sep">·</span>📢 ${alertTx}</span>
+    <div class="row-arr">›</div>`;
+  el.classList.toggle('has-new', newAlerts>0);
 }
 function openAlertSheet(){
   const sheet = document.getElementById('alert-sheet');
@@ -2456,6 +2433,9 @@ function openAlertSheet(){
     <div class="al-body">${listHtml}</div>`;
   document.getElementById('al-close').onclick = ()=>sheet.classList.remove('open');
   sheet.classList.add('open');
+  // 開いたら既読化（NEWドットは今回の表示までは残す）
+  ALERTS.forEach(a=>a.isNew=false);
+  renderSafetyLine();
 }
 
 // ── 最新情報ビュー ──
@@ -2850,20 +2830,25 @@ function renderHome(){
         : `${t('next_rank')}「${tx(info.next,'title')}」${t('to_next')} ${fmt(info.rem)} ${t('pt')}`)
     : t('max_rank');
   const items = FEED.map((f,i)=>({f,i})).filter(o => feedFilter==='all' || o.f.chip[0]===feedFilter);
-  document.getElementById('feed').innerHTML = items.length
-    ? items.map(({f,i}) => `
+  const shown = feedExpanded ? items : items.slice(0,3);
+  const moreBtn = items.length > 3
+    ? `<button class="feed-more" onclick="toggleFeedExpand()">${feedExpanded
+        ? (LANG==='en' ? '− Show less' : '− 閉じる')
+        : (LANG==='en' ? `View all (${items.length}) →` : `すべて見る（${items.length}件）→`)}</button>`
+    : '';
+  document.getElementById('feed').innerHTML = shown.length
+    ? shown.map(({f,i}) => `
       <div class="feed-item${f.resolved?' resolved':''}" onclick="openDetail(${i})">
         <div class="thumb" style="background:${f.bg}">${f.mark}</div>
         <div class="ft"><b>${txName(f.who)}</b> <span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
         <span class="chip ${f.resolved?'resolved':f.chip[0]}">${f.resolved?t('chip_resolved'):txChip(f.chip[0])}</span>
         <div class="row-arr">›</div>
-      </div>`).join('')
+      </div>`).join('') + moreBtn
     : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
   updateMissionBadge();
   updateInfoBadge();
-  renderAlerts();
-  renderForecast();
+  renderSafetyLine();
   // 時間帯グリーティング＋称号フレーム
   applyTimeOfDay();
   applyFrame();
@@ -2921,28 +2906,9 @@ function seedReactions(){
     if(f.myReaction===undefined) f.myReaction = null;
   });
 }
-function renderForecast(){
-  const el = document.getElementById('forecast');
-  if(!el) return;
-  const danger = MARKINGS.filter(m=>m.type==='danger').length;
-  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
-  const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
-  const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'#E63946'}
-            : score>=32 ? {k:'caution', ic:'⛅', c:'#F4A261'}
-            : {k:'safe', ic:'☀️', c:'#6ee7a8'};
-  const dash = 2*Math.PI*18, off = dash*(1-score/100);
-  el.innerHTML = `
-    <div class="fc-icon">${lvl.ic}</div>
-    <div class="fc-tx"><b>${t('fc_label')}<span class="fc-lv" style="color:${lvl.c}">${t('fc_'+lvl.k)}</span></b><span>${t('fc_'+lvl.k+'_msg')}</span></div>
-    <svg class="fc-meter" viewBox="0 0 44 44" aria-hidden="true">
-      <circle cx="22" cy="22" r="18" fill="none" stroke="var(--line)" stroke-width="5"/>
-      <circle cx="22" cy="22" r="18" fill="none" stroke="${lvl.c}" stroke-width="5" stroke-linecap="round"
-        stroke-dasharray="${dash}" stroke-dashoffset="${off}" transform="rotate(-90 22 22)"/>
-      <text x="22" y="26" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${score}</text>
-    </svg>`;
-}
-
 let feedFilter = 'all';
+let feedExpanded = false;
+function toggleFeedExpand(){ feedExpanded = !feedExpanded; renderHome(); }
 
 // ── ランク特典シート ──
 function openLevelSheet(){
@@ -4197,12 +4163,25 @@ function renderMapOverlay(){
   const recent = MARKINGS.filter(m=>isRecent(m.ago)).length;
   const ov = document.getElementById('map-overlay');
   if(ov){
+    const lvl = forecastLevel();
+    const topAlert = ALERTS[0];
+    const topTitle = topAlert ? (LANG==='en' ? (topAlert.title_en||topAlert.title) : topAlert.title) : '';
+    const restTx = ALERTS.length>1 ? (LANG==='en' ? ` +${ALERTS.length-1} more` : ` ほか${ALERTS.length-1}件`) : '';
     ov.innerHTML = `
+      <div class="map-brief" id="map-brief" role="button" aria-label="地域アラート一覧を開く">
+        <span class="mb-ic">${lvl.ic}</span>
+        <div class="mb-tx">
+          <b>${t('fc_label')}${LANG==='en'?': ':'：'}<span style="color:${lvl.c}">${t('fc_'+lvl.k)}</span> <span style="color:var(--gray);font-weight:600">${lvl.score}/100</span></b>
+          <span>📢 ${topTitle}${restTx}</span>
+        </div>
+        <div class="row-arr">›</div>
+      </div>
       <div class="map-pill filter-danger${mapTypeFilter==='danger'?' on':''}" id="pill-danger"><span class="dot" style="background:#E63946"></span>${t('ov_danger')} ${danger}</div>
       <div class="map-pill filter-warn${mapTypeFilter==='warn'?' on':''}" id="pill-warn"><span class="dot" style="background:#F4A261"></span>${t('ov_warn')} ${warn}</div>
       <div class="map-pill filter-safe${mapTypeFilter==='safe'?' on':''}" id="pill-safe"><span class="dot" style="background:#64748B"></span>${LANG==='en'?'Safe':'偶然'} ${safe}</div>
       <div class="map-pill${heatOn?' active':''}" id="pill-heat">${t('ov_heat')}</div>
       <div class="map-pill" id="pill-stats">${t('ov_stats')}</div>`;
+    document.getElementById('map-brief').onclick = openAlertSheet;
     document.getElementById('pill-danger').onclick = () => setMapFilter('danger');
     document.getElementById('pill-warn').onclick   = () => setMapFilter('warn');
     document.getElementById('pill-safe').onclick   = () => setMapFilter('safe');
