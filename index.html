@@ -189,7 +189,7 @@
   /* ── Home hero ── */
   .hero {
     background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
-    border-radius: 16px; padding: 13px 14px; margin-bottom: 10px; position: relative; overflow: hidden;
+    border-radius: 16px; padding: 13px 14px 0; margin-bottom: 10px; position: relative; overflow: hidden;
     cursor: pointer; border: 2px solid transparent;
     transition: border-color .4s ease, box-shadow .4s ease;
   }
@@ -203,6 +203,17 @@
   .hero .lvbar i { display: block; height: 100%; width: 68%; background: #fff; border-radius: 5px; }
   .hero .lvtx { font-size: 11px; opacity: .88; margin-top: 5px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .hero .lvtx .perk-hint { font-weight: 700; opacity: .9; white-space: nowrap; font-size: 10px; }
+  .hero-toprow { display: flex; align-items: center; justify-content: space-between; }
+  .fc-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: rgba(0,0,0,.22); white-space: nowrap; }
+  .hero-today { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid rgba(255,255,255,.13); margin: 10px -14px 0; }
+  .hero-cell { padding: 9px 5px; text-align: center; border-right: 1px solid rgba(255,255,255,.1); cursor: pointer; transition: background .12s; }
+  .hero-cell:last-child { border-right: none; }
+  .hero-cell:active { background: rgba(0,0,0,.12); }
+  .hero-cell .hc-ic { font-size: 13px; line-height: 1; }
+  .hero-cell b { display: block; font-size: 15px; font-weight: 800; color: rgba(255,255,255,.8); margin: 2px 0 1px; }
+  .hero-cell span { font-size: 9.5px; opacity: .72; }
+  .hero-cell.active b { color: #ffd77a; }
+  .hero-cell.done b { color: #a0f0c0; }
 
   .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-bottom: 10px; background: var(--night2); border-radius: 14px; border: 1px solid rgba(212,168,32,.18); overflow: hidden; }
   .stat { background: none; border: none; border-right: 1px solid rgba(212,168,32,.12); padding: 11px 6px; text-align: center; cursor: pointer; position: relative; overflow: hidden; border-radius: 0; }
@@ -656,6 +667,9 @@
   }
   .ff-chip.active { background: var(--red); border-color: var(--red); color: #fff; }
   .feed-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
+  .act-tabs { display: flex; gap: 0; margin-bottom: 10px; background: var(--night2); border-radius: 12px; padding: 3px; border: 1px solid rgba(212,168,32,.16); }
+  .act-tab { flex: 1; padding: 8px; border: none; background: none; color: var(--gray); font-size: 12px; font-weight: 800; border-radius: 10px; cursor: pointer; font-family: inherit; transition: all .15s; }
+  .act-tab.active { background: rgba(212,168,32,.18); color: var(--gold); }
 
   /* ── Rank detail sheet ── */
   .rank-sheet {
@@ -1515,16 +1529,16 @@
 
       <div class="hero" id="home-hero">
         <div class="glasswm">🔍</div>
-        <div class="role" id="home-role">特級探偵 / Lv.7</div>
+        <div class="hero-toprow">
+          <div class="role" id="home-role">特級探偵 / Lv.7</div>
+          <div class="fc-badge" id="fc-badge"></div>
+        </div>
         <div class="name" id="home-name">ユウキ さん</div>
         <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
         <div class="lvbar"><i id="lvbar"></i></div>
         <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint" data-i18n="perk_hint">特典を見る ›</span></div>
+        <div class="hero-today" id="hero-today"></div>
       </div>
-
-      <div id="today-row"></div>
-
-      <div class="forecast" id="forecast"></div>
 
       <div class="statgrid">
         <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic">📸</span><b id="stat-posts">38</b><div class="stat-tip"></div></div>
@@ -1534,17 +1548,22 @@
 
       <div class="lv-nudge" id="lv-nudge" style="display:none" onclick="openLevelSheet()" tabindex="0" role="button" aria-label="レベルアップ詳細"></div>
 
-      <div class="sec-title" data-i18n="sec_alerts">地域アラート</div>
-      <div id="alerts-list"></div>
-
-      <div class="sec-title" data-i18n="sec_feed">みんなの捜査ログ</div>
-      <div class="feed-filter" id="feed-filter">
-        <button class="ff-chip active" data-filter="all" data-i18n="ff_all">すべて</button>
-        <button class="ff-chip" data-filter="ok" data-i18n="ff_ok">濃厚</button>
-        <button class="ff-chip" data-filter="warn" data-i18n="ff_warn">要確認</button>
-        <button class="ff-chip" data-filter="ng" data-i18n="ff_ng">偶然</button>
+      <div class="act-tabs">
+        <button class="act-tab active" data-tab="alerts" onclick="switchActTab('alerts')" data-i18n="sec_alerts">地域アラート</button>
+        <button class="act-tab" data-tab="feed" onclick="switchActTab('feed')" data-i18n="sec_feed">みんなの捜査ログ</button>
       </div>
-      <div id="feed"></div>
+      <div id="act-alerts-wrap">
+        <div id="alerts-list"></div>
+      </div>
+      <div id="act-feed-wrap" style="display:none">
+        <div class="feed-filter" id="feed-filter">
+          <button class="ff-chip active" data-filter="all" data-i18n="ff_all">すべて</button>
+          <button class="ff-chip" data-filter="ok" data-i18n="ff_ok">濃厚</button>
+          <button class="ff-chip" data-filter="warn" data-i18n="ff_warn">要確認</button>
+          <button class="ff-chip" data-filter="ng" data-i18n="ff_ng">偶然</button>
+        </div>
+        <div id="feed"></div>
+      </div>
     </section>
 
     <!-- MAP -->
@@ -2342,17 +2361,16 @@ function todayRowHtml(){
   const patrolDone = DAILY.progress && (DAILY.progress['patrol'] || 0) > 0;
   const mDone = Object.keys(DAILY.done||{}).filter(k=>DAILY.done[k]).length;
   const mTotal = DAILY.picks ? DAILY.picks.length : 3;
-  return `<div class="today-row">
-    <div class="today-cell${postsToday>0?' active':''}" onclick="switchView('cam')" style="cursor:pointer">
-      <div class="tc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
+  return `
+    <div class="hero-cell${postsToday>0?' active':''}" onclick="switchView('cam')">
+      <div class="hc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
     </div>
-    <div class="today-cell${patrolDone?' done':''}" onclick="switchView('map')" style="cursor:pointer">
-      <div class="tc-ic">🚶</div><b>${patrolDone?'✓':'—'}</b><span>${t('td_patrol')}</span>
+    <div class="hero-cell${patrolDone?' done':''}" onclick="switchView('map')">
+      <div class="hc-ic">🚶</div><b>${patrolDone?'✓':'—'}</b><span>${t('td_patrol')}</span>
     </div>
-    <div class="today-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()" style="cursor:pointer">
-      <div class="tc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
-    </div>
-  </div>`;
+    <div class="hero-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()">
+      <div class="hc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
+    </div>`;
 }
 
 function showCheckinOverlay(basePts, streakDay, milestone){
@@ -2902,7 +2920,7 @@ function updateRankData(gained){
 
 function renderHome(){
   const info = getLevelInfo(STATE.points);
-  const trEl = document.getElementById('today-row');
+  const trEl = document.getElementById('hero-today');
   if(trEl) trEl.innerHTML = todayRowHtml();
   document.getElementById('home-role').textContent = `${tx(info.cur,'title')} / Lv.${info.cur.lv}`;
   document.getElementById('home-name').textContent = `${txName(PROFILE.name)}${t('name_suffix')}`;
@@ -2988,24 +3006,24 @@ function seedReactions(){
   });
 }
 function renderForecast(){
-  const el = document.getElementById('forecast');
+  const el = document.getElementById('fc-badge');
   if(!el) return;
   const danger = MARKINGS.filter(m=>m.type==='danger').length;
   const warn   = MARKINGS.filter(m=>m.type==='warn').length;
   const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
-  const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'#E63946'}
-            : score>=32 ? {k:'caution', ic:'⛅', c:'#F4A261'}
-            : {k:'safe', ic:'☀️', c:'#6ee7a8'};
-  const dash = 2*Math.PI*18, off = dash*(1-score/100);
-  el.innerHTML = `
-    <div class="fc-icon">${lvl.ic}</div>
-    <div class="fc-tx"><b>${t('fc_label')}<span class="fc-lv" style="color:${lvl.c}"> ${t('fc_'+lvl.k)}</span></b></div>
-    <svg class="fc-meter" viewBox="0 0 44 44" aria-hidden="true">
-      <circle cx="22" cy="22" r="18" fill="none" stroke="var(--line)" stroke-width="5"/>
-      <circle cx="22" cy="22" r="18" fill="none" stroke="${lvl.c}" stroke-width="5" stroke-linecap="round"
-        stroke-dasharray="${dash}" stroke-dashoffset="${off}" transform="rotate(-90 22 22)"/>
-      <text x="22" y="26" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${score}</text>
-    </svg>`;
+  const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'rgba(255,255,255,.9)'}
+            : score>=32 ? {k:'caution', ic:'⛅', c:'rgba(255,255,255,.75)'}
+            : {k:'safe', ic:'☀️', c:'rgba(255,255,255,.7)'};
+  el.innerHTML = `${lvl.ic} ${t('fc_'+lvl.k)}`;
+  el.style.color = lvl.c;
+}
+
+function switchActTab(tab){
+  document.querySelectorAll('.act-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  const aw = document.getElementById('act-alerts-wrap');
+  const fw = document.getElementById('act-feed-wrap');
+  if(aw) aw.style.display = tab === 'alerts' ? '' : 'none';
+  if(fw) fw.style.display = tab === 'feed' ? '' : 'none';
 }
 
 let feedFilter = 'all';
