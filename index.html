@@ -59,9 +59,10 @@
   body {
     font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
     background:
-      radial-gradient(900px 600px at 12% -5%, rgba(200,150,10,.13), transparent 55%),
-      radial-gradient(800px 600px at 95% 8%, rgba(80,40,130,.16), transparent 55%),
-      radial-gradient(circle at 30% 12%, #1a1525 0%, #08060F 65%);
+      radial-gradient(ellipse 75% 38% at 50% -3%, rgba(212,140,20,.22), transparent 65%),
+      radial-gradient(ellipse 55% 38% at 95% 9%, rgba(110,40,190,.20), transparent 55%),
+      radial-gradient(circle at 18% 88%, rgba(180,60,20,.06), transparent 50%),
+      linear-gradient(180deg, #0E0B1E 0%, #07050F 100%);
     background-attachment: fixed;
     min-height: 100vh;
     display: flex;
@@ -144,6 +145,12 @@
   }
   .tab svg { width: 23px; height: 23px; stroke: currentColor; fill: none; stroke-width: 1.8; }
   .tab.active { color: var(--red); }
+  .tab.active svg { filter: drop-shadow(0 0 3px currentColor); }
+  .tab.active::after {
+    content: ''; position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    width: 3px; height: 3px; border-radius: 50%; background: var(--red);
+    box-shadow: 0 0 6px 2px rgba(230,57,70,.6);
+  }
   .tab.cam {
     position: relative;
   }
@@ -152,10 +159,15 @@
     background: var(--red); display: flex; align-items: center; justify-content: center;
     margin-top: -22px; box-shadow: 0 8px 18px rgba(230,57,70,.5);
     border: 3px solid var(--night);
+    animation: cambtn-glow 2.2s ease-in-out infinite;
+  }
+  @keyframes cambtn-glow {
+    0%,100% { box-shadow: 0 6px 16px rgba(230,57,70,.45), 0 0 0 0 rgba(230,57,70,0); }
+    50% { box-shadow: 0 10px 28px rgba(230,57,70,.78), 0 0 18px rgba(230,57,70,.22); }
   }
   .tab.cam .cambtn svg { width: 26px; height: 26px; stroke: #fff; }
 
-  .view { display: none; padding: 12px 16px 20px; animation: fade .25s; }
+  .view { display: none; padding: 10px 14px 16px; animation: fade .25s; }
   .view.active { display: block; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
 
@@ -163,15 +175,15 @@
   .hdr {
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 30;
-    margin: -12px -16px 12px; padding: 12px 16px 10px;
+    margin: -10px -14px 10px; padding: 10px 14px 9px;
     background: rgba(14,12,24,.86); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
   }
-  .hdr h2 { font-size: 21px; font-weight: 800; }
-  .hdr .sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+  .hdr h2 { font-size: 20px; font-weight: 800; }
+  .hdr .sub { font-size: 11px; color: var(--gray); margin-top: 1px; }
   .card {
-    background: var(--night2); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px;
-    border: 1px solid var(--line);
+    background: var(--night2); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px;
+    border: 1px solid rgba(212,168,32,.16);
   }
 
   /* ── Home hero ── */
@@ -220,8 +232,10 @@
   .mission.weekly .mi { background: rgba(244,162,97,.2); }
   .mission.weekly .m-bar i { background: linear-gradient(90deg, var(--gold), var(--red)); }
 
-  .feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
-  .feed-item:last-child { border: none; }
+  #feed { margin-bottom: 8px; }
+  .feed-item { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .feed-item:first-child { border-top: 1px solid var(--line); }
+  .feed-item:last-child { border-bottom: none; }
   .feed-item .thumb { width: 48px; height: 48px; border-radius: 10px; font-size: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .feed-item .ft { flex: 1; }
   .feed-item .ft b { font-size: 13px; }
@@ -627,7 +641,7 @@
   .marker-cluster div { background: rgba(230,57,70,.85) !important; color:#fff !important; font-weight:800; font-size:13px; }
 
   /* ── Feed filter chips ── */
-  .feed-filter { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .feed-filter { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
   .ff-chip {
     font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 16px;
     border: 1px solid var(--line); background: var(--night2); color: var(--gray);
@@ -727,29 +741,37 @@
   .mp-hd .mp-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
   .mp-body { overflow-y: auto; flex: 1; }
   .mp-body::-webkit-scrollbar { width: 0; }
-  .mp-sec { font-size: 12px; font-weight: 800; color: #aab4c8; margin: 6px 0 8px; }
-  .mp-avgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 12px; }
+  .mp-sec {
+    font-size: 10px; font-weight: 800; color: var(--gold);
+    margin: 12px 0 8px; letter-spacing: .1em; text-transform: uppercase;
+    padding-left: 10px; position: relative;
+  }
+  .mp-sec::before {
+    content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 12px; background: var(--gold); border-radius: 2px;
+  }
+  .mp-avgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 10px; }
   .mp-av {
-    aspect-ratio: 1; border-radius: 12px; font-size: 22px; cursor: pointer;
+    aspect-ratio: 1; border-radius: 10px; font-size: 20px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    background: var(--night2); border: 1px solid var(--line);
+    background: var(--night2); border: 1px solid rgba(212,168,32,.14);
   }
   .mp-av.sel { background: rgba(230,57,70,.2); border-color: var(--red); }
-  .accent-row { display: flex; gap: 12px; }
+  .accent-row { display: flex; gap: 10px; }
   .accent-dot {
-    width: 38px; height: 38px; border-radius: 50%; border: 3px solid transparent;
+    width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent;
     cursor: pointer; padding: 0; transition: transform .12s ease;
   }
   .accent-dot:active { transform: scale(.9); }
   .accent-dot.sel { border-color: #fff; box-shadow: 0 0 0 2px var(--night); }
   .mp-name {
-    width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 15px; font-family: inherit;
-    background: var(--night2); border: 1px solid var(--line); color: #fff; margin-bottom: 16px;
+    width: 100%; padding: 11px 14px; border-radius: 12px; font-size: 15px; font-family: inherit;
+    background: var(--night2); border: 1px solid rgba(212,168,32,.16); color: #fff; margin-bottom: 14px;
   }
   .mp-name:focus { outline: none; border-color: var(--red); }
-  .mp-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .mp-scell { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-  .mp-scell b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); line-height: 1.1; }
+  .mp-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .mp-scell { background: var(--night2); border: 1px solid rgba(212,168,32,.16); border-radius: 12px; padding: 11px 12px; }
+  .mp-scell b { display: block; font-size: 20px; font-weight: 800; color: var(--gold); line-height: 1.1; }
   .mp-scell span { font-size: 11px; color: var(--gray); }
   .mp-achgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
   .mp-ach { display: flex; gap: 10px; align-items: center; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 11px; }
@@ -856,7 +878,6 @@
     }
   }
 
-  /* ── 危険度予報ウィジェット ── */
   /* ── 警戒度サマリー行（ホーム）：詳細はマップへ ── */
   .safety-line {
     display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
@@ -882,7 +903,7 @@
 
   /* ── フィード「すべて見る」 ── */
   .feed-more {
-    width: 100%; background: none; border: none; border-top: 1px solid var(--line);
+    width: 100%; background: none; border: none;
     color: #aab4c8; padding: 12px 0 5px; font-size: 12px; font-weight: 700;
     cursor: pointer; font-family: inherit; text-align: center;
   }
@@ -1047,7 +1068,7 @@
   /* ── レベルアップナッジ ── */
   .lv-nudge {
     display: flex; align-items: center; gap: 8px; cursor: pointer;
-    padding: 10px 14px; border-radius: 12px; margin-bottom: 12px;
+    padding: 8px 12px; border-radius: 10px; margin-bottom: 10px;
     background: linear-gradient(135deg, rgba(244,162,97,.16), rgba(230,57,70,.10));
     border: 1px solid rgba(244,162,97,.3); font-size: 12.5px; font-weight: 700; color: #F1D6BE;
     transition: transform .12s ease;
@@ -1057,11 +1078,11 @@
 
   /* ── Mission button (header) ── */
   .mission-btn {
-    position: relative; background: var(--night2); border: 1.5px solid var(--line);
-    border-radius: 12px; padding: 7px 11px; font-size: 17px; cursor: pointer;
-    color: #fff; line-height: 1; transition: background .15s;
+    position: relative; background: none; border: none;
+    border-radius: 8px; padding: 5px; font-size: 19px; cursor: pointer;
+    color: #fff; line-height: 1; transition: opacity .15s;
   }
-  .mission-btn:active { background: var(--navy); }
+  .mission-btn:active { opacity: .6; }
   .mission-count {
     position: absolute; top: -5px; right: -5px;
     background: var(--red); color: #fff; font-size: 9px; font-weight: 800;
@@ -1183,12 +1204,15 @@
 
   /* ── 今日の活動ミニバー ── */
   .today-row {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-bottom: 10px;
+    background: var(--night2); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
   }
   .today-cell {
-    background: var(--night2); border: 1px solid var(--line); border-radius: 12px;
-    padding: 8px 5px; text-align: center; transition: border-color .25s;
+    background: none; border: none; border-right: 1px solid var(--line); border-radius: 0;
+    padding: 8px 5px; text-align: center; transition: border-color .25s, background .15s;
   }
+  .today-cell:last-child { border-right: none; }
+  .today-cell:active { background: rgba(255,255,255,.04); }
   .today-cell .tc-ic { font-size: 13px; line-height: 1; }
   .today-cell b { display: block; font-size: 16px; font-weight: 800; color: var(--gray); margin: 2px 0 1px; }
   .today-cell span { font-size: 9.5px; color: var(--gray); }
@@ -1199,11 +1223,11 @@
 
   /* ── 最新情報ビュー ── */
   .info-btn {
-    position: relative; background: var(--night2); border: 1.5px solid var(--line);
-    border-radius: 12px; padding: 7px 11px; font-size: 17px; cursor: pointer;
-    color: #fff; line-height: 1; transition: background .15s;
+    position: relative; background: none; border: none;
+    border-radius: 8px; padding: 5px; font-size: 19px; cursor: pointer;
+    color: #fff; line-height: 1; transition: opacity .15s;
   }
-  .info-btn:active { background: var(--navy); }
+  .info-btn:active { opacity: .6; }
   .info-badge {
     position: absolute; top: -5px; right: -5px;
     background: var(--red); color: #fff; font-size: 9px; font-weight: 800;
@@ -1356,8 +1380,8 @@
   .mc-cell { background: rgba(0,0,0,.22); border-radius: 12px; padding: 10px 12px; border: 1px solid rgba(212,168,32,.12); }
   .mc-cell b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); }
   .mc-cell span { font-size: 10px; color: var(--gray); }
-  .hq-btn { background:none; border:none; font-size:22px; cursor:pointer; padding:4px 3px; line-height:1; }
-  .hq-btn:active { opacity:.65; }
+  .hq-btn { background:none; border:none; font-size:19px; cursor:pointer; padding:5px; line-height:1; }
+  .hq-btn:active { opacity:.6; }
   .hq-view { position:absolute; inset:0; z-index:170; background:var(--night); overflow-y:auto; transform:translateY(100%); transition:transform .32s cubic-bezier(.4,0,.2,1); }
   .hq-view.open { transform:translateY(0); }
   .hq-view::-webkit-scrollbar { width:0; }
@@ -1399,6 +1423,70 @@
   .hq-score-row:last-child { border:none; padding-bottom:0; }
   .hq-score-lbl { font-size:12px; color:var(--gray); }
   .hq-score-val { font-size:13px; font-weight:700; color:var(--gold); }
+
+  /* ── ハイブリッド表示 ──
+     大きい一覧系シートは中央モーダル、小さい詳細系
+     （mark/book/area/notif）はボトムシートのまま（スワイプで閉じられる） */
+  .rank-sheet, .level-sheet, .mypage-sheet,
+  .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet,
+  .mission-sheet {
+    top: 50%;
+    left: 18px;
+    right: 18px;
+    bottom: auto;
+    width: auto;
+    max-height: calc(100% - 138px);
+    border: 1px solid rgba(212,168,32,.18);
+    border-radius: 22px;
+    padding: 18px 18px 22px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(-50% + 20px)) scale(.96);
+    transition: opacity .2s ease, transform .24s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 22px 70px rgba(0,0,0,.62);
+  }
+  .rank-sheet.open, .level-sheet.open,
+  .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open,
+  .safety-sheet.open, .alert-sheet.open, .mission-sheet.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+  }
+  .rank-sheet .grab, .level-sheet .grab,
+  .mypage-sheet .grab, .quiz-sheet .grab, .card-sheet .grab, .stats-sheet .grab,
+  .safety-sheet .grab, .alert-sheet .grab, .mission-sheet .grab {
+    display: none;
+  }
+
+  .detail-modal {
+    inset: auto 18px auto 18px;
+    top: 50%;
+    max-height: calc(100% - 138px);
+    border: 1px solid rgba(212,168,32,.18);
+    border-radius: 22px;
+    background: rgba(14,12,24,.98);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(-50% + 20px)) scale(.96);
+    transition: opacity .2s ease, transform .24s cubic-bezier(.2,.8,.2,1);
+    box-shadow:
+      0 22px 70px rgba(0,0,0,.62),
+      0 0 0 999px rgba(3,2,10,.62);
+  }
+  .detail-modal.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+  }
+  .dm-head { padding: 18px 0 0; }
+
+  @media (max-height: 720px) {
+    .rank-sheet, .level-sheet, .mypage-sheet,
+    .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet,
+    .mission-sheet, .detail-modal {
+      max-height: calc(100% - 104px);
+    }
+  }
 </style>
 </head>
 <body>
@@ -1436,11 +1524,11 @@
     <section class="view active" id="view-home">
       <div class="hdr">
         <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
-        <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;gap:4px;align-items:center">
           <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く">🗂</button>
           <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く">🔔<span class="info-badge" id="info-badge"></span></button>
           <button class="mission-btn" onclick="openMissionSheet()" aria-label="ミッションを開く">📋<span class="mission-count" id="mission-count"></span></button>
-          <button class="avatar-btn" id="profile-btn" style="font-size:28px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
+          <button class="avatar-btn" id="profile-btn" style="font-size:24px;padding:5px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
         </div>
       </div>
 
@@ -1476,7 +1564,7 @@
         <button class="ff-chip" data-filter="warn" data-i18n="ff_warn">要確認</button>
         <button class="ff-chip" data-filter="ng" data-i18n="ff_ng">偶然</button>
       </div>
-      <div class="card" id="feed"></div>
+      <div id="feed"></div>
     </section>
 
     <!-- MAP -->
@@ -1507,7 +1595,7 @@
       </div>
       <div id="rank-team" style="display:none">
         <div id="myteam-card"></div>
-        <div class="sec-title" style="margin-top:14px" data-i18n="team_rank_title">🛡 探偵団ランキング</div>
+        <div class="sec-title" style="margin-top:14px" data-i18n="team_rank_title">探偵団ランキング</div>
         <div class="card" id="team-list"></div>
       </div>
     </section>
@@ -1629,7 +1717,7 @@ const I18N = {
     rank_title:'ランキング', rank_sub:'渋谷区エリア',
     rt_solo:'👤 個人', rt_team:'🛡 探偵団',
     seg_week:'今週', seg_month:'今月', seg_all:'総合',
-    team_rank_title:'🛡 探偵団ランキング',
+    team_rank_title:'探偵団ランキング',
     book_title:'探偵手帳', book_sub:'マーキング図鑑',
     book_desc:'侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。',
     book_search_ph:'🔎 記号名・意味で検索…', book_empty:'該当する記号が見つかりません',
@@ -1644,11 +1732,11 @@ const I18N = {
     next_rank:'次のランク', to_next:'まで あと', pt:'pt', max_rank:'最高ランク到達！',
     perks_title:'🎖 ランク特典', now_lv:'現在', next_is:'次は', promote_in:'で昇格', reach_max:'最高ランクに到達！', all_unlocked:'すべての特典が解放されています',
     st_done:'達成済み', st_cur:'現在', st_left:'あと',
-    mypage:'👤 マイページ', mp_avatar:'アバター', mp_name:'探偵名', mp_team:'🛡 所属探偵団',
-    mp_summary:'📊 今週のまとめ', mp_week_posts:'今週の投稿', mp_earned:'獲得ポイント', mp_week_rank:'週間ランキング', mp_streak:'連続記録',
-    mp_badges:'🏆 実績バッジ', mp_reset:'🗑 データをリセット', mp_reset_confirm:'すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？',
-    mp_lang:'🌐 言語 / Language', rank_suffix:'位', mp_accent:'🎨 アクセントカラー',
-    mp_frames:'🖼 称号フレーム', frame_equipped:'装備中', frame_lv_need:'Lv.{0}で解放',
+    mypage:'マイページ', mp_avatar:'アバター', mp_name:'探偵名', mp_team:'所属探偵団',
+    mp_summary:'今週のまとめ', mp_week_posts:'今週の投稿', mp_earned:'獲得ポイント', mp_week_rank:'週間ランキング', mp_streak:'連続記録',
+    mp_badges:'実績バッジ', mp_reset:'データをリセット', mp_reset_confirm:'すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？',
+    mp_lang:'言語 / Language', rank_suffix:'位', mp_accent:'アクセントカラー',
+    mp_frames:'称号フレーム', frame_equipped:'装備中', frame_lv_need:'Lv.{0}で解放',
     notif_title:'🔔 新着通知',
     recent_posts:'📌 最近の投稿', detected_danger:'濃厚 検出', detected_warn:'要確認',
     my_team_sub:'あなたの所属する探偵団', team_total:'団の総ポイント', team_members:'団員数', your_contrib:'あなたの貢献',
@@ -1684,12 +1772,12 @@ const I18N = {
     safety_btn:'🛡 防犯Tips・緊急', safety_title:'🛡 防犯Tips・緊急',
     tips_sec:'💡 今日の防犯Tip', checklist_sec:'✅ 外出前チェック', emergency_sec:'🆘 緊急連絡先',
     emergency_note:'タップで発信できます（実機）',
-    sec_alerts:'📢 地域アラート',
+    sec_alerts:'地域アラート',
     alert_cat_police:'警察署', alert_cat_city:'区役所', alert_cat_watch:'自警団',
     alerts_viewall:'すべてのアラートを見る →',
     alerts_title:'📢 地域アラート',
     info_title:'最新情報', info_sub:'地域のアラート・活動',
-    info_breaking:'⚡ 速報', info_community:'🚶 コミュニティ活動',
+    info_breaking:'⚡ 速報', info_community:'コミュニティ活動',
     info_cat_all:'すべて', info_cat_police:'🚔 警察', info_cat_city:'🏛️ 区役所', info_cat_watch:'👥 自警団', info_cat_activity:'🚶 活動',
     info_unread:'未読', info_today_danger:'今日の危険', info_activities:'コミュ活動',
     info_no_alerts:'この分類のアラートはありません',
@@ -1721,7 +1809,7 @@ const I18N = {
     rank_title:'Ranking', rank_sub:'Shibuya area',
     rt_solo:'👤 Solo', rt_team:'🛡 Squad',
     seg_week:'Week', seg_month:'Month', seg_all:'All-time',
-    team_rank_title:'🛡 Squad Ranking',
+    team_rank_title:'Squad Ranking',
     book_title:'Detective Handbook', book_sub:'Marking Encyclopedia',
     book_desc:'A list of marking symbols said to be used in break-in crimes. If you spot one, post it from the camera.',
     book_search_ph:'🔎 Search by name or meaning…', book_empty:'No matching symbols found',
@@ -1736,11 +1824,11 @@ const I18N = {
     next_rank:'Next rank', to_next:'— left:', pt:'pt', max_rank:'Max rank reached!',
     perks_title:'🎖 Rank Perks', now_lv:'Now', next_is:'Next:', promote_in:'to promote', reach_max:'Max rank reached!', all_unlocked:'All perks are unlocked',
     st_done:'Achieved', st_cur:'Current', st_left:'left:',
-    mypage:'👤 My Page', mp_avatar:'Avatar', mp_name:'Detective name', mp_team:'🛡 Your squad',
-    mp_summary:'📊 This week', mp_week_posts:'Posts this week', mp_earned:'Points earned', mp_week_rank:'Weekly rank', mp_streak:'Streak',
-    mp_badges:'🏆 Achievements', mp_reset:'🗑 Reset data', mp_reset_confirm:'This will reset all records (points, posts, achievements). Are you sure?',
-    mp_lang:'🌐 言語 / Language', rank_suffix:'', mp_accent:'🎨 Accent color',
-    mp_frames:'🖼 Title Frames', frame_equipped:'Equipped', frame_lv_need:'Unlocks at Lv.{0}',
+    mypage:'My Page', mp_avatar:'Avatar', mp_name:'Detective name', mp_team:'Your squad',
+    mp_summary:'This week', mp_week_posts:'Posts this week', mp_earned:'Points earned', mp_week_rank:'Weekly rank', mp_streak:'Streak',
+    mp_badges:'Achievements', mp_reset:'Reset data', mp_reset_confirm:'This will reset all records (points, posts, achievements). Are you sure?',
+    mp_lang:'言語 / Language', rank_suffix:'', mp_accent:'Accent color',
+    mp_frames:'Title Frames', frame_equipped:'Equipped', frame_lv_need:'Unlocks at Lv.{0}',
     notif_title:'🔔 New notifications',
     recent_posts:'📌 Recent posts', detected_danger:'Likely found', detected_warn:'To check',
     my_team_sub:'The squad you belong to', team_total:'Squad total pts', team_members:'Members', your_contrib:'Your contribution',
@@ -1776,12 +1864,12 @@ const I18N = {
     safety_btn:'🛡 Tips & Emergency', safety_title:'🛡 Tips & Emergency',
     tips_sec:"💡 Today's tip", checklist_sec:'✅ Before you go out', emergency_sec:'🆘 Emergency contacts',
     emergency_note:'Tap to call (on device)',
-    sec_alerts:'📢 Area Alerts',
+    sec_alerts:'Area Alerts',
     alert_cat_police:'Police', alert_cat_city:'City Hall', alert_cat_watch:'Neighborhood Watch',
     alerts_viewall:'View all alerts →',
     alerts_title:'📢 Area Alerts',
     info_title:'Latest Info', info_sub:'Area alerts & community',
-    info_breaking:'⚡ Breaking', info_community:'🚶 Community Activity',
+    info_breaking:'⚡ Breaking', info_community:'Community Activity',
     info_cat_all:'All', info_cat_police:'🚔 Police', info_cat_city:'🏛️ City Hall', info_cat_watch:'👥 Watch', info_cat_activity:'🚶 Activity',
     info_unread:'Unread', info_today_danger:"Today's dangers", info_activities:'Activities',
     info_no_alerts:'No alerts in this category',
@@ -2277,13 +2365,13 @@ function todayRowHtml(){
   const mDone = Object.keys(DAILY.done||{}).filter(k=>DAILY.done[k]).length;
   const mTotal = DAILY.picks ? DAILY.picks.length : 3;
   return `<div class="today-row">
-    <div class="today-cell${postsToday>0?' active':''}">
+    <div class="today-cell${postsToday>0?' active':''}" onclick="switchView('cam')" style="cursor:pointer">
       <div class="tc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
     </div>
-    <div class="today-cell${patrolDone?' done':''}">
+    <div class="today-cell${patrolDone?' done':''}" onclick="switchView('map')" style="cursor:pointer">
       <div class="tc-ic">🚶</div><b>${patrolDone?'✓':'—'}</b><span>${t('td_patrol')}</span>
     </div>
-    <div class="today-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}">
+    <div class="today-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()" style="cursor:pointer">
       <div class="tc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
     </div>
   </div>`;
@@ -4328,8 +4416,10 @@ renderMapOverlay();
 updateStatusTime();
 setInterval(updateStatusTime, 30000);
 
-// ── シート共通UX：背景タップ＆下スワイプで閉じる ──
+// ── シート共通UX：背景タップ＆（ボトムシートは）下スワイプで閉じる ──
 const SHEET_SELECTOR = '.notif-sheet,.rank-sheet,.area-sheet,.level-sheet,.mypage-sheet,.quiz-sheet,.card-sheet,.stats-sheet,.safety-sheet,.alert-sheet,.mission-sheet,.book-sheet,.mark-sheet';
+// ボトムシート（下から出る詳細系）だけスワイプで閉じられる。他は中央モーダル
+const BOTTOM_SHEETS = ['mark-sheet', 'book-sheet', 'area-sheet', 'notif-sheet'];
 // マップ上のシートは地図操作を妨げない非モーダル扱い（背景暗転なし）
 const NONMODAL_SHEETS = ['mark-sheet', 'area-sheet'];
 function openModalSheets(){
@@ -4346,7 +4436,7 @@ function initSheetUX(){
   document.getElementById('sheet-backdrop').onclick = () => {
     openModalSheets().forEach(s => s.classList.remove('open'));
   };
-  sheets.forEach(sheet => {
+  [...sheets].filter(s => BOTTOM_SHEETS.includes(s.id)).forEach(sheet => {
     let startY = null, dy = 0, dragging = false;
     sheet.addEventListener('touchstart', e => {
       // 中身がスクロール済みなら引き下げジェスチャーは発火させない
