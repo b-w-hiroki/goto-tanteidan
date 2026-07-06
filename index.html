@@ -251,10 +251,6 @@
   .mission.done .mi { background: rgba(45,106,79,.25) !important; }
   .m-action { background:var(--gold); color:#12122a; border:none; border-radius:8px; padding:5px 10px; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; flex-shrink:0; margin-left:6px; }
   .m-action:active { opacity:.75; }
-  .al-detail-date { font-size:11px; color:var(--gray); margin-bottom:14px; }
-  .al-detail-body { font-size:13px; color:#C0B090; line-height:1.75; }
-  .al-detail-share { width:100%; margin-top:16px; background:rgba(212,168,32,.12); border:1px solid rgba(212,168,32,.3); color:var(--gold); border-radius:12px; padding:11px; font-size:13px; font-weight:700; cursor:pointer; }
-  .al-detail-all { width:100%; margin-top:8px; background:none; border:1px solid var(--line); color:var(--gray); border-radius:12px; padding:11px; font-size:13px; cursor:pointer; }
   .done-badge { font-size: 12px; font-weight: 800; color: #6ee7a8; white-space: nowrap; }
 
   /* ── Level up overlay ── */
@@ -2436,6 +2432,7 @@ function openAlertSheet(){
   // 開いたら既読化（NEWドットは今回の表示までは残す）
   ALERTS.forEach(a=>a.isNew=false);
   renderSafetyLine();
+  updateInfoBadge();
 }
 
 // ── 最新情報ビュー ──
@@ -4361,7 +4358,7 @@ function initSheetUX(){
     sheet.addEventListener('touchmove', e => {
       if (!dragging) return;
       dy = e.touches[0].clientY - startY;
-      if (dy > 0) sheet.style.transform = `translateY(${dy}px)`;
+      sheet.style.transform = dy > 0 ? `translateY(${dy}px)` : '';
     }, { passive: true });
     const endDrag = () => {
       if (!dragging) return;
