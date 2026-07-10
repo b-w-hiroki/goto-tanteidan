@@ -319,6 +319,10 @@
   .ob-icon { font-size: 80px; margin-bottom: 22px; line-height: 1; }
   .ob-title { font-size: 22px; font-weight: 800; line-height: 1.35; margin-bottom: 14px; }
   .ob-desc { font-size: 14px; color: #C8B898; line-height: 1.75; }
+  .ob-feats { display: flex; gap: 10px; margin-top: 26px; }
+  .ob-feat { flex: 1; background: var(--night2); border: 1px solid var(--line); border-radius: 14px; padding: 14px 4px; text-align: center; min-width: 0; }
+  .ob-feat span { font-size: 24px; display: block; margin-bottom: 6px; line-height: 1; }
+  .ob-feat b { font-size: 10.5px; font-weight: 700; color: #C8B898; white-space: nowrap; }
   .ob-dots { display: flex; gap: 8px; justify-content: center; padding: 18px 0 4px; }
   .ob-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: all .25s; }
   .ob-dot.on { background: var(--red); width: 22px; border-radius: 4px; }
@@ -649,7 +653,8 @@
   .notif-sheet .ns-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
   .notif-list { overflow-y: auto; flex: 1; }
   .notif-list::-webkit-scrollbar { width: 0; }
-  .notif-item { display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .notif-item { display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .notif-item:active { background: rgba(255,255,255,.04); }
   .notif-item:last-child { border: none; }
   .notif-item .ni-icon { width: 40px; height: 40px; border-radius: 10px; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink:0; }
   .notif-item .ni-tx b { font-size: 13px; display:block; }
@@ -1623,6 +1628,11 @@
         <div class="ob-icon">🔍</div>
         <div class="ob-title" data-i18n="ob1t">GO-TO 探偵団へ<br>ようこそ</div>
         <div class="ob-desc" data-i18n="ob1d">市民が「探偵」となり、街の不審なマーキングを発見・投稿。AIが判定し、防犯マップをリアルタイムに育てるアプリです。</div>
+        <div class="ob-feats">
+          <div class="ob-feat"><span>📸</span><b data-i18n="ob_f1">見つけて撮影</b></div>
+          <div class="ob-feat"><span>🤖</span><b data-i18n="ob_f2">AIが自動判定</b></div>
+          <div class="ob-feat"><span>🗺️</span><b data-i18n="ob_f3">マップが育つ</b></div>
+        </div>
       </div>
       <div class="ob-slide" style="transform:translateX(100%)">
         <div class="ob-icon">📸</div>
@@ -1721,6 +1731,7 @@ const I18N = {
     ob2t:'撮影して投稿しよう', ob2d:'中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。',
     ob3t:'地図で街を守ろう', ob3d:'投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。',
     ob_next:'次へ', ob_start:'はじめる',
+    ob_f1:'見つけて撮影', ob_f2:'AIが自動判定', ob_f3:'マップが育つ',
     next_rank:'次のランク', to_next:'まで あと', pt:'pt', max_rank:'最高ランク到達！',
     perks_title:'🎖 ランク特典', now_lv:'現在', next_is:'次は', promote_in:'で昇格', reach_max:'最高ランクに到達！', all_unlocked:'すべての特典が解放されています',
     st_done:'達成済み', st_cur:'現在', st_left:'あと',
@@ -1813,6 +1824,7 @@ const I18N = {
     ob2t:'Shoot and Post', ob2d:'Tap the center camera button to shoot. AI auto-judges the marking and you earn investigation points.',
     ob3t:'Protect the Town on the Map', ob3d:'The more posts, the richer the map. Grasp danger spots via the heatmap and stats.',
     ob_next:'Next', ob_start:'Start',
+    ob_f1:'Spot & shoot', ob_f2:'AI verdict', ob_f3:'Map grows',
     next_rank:'Next rank', to_next:'— left:', pt:'pt', max_rank:'Max rank reached!',
     perks_title:'🎖 Rank Perks', now_lv:'Now', next_is:'Next:', promote_in:'to promote', reach_max:'Max rank reached!', all_unlocked:'All perks are unlocked',
     st_done:'Achieved', st_cur:'Current', st_left:'left:',
@@ -3170,7 +3182,8 @@ function openQuiz(){
       if(b.dataset.correct==='1') b.classList.add('correct');
     });
     document.getElementById('qz-result').innerHTML = `
-      <div class="qz-expl"><b>${correct?t('quiz_correct'):t('quiz_wrong')}</b> — ${tx(cat,'name')}<br>${tx(cat,'meaning')}</div>`;
+      <div class="qz-expl"><b>${correct?t('quiz_correct'):t('quiz_wrong')}</b> — ${tx(cat,'name')}<br>${tx(cat,'meaning')}</div>
+      <button class="ms-book-link" onclick="document.getElementById('quiz-sheet').classList.remove('open');switchView('book');openBookSheet(${QUIZ.markIdx})">📖 ${LANG==='en'?'See in handbook':'手帳でくわしく見る'}</button>`;
   };
 
   if(QUIZ.answered){
@@ -4039,11 +4052,12 @@ function openNotifSheet(){
       <button class="ns-close" id="ns-close">×</button>
     </div>
     <div class="notif-list">
-      ${items.map(f=>`
-        <div class="notif-item">
+      ${items.map((f,i)=>`
+        <div class="notif-item" onclick="closeNotifSheet();openDetail(${i})">
           <div class="ni-icon" style="background:${f.bg}">${f.mark}</div>
           <div class="ni-tx"><b>${txName(f.who)}</b><span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
           <span class="chip ${f.chip[0]}">${txChip(f.chip[0])}</span>
+          <div class="row-arr">›</div>
         </div>`).join('')}
     </div>`;
   document.getElementById('ns-close').onclick = closeNotifSheet;
