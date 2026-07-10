@@ -404,6 +404,8 @@
   .ms-who { font-size:11px; color:var(--gray); margin-bottom:10px; }
   .ms-resolve-btn { width:100%; margin-top:14px; padding:13px; background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.35); border-radius:14px; color:#7dd3fc; font-size:14px; font-weight:700; cursor:pointer; }
   .ms-resolve-btn:active { background:rgba(59,130,246,.28); }
+  .ms-book-link { width:100%; margin-top:10px; padding:12px; background:none; border:1px solid var(--line); border-radius:14px; color:#C0B090; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .ms-book-link:active { background:var(--navy); }
   .ms-resolved-badge { display:flex; align-items:center; gap:10px; margin-top:14px; background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.25); border-radius:14px; padding:12px 14px; }
 
   /* ── Area stats bottom sheet ── */
@@ -3409,7 +3411,8 @@ function openDetail(idx){
   const f = FEED[idx];
   const color = f.chip[0]==='ok'?'#E63946':f.chip[0]==='warn'?'#F4A261':'#64748B';
   const badgeBg = f.chip[0]==='ok'?'rgba(230,57,70,.2)':f.chip[0]==='warn'?'rgba(244,162,97,.2)':'rgba(100,116,139,.2)';
-  const cat = MARK_CATALOG.find(c=>c.mark===f.mark);
+  const catIdx = MARK_CATALOG.findIndex(c=>c.mark===f.mark);
+  const cat = catIdx >= 0 ? MARK_CATALOG[catIdx] : null;
   const modal = document.getElementById('detail-modal');
   modal.innerHTML = `
     <div class="dm-head">
@@ -3430,7 +3433,7 @@ function openDetail(idx){
       </div>
       <div class="ai-comment">🤖 ${tx(f,'aiComment')}</div>
       <div class="react-row" id="react-row">${reactionBtns(f)}</div>
-      ${cat ? `<div class="catalog-link" onclick="document.getElementById('detail-modal').classList.remove('open');switchView('book')">
+      ${cat ? `<div class="catalog-link" onclick="document.getElementById('detail-modal').classList.remove('open');switchView('book');openBookSheet(${catIdx})">
         <div class="cl-icon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(230,57,70,.15)">${cat.mark}</div>
         <div class="cl-info"><b>${tx(cat,'name')}</b><span>${t('dm_catalog')}</span></div>
       </div>` : ''}
@@ -3668,7 +3671,8 @@ function initMap(){
       const el = document.getElementById('map');
       if (el) el.innerHTML = `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:30px;text-align:center;color:var(--gray)">
         <div style="font-size:42px">🗺️</div>
-        <div style="font-size:13px;line-height:1.7">${t('map_fail')}</div></div>`;
+        <div style="font-size:13px;line-height:1.7">${t('map_fail')}</div>
+        <button class="btn primary" style="width:auto;padding:11px 26px;margin-top:6px" onclick="retryMap()">🔄 ${LANG==='en'?'Retry':'再読み込み'}</button></div>`;
     }
     return;
   }
@@ -3680,6 +3684,18 @@ function initMap(){
   addMarkingsToLayer(markerLayer);
   markerLayer.addTo(map);
   setTimeout(()=>map.invalidateSize(), 200);
+}
+// Leaflet読込失敗時の再試行：スクリプトを再挿入してから initMap をやり直す
+function retryMap(){
+  const el = document.getElementById('map');
+  if (el) el.innerHTML = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:13px">⏳ ${LANG==='en'?'Loading map…':'マップを読み込み中…'}</div>`;
+  const done = () => { mapFailed = false; initMap(); if (map) renderMapOverlay(); };
+  if (typeof L !== 'undefined' && typeof L.map === 'function'){ done(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.onload = done;
+  s.onerror = done; // 失敗時は initMap が再びエラー表示を出す
+  document.head.appendChild(s);
 }
 let mapTypeFilter = 'all';
 function addMarkingsToLayer(layer){
@@ -3704,6 +3720,10 @@ function openMarkingSheet(m){
   const resolvedSection = m.resolved
     ? `<div class="ms-resolved-badge"><span style="font-size:22px">🔵</span><div><b style="font-size:13px">${LANG==='en'?'Resolved':'対処済み'}</b><div style="font-size:11px;color:var(--gray)">${LANG==='en'?'This marking has been addressed.':'このマーキングは対処済みです。'}</div></div></div>`
     : `<button class="ms-resolve-btn" id="ms-resolve-btn">✅ ${LANG==='en'?'Mark as resolved':'対処済みにする'}</button>`;
+  const catIdx = MARK_CATALOG.findIndex(c => c.mark === m.mark);
+  const bookLink = catIdx >= 0
+    ? `<button class="ms-book-link" onclick="closeMarkingSheet();switchView('book');openBookSheet(${catIdx})">📖 ${LANG==='en'?'What this mark means':'この記号の意味を手帳で見る'}</button>`
+    : '';
   document.getElementById('mark-sheet').innerHTML = `
     <div class="grab"></div>
     <div class="ms-head">
@@ -3721,6 +3741,7 @@ function openMarkingSheet(m){
       ${conf !== null ? `<div class="conf-row"><span class="conf-lbl">${t('cam_conf')}</span><div class="conf-bar"><i style="width:${conf}%;background:${color}"></i></div><span class="conf-val" style="color:${color}">${conf}%</span></div>` : ''}
       ${aiComment ? `<div class="ai-comment">🤖 ${aiComment}</div>` : ''}
       ${resolvedSection}
+      ${bookLink}
     </div>`;
   const resolveBtn = document.getElementById('ms-resolve-btn');
   if(resolveBtn){
@@ -4056,7 +4077,7 @@ function renderSetupStep(step){
         <div class="setup-title">${LANG==='en'?'Choose your<br>detective name':'探偵名を<br>つけてください'}</div>
         <div class="setup-sub">${LANG==='en'?'This is the name shown in rankings':'ランキングに表示される名前です'}</div>
       </div>
-      <div class="setup-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:8px">
+      <div class="setup-body" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:56px">
         <span class="setup-av-ic">${_setupAv}</span>
         <input class="setup-name-inp" id="su-name" type="text" maxlength="12"
           placeholder="${LANG==='en'?'e.g. Takashi':'例：タカシ'}" value="${_setupName}"
@@ -4291,9 +4312,10 @@ function openAreaSheet(){
   const warn   = MARKINGS.filter(m=>m.type==='warn').length;
   const safe   = MARKINGS.filter(m=>m.type==='safe').length;
   const total  = MARKINGS.length;
-  // 危険度スコア（0-100）: 危険=満点、要確認=半分の重み
-  const score = Math.min(100, Math.round((danger*12 + warn*6)));
-  const lvl = score>=70 ? {label:t('as_alert'), c:'#E63946'} : score>=40 ? {label:t('as_caution'), c:'#F4A261'} : {label:t('as_safe'), c:'#2D6A4F'};
+  // ホーム/マップ/HQと同じ警戒度スケールに統一
+  const fc = forecastLevel();
+  const score = fc.score;
+  const lvl = { label: t('fc_'+fc.k), c: fc.c };
   const sheet = document.getElementById('area-sheet');
   sheet.innerHTML = `
     <div class="grab"></div>
