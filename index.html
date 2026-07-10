@@ -1978,6 +1978,8 @@ const ACHIEVEMENTS = [
   { id:'share',  icon:'📤', title:'街に拡散',         desc:'結果をシェアした',         title_en:'Spread the Word', desc_en:'Shared a result',          cond:()=>STATE.shares>=1 },
   { id:'ace',    icon:'👑', title:'エース昇格',       desc:'Lv.8 に到達した',         title_en:'Ace Promotion',   desc_en:'Reached Lv.8',             cond:()=>STATE.points>=3000 },
   { id:'master', icon:'💎', title:'ポイントマスター', desc:'5,000pt に到達した',      title_en:'Point Master',    desc_en:'Reached 5,000 pts',        cond:()=>STATE.points>=5000 },
+  { id:'collect3',   icon:'📖', title:'図鑑コレクター',   desc:'3種の記号を発見した',   title_en:'Collector',          desc_en:'Found 3 mark types',    cond:()=>MARK_CATALOG.filter(m=>(STATE.found||{})[m.mark]).length>=3 },
+  { id:'collectall', icon:'🎖️', title:'図鑑コンプリート', desc:'全種の記号を発見した', title_en:'Complete Handbook',  desc_en:'Found every mark type', cond:()=>MARK_CATALOG.filter(m=>(STATE.found||{})[m.mark]).length>=MARK_CATALOG.length },
 ];
 let ACH_UNLOCKED = [];
 
@@ -2194,8 +2196,14 @@ const CAM_OUTCOMES = [
     label:'インターホン側面の傷', desc:'「侵入経路の目印」と判定されました。', desc_en:'Judged a "marker for an entry route."', verdict:'マーキング濃厚' },
   { weight:2, type:'danger', mark:'→', title:'マーキング濃厚！', title_en:'Marking likely!', conf:[85,94], pts:50,
     label:'メーターボックスの矢印', desc:'「方向を示す記号」と判定されました。', desc_en:'Judged a "symbol indicating direction."', verdict:'マーキング濃厚' },
+  { weight:2, type:'danger', mark:'M', title:'マーキング濃厚！', title_en:'Marking likely!', conf:[82,93], pts:50,
+    label:'玄関柱のアルファベット', desc:'「属性を記録する記号」と判定されました。', desc_en:'Judged a "symbol encoding household info."', verdict:'マーキング濃厚' },
   { weight:3, type:'warn', mark:'●', title:'要確認', title_en:'Needs check', conf:[58,74], pts:30,
     label:'表札周りのシール', desc:'マーキングの可能性あり。再調査を推奨します。', desc_en:'Possibly a marking. Re-investigation is advised.', verdict:'要確認' },
+  { weight:2, type:'warn', mark:'✕', title:'要確認', title_en:'Needs check', conf:[55,72], pts:30,
+    label:'郵便受け裏の記号', desc:'除外マークの可能性あり。再調査を推奨します。', desc_en:'Possibly an exclusion mark. Re-investigation is advised.', verdict:'要確認' },
+  { weight:1, type:'warn', mark:'∴', title:'要確認', title_en:'Needs check', conf:[52,70], pts:30,
+    label:'ベランダ柵の三点マーク', desc:'三点マークの可能性あり。再調査を推奨します。', desc_en:'Possibly a three-dot mark. Re-investigation is advised.', verdict:'要確認' },
   { weight:2, type:'safe', mark:'○', title:'偶然と判定', title_en:'Judged coincidence', conf:[76,90], pts:10,
     label:'落書き・自然な汚れ', desc:'マーキングではないとAIが判断しました。', desc_en:'AI judged this is not a marking.', verdict:'偶然と判定' },
 ];
