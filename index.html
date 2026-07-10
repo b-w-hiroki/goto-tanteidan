@@ -189,23 +189,25 @@
   /* ── Home hero ── */
   .hero {
     background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
-    border-radius: 16px; padding: 13px 14px 0; margin-bottom: 10px; position: relative; overflow: hidden;
+    border-radius: 18px; padding: 12px 16px 0; margin-bottom: 12px; position: relative; overflow: hidden;
     cursor: pointer; border: 2px solid transparent;
     transition: border-color .4s ease, box-shadow .4s ease;
   }
-  .hero .glasswm { position: absolute; right: -10px; top: -14px; font-size: 88px; opacity: .12; }
+  .hero .glasswm { position: absolute; right: -10px; top: -16px; font-size: 90px; opacity: .12; }
+  .hero .hero-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .hero .hero-id { display: flex; flex-direction: column; }
   .hero .role { font-size: 11px; opacity: .8; }
-  .hero .name { font-size: 17px; font-weight: 800; margin: 2px 0 8px; }
+  .hero .name { font-size: 16px; font-weight: 800; margin-top: 1px; }
   .hero .ptrow { display: flex; align-items: baseline; gap: 6px; }
-  .hero .pt { font-size: 40px; font-weight: 800; line-height: 1; }
-  .hero .ptlbl { font-size: 12px; opacity: .85; }
-  .hero .lvbar { height: 6px; background: rgba(255,255,255,.25); border-radius: 5px; margin-top: 9px; overflow: hidden; }
+  .hero .pt { font-size: 32px; font-weight: 800; line-height: 1; }
+  .hero .ptlbl { font-size: 12px; opacity: .9; }
+  .hero .lvbar { height: 6px; background: rgba(255,255,255,.25); border-radius: 5px; margin-top: 8px; overflow: hidden; }
   .hero .lvbar i { display: block; height: 100%; width: 68%; background: #fff; border-radius: 5px; }
-  .hero .lvtx { font-size: 11px; opacity: .88; margin-top: 5px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .hero .lvtx .perk-hint { font-weight: 700; opacity: .9; white-space: nowrap; font-size: 10px; }
-  .hero-toprow { display: flex; align-items: center; justify-content: space-between; }
-  .fc-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: rgba(0,0,0,.22); white-space: nowrap; }
-  .hero-today { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid rgba(255,255,255,.13); margin: 10px -14px 0; }
+  .hero .lvtx { font-size: 10.5px; opacity: .92; margin-top: 5px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .hero .lvtx .perk-hint { font-weight: 700; opacity: .95; white-space: nowrap; }
+  .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+  .fc-badge { font-size: 10px; font-weight: 700; padding: 4px 9px; border-radius: 9px; background: rgba(0,0,0,.25); white-space: nowrap; cursor: pointer; }
+  .hero-today { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid rgba(255,255,255,.13); margin: 10px -16px 0; }
   .hero-cell { padding: 9px 5px; text-align: center; border-right: 1px solid rgba(255,255,255,.1); cursor: pointer; transition: background .12s; }
   .hero-cell:last-child { border-right: none; }
   .hero-cell:active { background: rgba(0,0,0,.12); }
@@ -215,25 +217,20 @@
   .hero-cell.active b { color: #ffd77a; }
   .hero-cell.done b { color: #a0f0c0; }
 
-  .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-bottom: 10px; background: var(--night2); border-radius: 14px; border: 1px solid rgba(212,168,32,.18); overflow: hidden; }
-  .stat { background: none; border: none; border-right: 1px solid rgba(212,168,32,.12); padding: 11px 6px; text-align: center; cursor: pointer; position: relative; overflow: hidden; border-radius: 0; }
-  .stat:last-child { border-right: none; }
-  .stat b { display: block; font-size: 22px; font-weight: 800; color: var(--red); }
+  .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .stat { background: var(--night2); border-radius: 14px; padding: 10px 6px 8px; text-align: center; border: 1px solid var(--line); cursor: pointer; position: relative; overflow: hidden; }
+  .stat b { display: block; font-size: 21px; font-weight: 800; color: var(--red); }
   .stat .stat-ic { display: block; font-size: 13px; margin-bottom: 1px; }
+  .stat .stat-lbl { display: block; font-size: 9.5px; color: var(--gray); margin-top: 3px; line-height: 1; }
   .stat-tip { font-size: 9.5px; color: var(--gold); text-align: center; max-height: 0; overflow: hidden;
     transition: max-height .25s ease; pointer-events: none; }
   .stat-tip.show { max-height: 16px; }
 
   .sec-title {
-    font-size: 10px; font-weight: 800; color: var(--gold);
-    margin: 0 0 8px; display: flex; align-items: center; gap: 0;
-    letter-spacing: .1em; text-transform: uppercase;
-    padding-left: 10px; position: relative;
+    font-size: 12px; font-weight: 800; color: #8a8faa; margin: 14px 0 8px;
+    display: flex; align-items: center; gap: 6px; letter-spacing: .05em; text-transform: uppercase;
   }
-  .sec-title::before {
-    content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-    width: 3px; height: 13px; background: var(--gold); border-radius: 2px;
-  }
+  .sec-title::before { content:''; display:inline-block; width:3px; height:14px; border-radius:2px; background:var(--red); flex-shrink:0; }
 
   .mission { display: flex; align-items: center; gap: 11px; padding: 11px 14px; }
   .mission .mi { width: 38px; height: 38px; border-radius: 11px; background: rgba(69,123,157,.2); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
@@ -255,7 +252,7 @@
   .feed-item .ft b { font-size: 13px; }
   .feed-item .ft span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; }
   .chip { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
-  .chip.ok { background: rgba(45,106,79,.25); color: #6ee7a8; }
+  .chip.ok { background: rgba(230,57,70,.22); color: #ff9aa3; }
   .chip.warn { background: rgba(244,162,97,.22); color: var(--gold); }
   .chip.ng { background: rgba(100,116,139,.25); color: #9aa6ba; }
   .chip.resolved { background: rgba(59,130,246,.2); color: #7dd3fc; }
@@ -275,14 +272,11 @@
   .resolve-badge .rb-tx span { font-size: 11px; color: var(--gray); }
 
   /* ── Mission done state ── */
-  .mission.done { opacity: .55; }
+  .mission.done { opacity: .6; border-color: rgba(45,106,79,.45); background: rgba(45,106,79,.07); }
   .mission.done .mi { background: rgba(45,106,79,.25) !important; }
+  .mission.done .mt b { text-decoration: line-through; text-decoration-color: rgba(110,231,168,.5); }
   .m-action { background:var(--gold); color:#12122a; border:none; border-radius:8px; padding:5px 10px; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; flex-shrink:0; margin-left:6px; }
   .m-action:active { opacity:.75; }
-  .al-detail-date { font-size:11px; color:var(--gray); margin-bottom:14px; }
-  .al-detail-body { font-size:13px; color:#C0B090; line-height:1.75; }
-  .al-detail-share { width:100%; margin-top:16px; background:rgba(212,168,32,.12); border:1px solid rgba(212,168,32,.3); color:var(--gold); border-radius:12px; padding:11px; font-size:13px; font-weight:700; cursor:pointer; }
-  .al-detail-all { width:100%; margin-top:8px; background:none; border:1px solid var(--line); color:var(--gray); border-radius:12px; padding:11px; font-size:13px; cursor:pointer; }
   .done-badge { font-size: 12px; font-weight: 800; color: #6ee7a8; white-space: nowrap; }
 
   /* ── Level up overlay ── */
@@ -363,7 +357,7 @@
   .book-row-info b { font-size:13px; display:block; margin-bottom:3px; }
   .book-row-freq { font-size:10px; color:var(--gray); }
   .book-row-arr { color:var(--gray); font-size:18px; flex-shrink:0; }
-  .book-sheet { position:absolute; left:0; right:0; bottom:78px; z-index:1100; background:rgba(18,18,42,.98); backdrop-filter:blur(14px); border-top:1px solid var(--line); border-radius:20px 20px 0 0; padding:14px 20px 28px; transform:translateY(110%); transition:transform .3s ease; box-shadow:0 -10px 30px rgba(0,0,0,.5); max-height:80%; display:flex; flex-direction:column; }
+  .book-sheet { position:absolute; left:0; right:0; bottom:0; z-index:1100; background:rgba(18,18,42,.98); backdrop-filter:blur(14px); border-top:1px solid var(--line); border-radius:20px 20px 0 0; padding:14px 20px 28px; transform:translateY(110%); transition:transform .3s ease; box-shadow:0 -10px 30px rgba(0,0,0,.5); max-height:80%; display:flex; flex-direction:column; }
   .book-sheet.open { transform:translateY(0); }
   .book-sheet .grab { width:40px; height:4px; border-radius:3px; background:#3a3a55; margin:0 auto 16px; flex-shrink:0; }
   .bs-head { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
@@ -533,6 +527,7 @@
   .shutter {
     width: 74px; height: 74px; border-radius: 50%; background: #fff; border: 5px solid rgba(255,255,255,.3);
     cursor: pointer; transition: transform .1s;
+    display: flex; align-items: center; justify-content: center; font-size: 30px; line-height: 1;
   }
   .shutter:active { transform: scale(.92); }
   .cam-hint { font-size: 13px; color: #C0B090; margin-bottom: 18px; line-height: 1.6; }
@@ -551,6 +546,10 @@
 
   .result-card { width: 100%; text-align: center; }
   .result-card .big { font-size: 60px; margin-bottom: 8px; }
+  .result-card .rc-mark {
+    display: inline-flex; width: 96px; height: 96px; border-radius: 24px;
+    align-items: center; justify-content: center; font-size: 50px; margin-bottom: 10px;
+  }
   .result-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
   .result-card .desc { font-size: 13px; color: #C0B090; line-height: 1.6; margin-bottom: 18px; }
   .pt-pop {
@@ -575,7 +574,7 @@
   .rank-row .av { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
   .rank-row .rn { flex: 1; }
   .rank-row .rn b { font-size: 14px; }
-  .rank-row .rn span { font-size: 11px; color: var(--gray); }
+  .rank-row .rn span { font-size: 11px; color: var(--gray); margin-left: 5px; }
   .rank-row .rp { font-weight: 800; color: var(--gold); font-size: 14px; }
   .rank-row.me { background: rgba(230,57,70,.1); border-radius: 12px; margin: 0 -8px; padding: 12px 8px; }
 
@@ -667,9 +666,6 @@
   }
   .ff-chip.active { background: var(--red); border-color: var(--red); color: #fff; }
   .feed-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
-  .act-tabs { display: flex; gap: 0; margin-bottom: 10px; background: var(--night2); border-radius: 12px; padding: 3px; border: 1px solid rgba(212,168,32,.16); }
-  .act-tab { flex: 1; padding: 8px; border: none; background: none; color: var(--gray); font-size: 12px; font-weight: 800; border-radius: 10px; cursor: pointer; font-family: inherit; transition: all .15s; }
-  .act-tab.active { background: rgba(212,168,32,.18); color: var(--gold); }
 
   /* ── Rank detail sheet ── */
   .rank-sheet {
@@ -821,6 +817,18 @@
     transition: transform .3s ease, visibility 0s;
   }
 
+  /* ── シート共通UX：背景タップ＆下スワイプで閉じる ── */
+  .sheet-backdrop {
+    position: absolute; inset: 0; z-index: 1090;
+    background: rgba(6,4,14,.45);
+    opacity: 0; pointer-events: none; transition: opacity .3s ease;
+  }
+  .sheet-backdrop.show { opacity: 1; pointer-events: auto; }
+  .sheet-dragging { transition: none !important; }
+
+  /* タップ可能な行の共通シェブロン */
+  .row-arr { color: var(--gray); opacity: .55; font-size: 18px; flex-shrink: 0; align-self: center; line-height: 1; }
+
   @media (max-width: 820px) { .pitch { display: none; } }
 
   /* ── 実機（スマホ）では電話枠を外して全画面表示 ── */
@@ -887,18 +895,23 @@
     }
   }
 
-  /* ── 危険度予報ウィジェット ── */
-  .forecast {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
-    padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line);
-    background: var(--night2);
+  /* ── 警戒度ブリーフ（マップ上部） ── */
+  .map-brief {
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    background: rgba(18,18,42,.92); backdrop-filter: blur(8px);
+    border: 1px solid var(--line); border-radius: 14px; padding: 9px 13px; cursor: pointer;
   }
-  .forecast .fc-icon { font-size: 20px; line-height: 1; flex-shrink: 0; }
-  .forecast .fc-tx { flex: 1; min-width: 0; }
-  .forecast .fc-tx b { font-size: 12px; display: block; }
-  .forecast .fc-tx b .fc-lv { font-weight: 800; margin-left: 4px; }
-  .forecast .fc-tx span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; line-height: 1.4; }
-  .forecast .fc-meter { width: 38px; height: 38px; flex-shrink: 0; }
+  .map-brief .mb-ic { font-size: 22px; line-height: 1; flex-shrink: 0; }
+  .map-brief .mb-tx { flex: 1; min-width: 0; }
+  .map-brief .mb-tx b { font-size: 12.5px; display: block; }
+  .map-brief .mb-tx > span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ── フィード「すべて見る」 ── */
+  .feed-more {
+    width: 100%; background: none; border: none;
+    color: #aab4c8; padding: 12px 0 5px; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit; text-align: center;
+  }
 
   /* ── クイズ / 戦績カード ボタン ── */
   .panel-btn {
@@ -921,7 +934,11 @@
   .qz-hd, .cd-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-shrink:0; }
   .qz-hd b, .cd-hd b { font-size: 16px; font-weight: 800; }
   .qz-close, .cd-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
-  .qz-mark { font-size: 64px; text-align: center; margin: 6px 0 4px; line-height: 1; }
+  .qz-mark {
+    font-size: 52px; line-height: 1; width: 96px; height: 96px; margin: 6px auto 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--night); border: 1px solid var(--line); border-radius: 24px;
+  }
   .qz-q { font-size: 14px; text-align: center; color: #C0B090; margin-bottom: 16px; }
   .qz-opts { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
   .qz-opt {
@@ -1106,19 +1123,19 @@
   .rg-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .rg-top b { font-size: 13px; }
   .rg-earned { font-size: 12px; font-weight: 800; color: var(--gold); }
-  .rg-track { position: relative; height: 8px; background: var(--night); border-radius: 5px; margin: 16px 0 8px; }
+  .rg-track { position: relative; height: 8px; background: var(--night); border-radius: 5px; margin: 18px 0 14px; }
   .rg-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 5px;
     background: linear-gradient(90deg, var(--gold), var(--red)); transition: width .5s ease; }
   .rg-node { position: absolute; top: 50%; transform: translate(-50%,-50%); z-index: 2; }
   .rg-node .rg-dot {
-    width: 22px; height: 22px; border-radius: 50%; background: var(--night2);
+    width: 28px; height: 28px; border-radius: 50%; background: var(--night2);
     border: 2px solid var(--line); display: flex; align-items: center; justify-content: center;
-    font-size: 11px; line-height: 1;
+    font-size: 13px; line-height: 1;
   }
-  .rg-node.reached .rg-dot { border-color: var(--gold); background: rgba(212,168,32,.2); }
+  .rg-node.reached .rg-dot { border-color: var(--gold); background: rgba(212,168,32,.2); box-shadow: 0 0 10px rgba(212,168,32,.35); }
   .rg-node.claimed .rg-dot { border-color: var(--green); background: var(--green); }
-  .rg-node .rg-at { position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
-    font-size: 8.5px; color: var(--gray); white-space: nowrap; }
+  .rg-node .rg-at { position: absolute; top: 31px; left: 50%; transform: translateX(-50%);
+    font-size: 9.5px; color: var(--gray); white-space: nowrap; }
   .rg-node.reached .rg-at { color: var(--gold); font-weight: 700; }
   .rg-claim {
     margin-top: 14px; width: 100%; padding: 11px; border-radius: 11px; border: none; cursor: pointer;
@@ -1130,20 +1147,11 @@
   .rg-allclaimed { margin-top: 12px; text-align: center; font-size: 11.5px; color: #6ee7a8; font-weight: 700; }
 
   /* ── 地域アラート ── */
-  .alert-card {
-    display: flex; gap: 11px; align-items: flex-start; padding: 11px 14px; cursor: pointer;
-    border-bottom: 1px solid var(--line); transition: background .15s;
-  }
-  .alert-card:last-child { border: none; }
-  .alert-card:active { background: rgba(255,255,255,.04); }
   .alert-src-ic { width: 38px; height: 38px; border-radius: 11px; font-size: 19px;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .alert-src-ic.police { background: rgba(230,57,70,.18); }
   .alert-src-ic.city   { background: rgba(69,123,157,.18); }
   .alert-src-ic.watch  { background: rgba(45,106,79,.18); }
-  .alert-tx { flex: 1; min-width: 0; }
-  .alert-tx b { font-size: 13px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .alert-tx .alert-meta { font-size: 11px; color: var(--gray); margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .alert-chip { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 700; white-space: nowrap; }
   .alert-chip.police { background: rgba(230,57,70,.2); color: #ff9aa3; }
   .alert-chip.city   { background: rgba(69,123,157,.2); color: #93c5e8; }
@@ -1202,25 +1210,6 @@
   .ci-milestone { font-size: 13px; font-weight: 800; color: var(--gold);
     background: rgba(212,168,32,.15); border: 1px solid rgba(212,168,32,.35);
     border-radius: 12px; padding: 9px 16px; margin-top: 4px; }
-
-  /* ── 今日の活動ミニバー ── */
-  .today-row {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-bottom: 10px;
-    background: var(--night2); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
-  }
-  .today-cell {
-    background: none; border: none; border-right: 1px solid var(--line); border-radius: 0;
-    padding: 8px 5px; text-align: center; transition: border-color .25s, background .15s;
-  }
-  .today-cell:last-child { border-right: none; }
-  .today-cell:active { background: rgba(255,255,255,.04); }
-  .today-cell .tc-ic { font-size: 13px; line-height: 1; }
-  .today-cell b { display: block; font-size: 16px; font-weight: 800; color: var(--gray); margin: 2px 0 1px; }
-  .today-cell span { font-size: 9.5px; color: var(--gray); }
-  .today-cell.done { border-color: rgba(45,106,79,.5); }
-  .today-cell.done b { color: #6ee7a8; }
-  .today-cell.active { border-color: rgba(212,168,32,.4); }
-  .today-cell.active b { color: var(--gold); }
 
   /* ── 最新情報ビュー ── */
   .info-btn {
@@ -1367,12 +1356,20 @@
   .setup-team-item.sel .setup-team-chk { opacity:1; }
   .setup-skip { background:none; border:none; color:var(--gray); font-size:13px; cursor:pointer; width:100%; padding:12px 0 0; text-align:center; display:block; }
   /* ── ランキング: 自分の貢献カード ── */
-  .my-contrib { background:linear-gradient(135deg,rgba(212,168,32,.1),rgba(230,57,70,.07)); border:1px solid rgba(212,168,32,.22); border-radius:14px; padding:14px 16px; margin-top:12px; }
-  .my-contrib-title { font-size:10px; font-weight:800; color:var(--gray); letter-spacing:.1em; margin-bottom:10px; }
-  .my-contrib-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .mc-cell { background:rgba(0,0,0,.18); border-radius:10px; padding:9px 12px; }
-  .mc-cell b { display:block; font-size:20px; font-weight:800; color:var(--gold); }
-  .mc-cell span { font-size:10px; color:var(--gray); }
+  .my-contrib {
+    background: linear-gradient(135deg, rgba(212,168,32,.14), rgba(230,57,70,.08));
+    border: 1px solid rgba(212,168,32,.3); border-radius: 16px; padding: 14px 16px; margin-top: 12px;
+    box-shadow: 0 4px 16px rgba(212,168,32,.08);
+  }
+  .my-contrib-title {
+    font-size: 10px; font-weight: 800; color: var(--gold); letter-spacing: .1em;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .my-contrib-title::before { content: '⭐'; font-size: 12px; }
+  .my-contrib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mc-cell { background: rgba(0,0,0,.22); border-radius: 12px; padding: 10px 12px; border: 1px solid rgba(212,168,32,.12); }
+  .mc-cell b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); }
+  .mc-cell span { font-size: 10px; color: var(--gray); }
   .hq-btn { background:none; border:none; font-size:19px; cursor:pointer; padding:5px; line-height:1; }
   .hq-btn:active { opacity:.6; }
   .hq-view { position:absolute; inset:0; z-index:170; background:var(--night); overflow-y:auto; transform:translateY(100%); transition:transform .32s cubic-bezier(.4,0,.2,1); }
@@ -1417,10 +1414,12 @@
   .hq-score-lbl { font-size:12px; color:var(--gray); }
   .hq-score-val { font-size:13px; font-weight:700; color:var(--gold); }
 
-  /* ── Modal presentation for former bottom sheets ── */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet,
+  /* ── ハイブリッド表示 ──
+     大きい一覧系シートは中央モーダル、小さい詳細系
+     （mark/book/area/notif）はボトムシートのまま（スワイプで閉じられる） */
+  .rank-sheet, .level-sheet, .mypage-sheet,
   .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet,
-  .mission-sheet, .book-sheet, .mark-sheet {
+  .mission-sheet {
     top: 50%;
     left: 18px;
     right: 18px;
@@ -1434,22 +1433,18 @@
     pointer-events: none;
     transform: translateY(calc(-50% + 20px)) scale(.96);
     transition: opacity .2s ease, transform .24s cubic-bezier(.2,.8,.2,1);
-    box-shadow:
-      0 22px 70px rgba(0,0,0,.62),
-      0 0 0 999px rgba(3,2,10,.62);
+    box-shadow: 0 22px 70px rgba(0,0,0,.62);
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open,
+  .rank-sheet.open, .level-sheet.open,
   .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open,
-  .safety-sheet.open, .alert-sheet.open, .mission-sheet.open,
-  .book-sheet.open, .mark-sheet.open {
+  .safety-sheet.open, .alert-sheet.open, .mission-sheet.open {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(-50%) scale(1);
   }
-  .notif-sheet .grab, .rank-sheet .grab, .area-sheet .grab, .level-sheet .grab,
+  .rank-sheet .grab, .level-sheet .grab,
   .mypage-sheet .grab, .quiz-sheet .grab, .card-sheet .grab, .stats-sheet .grab,
-  .safety-sheet .grab, .alert-sheet .grab, .mission-sheet .grab,
-  .book-sheet .grab, .mark-sheet .grab {
+  .safety-sheet .grab, .alert-sheet .grab, .mission-sheet .grab {
     display: none;
   }
 
@@ -1476,9 +1471,9 @@
   .dm-head { padding: 18px 0 0; }
 
   @media (max-height: 720px) {
-    .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet,
+    .rank-sheet, .level-sheet, .mypage-sheet,
     .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet,
-    .mission-sheet, .book-sheet, .mark-sheet, .detail-modal {
+    .mission-sheet, .detail-modal {
       max-height: calc(100% - 104px);
     }
   }
@@ -1529,41 +1524,37 @@
 
       <div class="hero" id="home-hero">
         <div class="glasswm">🔍</div>
-        <div class="hero-toprow">
-          <div class="role" id="home-role">特級探偵 / Lv.7</div>
-          <div class="fc-badge" id="fc-badge"></div>
+        <div class="hero-top">
+          <div class="hero-id">
+            <div class="role" id="home-role">特級探偵 / Lv.7</div>
+            <div class="name" id="home-name">ユウキ さん</div>
+          </div>
+          <div class="hero-right">
+            <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
+            <div class="fc-badge" id="fc-badge" role="button" aria-label="警戒度とアラートをマップで確認" onclick="event.stopPropagation();switchView('map')"></div>
+          </div>
         </div>
-        <div class="name" id="home-name">ユウキ さん</div>
-        <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
         <div class="lvbar"><i id="lvbar"></i></div>
         <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint" data-i18n="perk_hint">特典を見る ›</span></div>
         <div class="hero-today" id="hero-today"></div>
       </div>
 
       <div class="statgrid">
-        <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic">📸</span><b id="stat-posts">38</b><div class="stat-tip"></div></div>
-        <div class="stat" onclick="showStatTip(this,'stat_areas')"><span class="stat-ic">🔓</span><b>12</b><div class="stat-tip"></div></div>
-        <div class="stat" onclick="showStatTip(this,'stat_streak')"><span class="stat-ic">🔥</span><b id="stat-streak">5</b><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic">📸</span><b id="stat-posts">38</b><span class="stat-lbl" data-i18n="stat_posts_lbl">投稿数</span><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_areas')"><span class="stat-ic">🔓</span><b>12</b><span class="stat-lbl" data-i18n="stat_areas_lbl">エリア</span><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_streak')"><span class="stat-ic">🔥</span><b id="stat-streak">5</b><span class="stat-lbl" data-i18n="stat_streak_lbl">連続日</span><div class="stat-tip"></div></div>
       </div>
 
       <div class="lv-nudge" id="lv-nudge" style="display:none" onclick="openLevelSheet()" tabindex="0" role="button" aria-label="レベルアップ詳細"></div>
 
-      <div class="act-tabs">
-        <button class="act-tab active" data-tab="alerts" onclick="switchActTab('alerts')" data-i18n="sec_alerts">地域アラート</button>
-        <button class="act-tab" data-tab="feed" onclick="switchActTab('feed')" data-i18n="sec_feed">みんなの捜査ログ</button>
+      <div class="sec-title" data-i18n="sec_feed">🕐 みんなの捜査ログ</div>
+      <div class="feed-filter" id="feed-filter">
+        <button class="ff-chip active" data-filter="all" data-i18n="ff_all">すべて</button>
+        <button class="ff-chip" data-filter="ok" data-i18n="ff_ok">濃厚</button>
+        <button class="ff-chip" data-filter="warn" data-i18n="ff_warn">要確認</button>
+        <button class="ff-chip" data-filter="ng" data-i18n="ff_ng">偶然</button>
       </div>
-      <div id="act-alerts-wrap">
-        <div id="alerts-list"></div>
-      </div>
-      <div id="act-feed-wrap" style="display:none">
-        <div class="feed-filter" id="feed-filter">
-          <button class="ff-chip active" data-filter="all" data-i18n="ff_all">すべて</button>
-          <button class="ff-chip" data-filter="ok" data-i18n="ff_ok">濃厚</button>
-          <button class="ff-chip" data-filter="warn" data-i18n="ff_warn">要確認</button>
-          <button class="ff-chip" data-filter="ng" data-i18n="ff_ng">偶然</button>
-        </div>
-        <div id="feed"></div>
-      </div>
+      <div id="feed"></div>
     </section>
 
     <!-- MAP -->
@@ -1609,7 +1600,6 @@
           <div style="font-size:26px">📖</div>
         </div>
       </div>
-      <p style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.6" data-i18n="book_desc">侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。</p>
       <input class="book-search" id="book-search" type="text" data-i18n-ph="book_search_ph" placeholder="🔎 記号名・意味で検索…" />
       <div class="book-filter" id="book-filter">
         <button class="ff-chip active" data-bfilter="all" data-i18n="bf_all">すべて</button>
@@ -1651,6 +1641,7 @@
     </div>
   </div>
 
+  <div class="sheet-backdrop" id="sheet-backdrop" aria-hidden="true"></div>
   <div class="notif-sheet" id="notif-sheet"></div>
   <div class="rank-sheet" id="rank-sheet"></div>
   <div class="level-sheet" id="level-sheet"></div>
@@ -1709,7 +1700,8 @@ const I18N = {
     pts_label:'捜査ポイント', perk_hint:'特典を見る ›', name_suffix:' さん',
     aria_cam:'カメラで撮影する', aria_profile:'マイページを開く', aria_notif:'新着通知を開く',
     stat_posts:'投稿数', stat_areas:'解放エリア', stat_streak:'連続記録',
-    sec_missions:'今日のミッション', sec_weekly:'今週のチャレンジ', sec_feed:'みんなの捜査ログ',
+    stat_posts_lbl:'投稿数', stat_areas_lbl:'エリア', stat_streak_lbl:'連続日',
+    sec_missions:'📋 今日のミッション', sec_weekly:'🗓 今週のチャレンジ', sec_feed:'🕐 みんなの捜査ログ',
     ff_all:'すべて', ff_ok:'濃厚', ff_warn:'要確認', ff_ng:'偶然',
     feed_empty:'該当する投稿はありません',
     rank_title:'ランキング', rank_sub:'渋谷区エリア',
@@ -1800,7 +1792,8 @@ const I18N = {
     pts_label:'investigation pts', perk_hint:'See perks ›', name_suffix:'',
     aria_cam:'Open camera', aria_profile:'Open my page', aria_notif:'Open notifications',
     stat_posts:'Posts', stat_areas:'Areas', stat_streak:'Streak',
-    sec_missions:'Today\'s Missions', sec_weekly:'Weekly Challenges', sec_feed:'Community Log',
+    stat_posts_lbl:'posts', stat_areas_lbl:'areas', stat_streak_lbl:'days',
+    sec_missions:'📋 Today\'s Missions', sec_weekly:'🗓 Weekly Challenges', sec_feed:'🕐 Community Log',
     ff_all:'All', ff_ok:'Likely', ff_warn:'Check', ff_ng:'Coincidence',
     feed_empty:'No matching posts',
     rank_title:'Ranking', rank_sub:'Shibuya area',
@@ -2366,7 +2359,7 @@ function todayRowHtml(){
       <div class="hc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
     </div>
     <div class="hero-cell${patrolDone?' done':''}" onclick="switchView('map')">
-      <div class="hc-ic">🚶</div><b>${patrolDone?'✓':'—'}</b><span>${t('td_patrol')}</span>
+      <div class="hc-ic">🚶</div><b>${patrolDone?'✓':(LANG==='en'?'–':'未')}</b><span>${t('td_patrol')}</span>
     </div>
     <div class="hero-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()">
       <div class="hc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
@@ -2459,59 +2452,25 @@ function bumpDaily(metric){
   updateMissionBadge();
 }
 
-// ── 地域アラート ──
+// ── 地域アラート・警戒度 ──
 function alertCatLabel(cat){ return t('alert_cat_'+cat); }
-function renderAlerts(){
-  const el = document.getElementById('alerts-list');
-  if(!el) return;
-  const shown = ALERTS.slice(0,3);
-  el.innerHTML = `<div style="border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:10px">${
-    shown.map((a,i)=>{
-      const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
-      const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
-      return `<div class="alert-card" onclick="openAlertDetail(${i})">
-        <div class="alert-src-ic ${a.cat}">${a.src}</div>
-        <div class="alert-tx">
-          <b>${titleTx}</b>
-          <div class="alert-meta">
-            <span class="alert-chip ${a.cat}">${alertCatLabel(a.cat)}</span>
-            <span>${orgTx}</span>
-            <span>${a.date.slice(5).replace('-','/')}</span>
-          </div>
-        </div>
-        ${a.isNew?'<div class="alert-new-dot"></div>':''}
-      </div>`;
-    }).join('')
-  }<div style="padding:6px 14px 8px;border-top:1px solid var(--line)">
-    <button class="panel-btn" onclick="openAlertSheet()" style="margin:0;padding:8px;font-size:12px">${t('alerts_viewall')}</button>
-  </div></div>`;
+function forecastLevel(){
+  const danger = MARKINGS.filter(m=>m.type==='danger').length;
+  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
+  const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'#E63946'}
+            : score>=32 ? {k:'caution', ic:'⛅', c:'#F4A261'}
+            : {k:'safe', ic:'☀️', c:'#6ee7a8'};
+  return { score, ...lvl };
 }
-function openAlertDetail(idx){
-  const a = ALERTS[idx];
-  if(!a) return;
-  const sheet = document.getElementById('alert-sheet');
-  if(!sheet) return;
-  const titleTx = LANG==='en' ? (a.title_en||a.title) : a.title;
-  const orgTx   = LANG==='en' ? (a.org_en||a.org)     : a.org;
-  const bodyTx  = LANG==='en' ? (a.body_en||a.body)   : a.body;
-  if(a.isNew){ a.isNew = false; renderAlerts(); }
-  sheet.innerHTML = `
-    <div class="grab"></div>
-    <div class="al-hd">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div class="alert-src-ic ${a.cat}" style="flex-shrink:0">${a.src}</div>
-        <span class="alert-chip ${a.cat}">${alertCatLabel(a.cat)}</span>
-      </div>
-      <button class="al-close" id="al-close">×</button>
-    </div>
-    <div class="al-body">
-      <b style="font-size:16px;font-weight:800;line-height:1.4;display:block;margin-bottom:8px">${titleTx}</b>
-      <div class="al-detail-date">${orgTx} · ${a.date}</div>
-      <div class="al-detail-body">${bodyTx}</div>
-      <button class="al-detail-all" onclick="openAlertSheet()">${LANG==='en'?'📋 View all alerts':'📋 すべてのアラートを見る'}</button>
-    </div>`;
-  document.getElementById('al-close').onclick = ()=>sheet.classList.remove('open');
-  sheet.classList.add('open');
+// ヒーロー内の警戒度バッジ（タップでマップへ。詳細はマップに集約）
+function renderSafetyLine(){
+  const el = document.getElementById('fc-badge');
+  if(!el) return;
+  const lvl = forecastLevel();
+  const newAlerts = ALERTS.filter(a=>a.isNew).length;
+  const alertTx = newAlerts>0 ? ` · 📢${newAlerts}` : '';
+  el.innerHTML = `${lvl.ic} ${t('fc_'+lvl.k)}${alertTx} ›`;
 }
 function openAlertSheet(){
   const sheet = document.getElementById('alert-sheet');
@@ -2541,6 +2500,10 @@ function openAlertSheet(){
     <div class="al-body">${listHtml}</div>`;
   document.getElementById('al-close').onclick = ()=>sheet.classList.remove('open');
   sheet.classList.add('open');
+  // 開いたら既読化（NEWドットは今回の表示までは残す）
+  ALERTS.forEach(a=>a.isNew=false);
+  renderSafetyLine();
+  updateInfoBadge();
 }
 
 // ── 最新情報ビュー ──
@@ -2554,16 +2517,10 @@ function renderHQBriefing(){
 
   const danger = MARKINGS.filter(m=>m.type==='danger').length;
   const warn   = MARKINGS.filter(m=>m.type==='warn').length;
-  const score  = danger * 3 + warn;
-  const lvIdx  = score>60?4 : score>40?3 : score>25?2 : score>12?1 : 0;
-  const lvNum  = lvIdx + 1;
-  const tColors = ['#2D6A4F','#6EE7A8','#F4A261','#E63946','#B00020'];
-  const tLabels = LANG==='en'
-    ? ['Low','Guarded','Elevated','High','Critical']
-    : ['低','警戒','中程度','高','危険'];
-  const tIcons  = ['🟢','🟡','🟠','🔴','🚨'];
-  const tc   = tColors[lvIdx];
-  const tPct = Math.round((lvNum/5)*100);
+  // ホーム/マップと同じ警戒度スケールに統一
+  const fc  = forecastLevel();
+  const tc  = fc.c;
+  const tPct = fc.score;
 
   const zones = [
     { name:LANG==='en'?'South Shibuya':'渋谷南部',   cnt:Math.max(4, Math.floor(danger*.35)), type:'danger' },
@@ -2633,11 +2590,11 @@ function renderHQBriefing(){
         <div class="hq-sec-title">${LANG==='en'?'THREAT LEVEL':'脅威レベル'}</div>
         <div class="hq-threat">
           <div class="hq-threat-bar">
-            <div class="hq-threat-lv" style="color:${tc}">Lv.${lvNum} &nbsp;${tLabels[lvIdx]}</div>
+            <div class="hq-threat-lv" style="color:${tc}">${t('fc_'+fc.k)} <span style="font-size:12px;font-weight:600;color:var(--gray)">${fc.score}/100</span></div>
             <div class="hq-threat-sub">${LANG==='en'?'Shibuya area · now':'渋谷エリア · 現在'}</div>
             <div class="hq-threat-track"><div class="hq-threat-fill" style="width:${tPct}%;background:${tc}"></div></div>
           </div>
-          <div class="hq-threat-ic">${tIcons[lvIdx]}</div>
+          <div class="hq-threat-ic">${fc.ic}</div>
         </div>
       </div>
 
@@ -2935,19 +2892,27 @@ function renderHome(){
         : `${t('next_rank')}「${tx(info.next,'title')}」${t('to_next')} ${fmt(info.rem)} ${t('pt')}`)
     : t('max_rank');
   const items = FEED.map((f,i)=>({f,i})).filter(o => feedFilter==='all' || o.f.chip[0]===feedFilter);
-  document.getElementById('feed').innerHTML = items.length
-    ? items.map(({f,i}) => `
+  // 隠れるのが1件だけなら折りたたまない
+  const collapsible = items.length > 4;
+  const shown = (feedExpanded || !collapsible) ? items : items.slice(0,3);
+  const moreBtn = collapsible
+    ? `<button class="feed-more" onclick="toggleFeedExpand()">${feedExpanded
+        ? (LANG==='en' ? '− Show less' : '− 閉じる')
+        : (LANG==='en' ? `View all (${items.length}) →` : `すべて見る（${items.length}件）→`)}</button>`
+    : '';
+  document.getElementById('feed').innerHTML = shown.length
+    ? shown.map(({f,i}) => `
       <div class="feed-item${f.resolved?' resolved':''}" onclick="openDetail(${i})">
         <div class="thumb" style="background:${f.bg}">${f.mark}</div>
         <div class="ft"><b>${txName(f.who)}</b> <span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
         <span class="chip ${f.resolved?'resolved':f.chip[0]}">${f.resolved?t('chip_resolved'):txChip(f.chip[0])}</span>
-      </div>`).join('')
+        <div class="row-arr">›</div>
+      </div>`).join('') + moreBtn
     : `<div class="feed-empty">${t('feed_empty')}</div>`;
   renderMissions();
   updateMissionBadge();
   updateInfoBadge();
-  renderAlerts();
-  renderForecast();
+  renderSafetyLine();
   // 時間帯グリーティング＋称号フレーム
   applyTimeOfDay();
   applyFrame();
@@ -3005,28 +2970,9 @@ function seedReactions(){
     if(f.myReaction===undefined) f.myReaction = null;
   });
 }
-function renderForecast(){
-  const el = document.getElementById('fc-badge');
-  if(!el) return;
-  const danger = MARKINGS.filter(m=>m.type==='danger').length;
-  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
-  const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
-  const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'rgba(255,255,255,.9)'}
-            : score>=32 ? {k:'caution', ic:'⛅', c:'rgba(255,255,255,.75)'}
-            : {k:'safe', ic:'☀️', c:'rgba(255,255,255,.7)'};
-  el.innerHTML = `${lvl.ic} ${t('fc_'+lvl.k)}`;
-  el.style.color = lvl.c;
-}
-
-function switchActTab(tab){
-  document.querySelectorAll('.act-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  const aw = document.getElementById('act-alerts-wrap');
-  const fw = document.getElementById('act-feed-wrap');
-  if(aw) aw.style.display = tab === 'alerts' ? '' : 'none';
-  if(fw) fw.style.display = tab === 'feed' ? '' : 'none';
-}
-
 let feedFilter = 'all';
+let feedExpanded = false;
+function toggleFeedExpand(){ feedExpanded = !feedExpanded; renderHome(); }
 
 // ── ランク特典シート ──
 function openLevelSheet(){
@@ -3619,6 +3565,7 @@ function renderRank(seg){
       <div class="av" style="background:${r.bg}">${r.av}</div>
       <div class="rn"><b>${txName(r.name)}</b><span>${txArea(r.area)}</span></div>
       <div class="rp">${fmt(r.pt)}</div>
+      <div class="row-arr">›</div>
     </div>`;
   }).join('');
 }
@@ -3726,6 +3673,7 @@ function initMap(){
     return;
   }
   map = L.map('map', { zoomControl:false, attributionControl:false }).setView([35.6595, 139.7010], 16);
+  map.on('click', () => closeMarkingSheet());
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
   const useCluster = typeof L.markerClusterGroup === 'function';
   markerLayer = useCluster ? L.markerClusterGroup({ maxClusterRadius:50, disableClusteringAtZoom:17 }) : L.layerGroup();
@@ -3920,7 +3868,7 @@ function camIdle(){
       <div class="target" id="vtarget">${s.target}</div>
     </div>
     <div class="cam-hint">📍 ${tx(s,'place')}<br>${t('cam_hint')}</div>
-    <div class="shutter" id="shutter"></div>`;
+    <div class="shutter" id="shutter" role="button" aria-label="${LANG==='en'?'Take photo':'撮影する'}">📸</div>`;
   document.getElementById('shutter').onclick = camAnalyze;
 }
 
@@ -3971,10 +3919,11 @@ function camResult(){
   const totalGained = gained + comboBonus;
   const comboBadge = isCombo
     ? `<div class="combo-badge">🔥 ${LANG==='en'?'COMBO':'コンボ'} ×${comboCount}  +${comboBonus}pt!</div>` : '';
+  const tileBg = { danger:'rgba(230,57,70,.18)', warn:'rgba(244,162,97,.18)', safe:'rgba(100,116,139,.18)' }[o.type];
   document.getElementById('cam-stage').innerHTML = `
     <div class="result-card">
       ${comboBadge}
-      <div class="big">${o.mark}</div>
+      <div><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>
       <h3 style="color:${color}">${tx(o,'title')}</h3>
       <div class="desc">${t('cam_conf')} <b>${conf}%</b><br>${tx(o,'desc')}<br>${t('cam_added')}</div>
       <div class="pt-pop"><div class="n">+${totalGained} ${t('pt')}</div><div class="l">${t('cam_got')}${bonus}</div></div>
@@ -4279,12 +4228,25 @@ function renderMapOverlay(){
   const recent = MARKINGS.filter(m=>isRecent(m.ago)).length;
   const ov = document.getElementById('map-overlay');
   if(ov){
+    const lvl = forecastLevel();
+    const topAlert = ALERTS[0];
+    const topTitle = topAlert ? (LANG==='en' ? (topAlert.title_en||topAlert.title) : topAlert.title) : '';
+    const restTx = ALERTS.length>1 ? (LANG==='en' ? ` +${ALERTS.length-1} more` : ` ほか${ALERTS.length-1}件`) : '';
     ov.innerHTML = `
+      <div class="map-brief" id="map-brief" role="button" aria-label="地域アラート一覧を開く">
+        <span class="mb-ic">${lvl.ic}</span>
+        <div class="mb-tx">
+          <b>${t('fc_label')}${LANG==='en'?': ':'：'}<span style="color:${lvl.c}">${t('fc_'+lvl.k)}</span> <span style="color:var(--gray);font-weight:600">${lvl.score}/100</span></b>
+          <span>📢 ${topTitle}${restTx}</span>
+        </div>
+        <div class="row-arr">›</div>
+      </div>
       <div class="map-pill filter-danger${mapTypeFilter==='danger'?' on':''}" id="pill-danger"><span class="dot" style="background:#E63946"></span>${t('ov_danger')} ${danger}</div>
       <div class="map-pill filter-warn${mapTypeFilter==='warn'?' on':''}" id="pill-warn"><span class="dot" style="background:#F4A261"></span>${t('ov_warn')} ${warn}</div>
       <div class="map-pill filter-safe${mapTypeFilter==='safe'?' on':''}" id="pill-safe"><span class="dot" style="background:#64748B"></span>${LANG==='en'?'Safe':'偶然'} ${safe}</div>
       <div class="map-pill${heatOn?' active':''}" id="pill-heat">${t('ov_heat')}</div>
       <div class="map-pill" id="pill-stats">${t('ov_stats')}</div>`;
+    document.getElementById('map-brief').onclick = openAlertSheet;
     document.getElementById('pill-danger').onclick = () => setMapFilter('danger');
     document.getElementById('pill-warn').onclick   = () => setMapFilter('warn');
     document.getElementById('pill-safe').onclick   = () => setMapFilter('safe');
@@ -4433,6 +4395,53 @@ renderRank('week');
 renderMapOverlay();
 updateStatusTime();
 setInterval(updateStatusTime, 30000);
+
+// ── シート共通UX：背景タップ＆（ボトムシートは）下スワイプで閉じる ──
+const SHEET_SELECTOR = '.notif-sheet,.rank-sheet,.area-sheet,.level-sheet,.mypage-sheet,.quiz-sheet,.card-sheet,.stats-sheet,.safety-sheet,.alert-sheet,.mission-sheet,.book-sheet,.mark-sheet';
+// ボトムシート（下から出る詳細系）だけスワイプで閉じられる。他は中央モーダル
+const BOTTOM_SHEETS = ['mark-sheet', 'book-sheet', 'area-sheet', 'notif-sheet'];
+// マップ上のシートは地図操作を妨げない非モーダル扱い（背景暗転なし）
+const NONMODAL_SHEETS = ['mark-sheet', 'area-sheet'];
+function openModalSheets(){
+  return [...document.querySelectorAll(SHEET_SELECTOR)]
+    .filter(s => s.classList.contains('open') && !NONMODAL_SHEETS.includes(s.id));
+}
+function syncSheetBackdrop(){
+  document.getElementById('sheet-backdrop').classList.toggle('show', openModalSheets().length > 0);
+}
+function initSheetUX(){
+  const sheets = document.querySelectorAll(SHEET_SELECTOR);
+  const mo = new MutationObserver(syncSheetBackdrop);
+  sheets.forEach(s => mo.observe(s, { attributes: true, attributeFilter: ['class'] }));
+  document.getElementById('sheet-backdrop').onclick = () => {
+    openModalSheets().forEach(s => s.classList.remove('open'));
+  };
+  [...sheets].filter(s => BOTTOM_SHEETS.includes(s.id)).forEach(sheet => {
+    let startY = null, dy = 0, dragging = false;
+    sheet.addEventListener('touchstart', e => {
+      // 中身がスクロール済みなら引き下げジェスチャーは発火させない
+      let el = e.target;
+      while (el && el !== sheet){ if (el.scrollTop > 0) return; el = el.parentElement; }
+      startY = e.touches[0].clientY; dy = 0; dragging = true;
+      sheet.classList.add('sheet-dragging');
+    }, { passive: true });
+    sheet.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      dy = e.touches[0].clientY - startY;
+      sheet.style.transform = dy > 0 ? `translateY(${dy}px)` : '';
+    }, { passive: true });
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      sheet.classList.remove('sheet-dragging');
+      sheet.style.transform = '';
+      if (dy > 90) sheet.classList.remove('open');
+    };
+    sheet.addEventListener('touchend', endDrag);
+    sheet.addEventListener('touchcancel', endDrag);
+  });
+}
+initSheetUX();
 </script>
 </body>
 </html>
