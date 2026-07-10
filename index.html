@@ -356,7 +356,17 @@
   /* ── Book (handbook) tab ── */
   .book-row { display:flex; gap:12px; align-items:center; background:var(--night2); border-radius:14px; padding:11px 14px; margin-bottom:8px; border:1px solid var(--line); cursor:pointer; transition:background .15s; }
   .book-row:active { background:var(--navy); }
-  .book-row-mark { font-size:26px; width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .book-row-mark { font-size:26px; width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; position:relative; }
+  .br-found {
+    position:absolute; right:-5px; top:-5px; width:17px; height:17px; border-radius:50%;
+    background:var(--gold); color:#12122a; font-size:10px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; border:2px solid var(--night2);
+  }
+  .book-progress { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:11.5px; color:var(--gray); font-weight:700; }
+  .book-progress b { color:var(--gold); }
+  .book-progress .bp-bar { flex:1; height:6px; background:var(--night2); border:1px solid var(--line); border-radius:4px; overflow:hidden; }
+  .book-progress .bp-bar i { display:block; height:100%; background:var(--gold); border-radius:4px; transition:width .4s ease; }
+  .chip.found { background:rgba(212,168,32,.2); color:var(--gold); }
   .book-row-info { flex:1; min-width:0; }
   .book-row-info b { font-size:13px; display:block; margin-bottom:3px; }
   .book-row-freq { font-size:10px; color:var(--gray); }
@@ -1912,7 +1922,8 @@ function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f===
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
-  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, patrols: 0, patrolKm: 0, lastCheckin: '', history: {}, checklist: { date:'', done:{} }, camCombo: 0 };
+  myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, patrols: 0, patrolKm: 0, lastCheckin: '', history: {}, checklist: { date:'', done:{} }, camCombo: 0,
+  found: {} };  // 手帳コレクション: 自分が投稿した記号（mark文字 → true）
 
 const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'amber', frame: 'amber' };
 
@@ -2973,6 +2984,11 @@ function recordPostToday(){
   const k = todayStr();
   STATE.history[k] = (STATE.history[k]||0) + 1;
 }
+// 自分の過去投稿から手帳コレクションを復元（冪等）
+function seedFound(){
+  STATE.found = STATE.found || {};
+  FEED.forEach(f => { if(f.who === PROFILE.name && f.mark) STATE.found[f.mark] = true; });
+}
 // フィード投稿のリアクション初期値を付与
 function seedReactions(){
   const seeds = [[14,2,8],[9,1,5],[6,3,2],[3,0,1]];
@@ -3516,19 +3532,26 @@ function renderBook(){
       (m.name_en||'') + ' ' + (m.meaning_en||'') + ' ' + m.examples.map(txLabel).join(' ')).toLowerCase();
     return hay.includes(q);
   });
-  document.getElementById('book-list').innerHTML = list.length ? list.map(({m,i})=>{
+  const foundCount = MARK_CATALOG.filter(m => STATE.found[m.mark]).length;
+  const progressHtml = `
+    <div class="book-progress">
+      <span>📖 ${LANG==='en'?'Found':'発見済み'} <b>${foundCount}</b>/${MARK_CATALOG.length}</span>
+      <div class="bp-bar"><i style="width:${Math.round(foundCount/MARK_CATALOG.length*100)}%"></i></div>
+    </div>`;
+  document.getElementById('book-list').innerHTML = progressHtml + (list.length ? list.map(({m,i})=>{
     const chipCls = m.color==='danger'?'ok':m.color==='warn'?'warn':'ng';
     const chipLbl = m.color==='danger'?t('chip_danger'):m.color==='warn'?t('chip_warn'):t('chip_safe');
     const bg = m.color==='danger'?'rgba(230,57,70,.18)':m.color==='warn'?'rgba(244,162,97,.18)':'rgba(100,116,139,.18)';
+    const found = !!STATE.found[m.mark];
     return `<div class="book-row" onclick="openBookSheet(${i})">
-      <div class="book-row-mark" style="background:${bg}">${m.mark}</div>
+      <div class="book-row-mark" style="background:${bg}">${m.mark}${found?'<span class="br-found">✓</span>':''}</div>
       <div class="book-row-info">
         <b>${tx(m,'name')} <span class="chip ${chipCls}" style="font-size:9px">${chipLbl}</span></b>
         <div class="book-row-freq">${txFreq(m.frequency)}</div>
       </div>
       <div class="book-row-arr">›</div>
     </div>`;
-  }).join('') : `<div class="book-empty">${t('book_empty')}</div>`;
+  }).join('') : `<div class="book-empty">${t('book_empty')}</div>`);
 }
 function openBookSheet(idx){
   const m = MARK_CATALOG[idx];
@@ -3543,7 +3566,7 @@ function openBookSheet(idx){
       <div class="bs-icon" style="background:${bg}">${m.mark}</div>
       <div class="bs-title">
         <b>${tx(m,'name')}</b>
-        <span class="chip ${chipCls}">${chipLbl}</span>
+        <span class="chip ${chipCls}">${chipLbl}</span>${STATE.found[m.mark]?` <span class="chip found">✓ ${LANG==='en'?'Found':'発見済み'}</span>`:''}
       </div>
       <button class="bs-close" onclick="closeBookSheet()">×</button>
     </div>
@@ -3971,6 +3994,7 @@ function camResult(){
     gainPoints(totalGained);
     STATE.posts += 1; STATE.myPosts += 1;
     if(o.type==='danger') STATE.dangerFound += 1;
+    STATE.found[o.mark] = true;  // 手帳コレクションに記録
     recordPostToday();
     // フィードに先頭追加（日英両方を保存して言語切替に対応）
     const bgMap = { danger:'rgba(230,57,70,.2)', warn:'rgba(244,162,97,.2)', safe:'rgba(100,116,139,.2)' };
@@ -4417,6 +4441,7 @@ loadState();
 const isNewDay = ensureDaily();
 ensureWeekly();
 seedHistory();
+seedFound();
 seedReactions();
 syncProfileToRanks();
 applyAccent();
