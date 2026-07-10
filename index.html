@@ -241,7 +241,7 @@
   .feed-item .ft b { font-size: 13px; }
   .feed-item .ft span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; }
   .chip { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
-  .chip.ok { background: rgba(45,106,79,.25); color: #6ee7a8; }
+  .chip.ok { background: rgba(230,57,70,.22); color: #ff9aa3; }
   .chip.warn { background: rgba(244,162,97,.22); color: var(--gold); }
   .chip.ng { background: rgba(100,116,139,.25); color: #9aa6ba; }
   .chip.resolved { background: rgba(59,130,246,.2); color: #7dd3fc; }
@@ -261,8 +261,9 @@
   .resolve-badge .rb-tx span { font-size: 11px; color: var(--gray); }
 
   /* ── Mission done state ── */
-  .mission.done { opacity: .55; }
+  .mission.done { opacity: .6; border-color: rgba(45,106,79,.45); background: rgba(45,106,79,.07); }
   .mission.done .mi { background: rgba(45,106,79,.25) !important; }
+  .mission.done .mt b { text-decoration: line-through; text-decoration-color: rgba(110,231,168,.5); }
   .m-action { background:var(--gold); color:#12122a; border:none; border-radius:8px; padding:5px 10px; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; flex-shrink:0; margin-left:6px; }
   .m-action:active { opacity:.75; }
   .done-badge { font-size: 12px; font-weight: 800; color: #6ee7a8; white-space: nowrap; }
@@ -515,6 +516,7 @@
   .shutter {
     width: 74px; height: 74px; border-radius: 50%; background: #fff; border: 5px solid rgba(255,255,255,.3);
     cursor: pointer; transition: transform .1s;
+    display: flex; align-items: center; justify-content: center; font-size: 30px; line-height: 1;
   }
   .shutter:active { transform: scale(.92); }
   .cam-hint { font-size: 13px; color: #C0B090; margin-bottom: 18px; line-height: 1.6; }
@@ -533,6 +535,10 @@
 
   .result-card { width: 100%; text-align: center; }
   .result-card .big { font-size: 60px; margin-bottom: 8px; }
+  .result-card .rc-mark {
+    display: inline-flex; width: 96px; height: 96px; border-radius: 24px;
+    align-items: center; justify-content: center; font-size: 50px; margin-bottom: 10px;
+  }
   .result-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
   .result-card .desc { font-size: 13px; color: #C0B090; line-height: 1.6; margin-bottom: 18px; }
   .pt-pop {
@@ -557,7 +563,7 @@
   .rank-row .av { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
   .rank-row .rn { flex: 1; }
   .rank-row .rn b { font-size: 14px; }
-  .rank-row .rn span { font-size: 11px; color: var(--gray); }
+  .rank-row .rn span { font-size: 11px; color: var(--gray); margin-left: 5px; }
   .rank-row .rp { font-weight: 800; color: var(--gold); font-size: 14px; }
   .rank-row.me { background: rgba(230,57,70,.1); border-radius: 12px; margin: 0 -8px; padding: 12px 8px; }
 
@@ -929,7 +935,11 @@
   .qz-hd, .cd-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-shrink:0; }
   .qz-hd b, .cd-hd b { font-size: 16px; font-weight: 800; }
   .qz-close, .cd-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
-  .qz-mark { font-size: 64px; text-align: center; margin: 6px 0 4px; line-height: 1; }
+  .qz-mark {
+    font-size: 52px; line-height: 1; width: 96px; height: 96px; margin: 6px auto 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--night); border: 1px solid var(--line); border-radius: 24px;
+  }
   .qz-q { font-size: 14px; text-align: center; color: #C0B090; margin-bottom: 16px; }
   .qz-opts { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
   .qz-opt {
@@ -1114,19 +1124,19 @@
   .rg-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .rg-top b { font-size: 13px; }
   .rg-earned { font-size: 12px; font-weight: 800; color: var(--gold); }
-  .rg-track { position: relative; height: 8px; background: var(--night); border-radius: 5px; margin: 16px 0 8px; }
+  .rg-track { position: relative; height: 8px; background: var(--night); border-radius: 5px; margin: 18px 0 14px; }
   .rg-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 5px;
     background: linear-gradient(90deg, var(--gold), var(--red)); transition: width .5s ease; }
   .rg-node { position: absolute; top: 50%; transform: translate(-50%,-50%); z-index: 2; }
   .rg-node .rg-dot {
-    width: 22px; height: 22px; border-radius: 50%; background: var(--night2);
+    width: 28px; height: 28px; border-radius: 50%; background: var(--night2);
     border: 2px solid var(--line); display: flex; align-items: center; justify-content: center;
-    font-size: 11px; line-height: 1;
+    font-size: 13px; line-height: 1;
   }
-  .rg-node.reached .rg-dot { border-color: var(--gold); background: rgba(212,168,32,.2); }
+  .rg-node.reached .rg-dot { border-color: var(--gold); background: rgba(212,168,32,.2); box-shadow: 0 0 10px rgba(212,168,32,.35); }
   .rg-node.claimed .rg-dot { border-color: var(--green); background: var(--green); }
-  .rg-node .rg-at { position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
-    font-size: 8.5px; color: var(--gray); white-space: nowrap; }
+  .rg-node .rg-at { position: absolute; top: 31px; left: 50%; transform: translateX(-50%);
+    font-size: 9.5px; color: var(--gray); white-space: nowrap; }
   .rg-node.reached .rg-at { color: var(--gold); font-weight: 700; }
   .rg-claim {
     margin-top: 14px; width: 100%; padding: 11px; border-radius: 11px; border: none; cursor: pointer;
@@ -2369,7 +2379,7 @@ function todayRowHtml(){
       <div class="tc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
     </div>
     <div class="today-cell${patrolDone?' done':''}" onclick="switchView('map')" style="cursor:pointer">
-      <div class="tc-ic">🚶</div><b>${patrolDone?'✓':'—'}</b><span>${t('td_patrol')}</span>
+      <div class="tc-ic">🚶</div><b>${patrolDone?'✓':(LANG==='en'?'–':'未')}</b><span>${t('td_patrol')}</span>
     </div>
     <div class="today-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()" style="cursor:pointer">
       <div class="tc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
@@ -2534,16 +2544,10 @@ function renderHQBriefing(){
 
   const danger = MARKINGS.filter(m=>m.type==='danger').length;
   const warn   = MARKINGS.filter(m=>m.type==='warn').length;
-  const score  = danger * 3 + warn;
-  const lvIdx  = score>60?4 : score>40?3 : score>25?2 : score>12?1 : 0;
-  const lvNum  = lvIdx + 1;
-  const tColors = ['#2D6A4F','#6EE7A8','#F4A261','#E63946','#B00020'];
-  const tLabels = LANG==='en'
-    ? ['Low','Guarded','Elevated','High','Critical']
-    : ['低','警戒','中程度','高','危険'];
-  const tIcons  = ['🟢','🟡','🟠','🔴','🚨'];
-  const tc   = tColors[lvIdx];
-  const tPct = Math.round((lvNum/5)*100);
+  // ホーム/マップと同じ警戒度スケールに統一
+  const fc  = forecastLevel();
+  const tc  = fc.c;
+  const tPct = fc.score;
 
   const zones = [
     { name:LANG==='en'?'South Shibuya':'渋谷南部',   cnt:Math.max(4, Math.floor(danger*.35)), type:'danger' },
@@ -2613,11 +2617,11 @@ function renderHQBriefing(){
         <div class="hq-sec-title">${LANG==='en'?'THREAT LEVEL':'脅威レベル'}</div>
         <div class="hq-threat">
           <div class="hq-threat-bar">
-            <div class="hq-threat-lv" style="color:${tc}">Lv.${lvNum} &nbsp;${tLabels[lvIdx]}</div>
+            <div class="hq-threat-lv" style="color:${tc}">${t('fc_'+fc.k)} <span style="font-size:12px;font-weight:600;color:var(--gray)">${fc.score}/100</span></div>
             <div class="hq-threat-sub">${LANG==='en'?'Shibuya area · now':'渋谷エリア · 現在'}</div>
             <div class="hq-threat-track"><div class="hq-threat-fill" style="width:${tPct}%;background:${tc}"></div></div>
           </div>
-          <div class="hq-threat-ic">${tIcons[lvIdx]}</div>
+          <div class="hq-threat-ic">${fc.ic}</div>
         </div>
       </div>
 
@@ -2915,8 +2919,10 @@ function renderHome(){
         : `${t('next_rank')}「${tx(info.next,'title')}」${t('to_next')} ${fmt(info.rem)} ${t('pt')}`)
     : t('max_rank');
   const items = FEED.map((f,i)=>({f,i})).filter(o => feedFilter==='all' || o.f.chip[0]===feedFilter);
-  const shown = feedExpanded ? items : items.slice(0,3);
-  const moreBtn = items.length > 3
+  // 隠れるのが1件だけなら折りたたまない
+  const collapsible = items.length > 4;
+  const shown = (feedExpanded || !collapsible) ? items : items.slice(0,3);
+  const moreBtn = collapsible
     ? `<button class="feed-more" onclick="toggleFeedExpand()">${feedExpanded
         ? (LANG==='en' ? '− Show less' : '− 閉じる')
         : (LANG==='en' ? `View all (${items.length}) →` : `すべて見る（${items.length}件）→`)}</button>`
@@ -3889,7 +3895,7 @@ function camIdle(){
       <div class="target" id="vtarget">${s.target}</div>
     </div>
     <div class="cam-hint">📍 ${tx(s,'place')}<br>${t('cam_hint')}</div>
-    <div class="shutter" id="shutter"></div>`;
+    <div class="shutter" id="shutter" role="button" aria-label="${LANG==='en'?'Take photo':'撮影する'}">📸</div>`;
   document.getElementById('shutter').onclick = camAnalyze;
 }
 
@@ -3940,10 +3946,11 @@ function camResult(){
   const totalGained = gained + comboBonus;
   const comboBadge = isCombo
     ? `<div class="combo-badge">🔥 ${LANG==='en'?'COMBO':'コンボ'} ×${comboCount}  +${comboBonus}pt!</div>` : '';
+  const tileBg = { danger:'rgba(230,57,70,.18)', warn:'rgba(244,162,97,.18)', safe:'rgba(100,116,139,.18)' }[o.type];
   document.getElementById('cam-stage').innerHTML = `
     <div class="result-card">
       ${comboBadge}
-      <div class="big">${o.mark}</div>
+      <div><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>
       <h3 style="color:${color}">${tx(o,'title')}</h3>
       <div class="desc">${t('cam_conf')} <b>${conf}%</b><br>${tx(o,'desc')}<br>${t('cam_added')}</div>
       <div class="pt-pop"><div class="n">+${totalGained} ${t('pt')}</div><div class="l">${t('cam_got')}${bonus}</div></div>
