@@ -189,7 +189,7 @@
   /* ── Home hero ── */
   .hero {
     background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
-    border-radius: 18px; padding: 12px 16px; margin-bottom: 12px; position: relative; overflow: hidden;
+    border-radius: 18px; padding: 12px 16px 0; margin-bottom: 12px; position: relative; overflow: hidden;
     cursor: pointer; border: 2px solid transparent;
     transition: border-color .4s ease, box-shadow .4s ease;
   }
@@ -205,6 +205,17 @@
   .hero .lvbar i { display: block; height: 100%; width: 68%; background: #fff; border-radius: 5px; }
   .hero .lvtx { font-size: 10.5px; opacity: .92; margin-top: 5px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .hero .lvtx .perk-hint { font-weight: 700; opacity: .95; white-space: nowrap; }
+  .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+  .fc-badge { font-size: 10px; font-weight: 700; padding: 4px 9px; border-radius: 9px; background: rgba(0,0,0,.25); white-space: nowrap; cursor: pointer; }
+  .hero-today { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid rgba(255,255,255,.13); margin: 10px -16px 0; }
+  .hero-cell { padding: 9px 5px; text-align: center; border-right: 1px solid rgba(255,255,255,.1); cursor: pointer; transition: background .12s; }
+  .hero-cell:last-child { border-right: none; }
+  .hero-cell:active { background: rgba(0,0,0,.12); }
+  .hero-cell .hc-ic { font-size: 13px; line-height: 1; }
+  .hero-cell b { display: block; font-size: 15px; font-weight: 800; color: rgba(255,255,255,.8); margin: 2px 0 1px; }
+  .hero-cell span { font-size: 9.5px; opacity: .72; }
+  .hero-cell.active b { color: #ffd77a; }
+  .hero-cell.done b { color: #a0f0c0; }
 
   .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
   .stat { background: var(--night2); border-radius: 14px; padding: 10px 6px 8px; text-align: center; border: 1px solid var(--line); cursor: pointer; position: relative; overflow: hidden; }
@@ -884,18 +895,6 @@
     }
   }
 
-  /* ── 警戒度サマリー行（ホーム）：詳細はマップへ ── */
-  .safety-line {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-    padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line);
-    background: var(--night2); cursor: pointer;
-  }
-  .safety-line .sl-ic { font-size: 20px; line-height: 1; flex-shrink: 0; }
-  .safety-line .sl-tx { flex: 1; min-width: 0; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .safety-line .sl-tx b { font-weight: 800; }
-  .safety-line .sl-sep { color: var(--gray); margin: 0 7px; }
-  .safety-line.has-new { border-color: rgba(230,57,70,.4); }
-
   /* ── 警戒度ブリーフ（マップ上部） ── */
   .map-brief {
     width: 100%; display: flex; align-items: center; gap: 10px;
@@ -1211,25 +1210,6 @@
   .ci-milestone { font-size: 13px; font-weight: 800; color: var(--gold);
     background: rgba(212,168,32,.15); border: 1px solid rgba(212,168,32,.35);
     border-radius: 12px; padding: 9px 16px; margin-top: 4px; }
-
-  /* ── 今日の活動ミニバー ── */
-  .today-row {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-bottom: 10px;
-    background: var(--night2); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
-  }
-  .today-cell {
-    background: none; border: none; border-right: 1px solid var(--line); border-radius: 0;
-    padding: 8px 5px; text-align: center; transition: border-color .25s, background .15s;
-  }
-  .today-cell:last-child { border-right: none; }
-  .today-cell:active { background: rgba(255,255,255,.04); }
-  .today-cell .tc-ic { font-size: 13px; line-height: 1; }
-  .today-cell b { display: block; font-size: 16px; font-weight: 800; color: var(--gray); margin: 2px 0 1px; }
-  .today-cell span { font-size: 9.5px; color: var(--gray); }
-  .today-cell.done { border-color: rgba(45,106,79,.5); }
-  .today-cell.done b { color: #6ee7a8; }
-  .today-cell.active { border-color: rgba(212,168,32,.4); }
-  .today-cell.active b { color: var(--gold); }
 
   /* ── 最新情報ビュー ── */
   .info-btn {
@@ -1549,15 +1529,15 @@
             <div class="role" id="home-role">特級探偵 / Lv.7</div>
             <div class="name" id="home-name">ユウキ さん</div>
           </div>
-          <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
+          <div class="hero-right">
+            <div class="ptrow"><span class="pt" id="home-pt">2,480</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
+            <div class="fc-badge" id="fc-badge" role="button" aria-label="警戒度とアラートをマップで確認" onclick="event.stopPropagation();switchView('map')"></div>
+          </div>
         </div>
         <div class="lvbar"><i id="lvbar"></i></div>
         <div class="lvtx"><span id="home-lvtx">次のランクまで あと 520 pt</span><span class="perk-hint" id="home-perk-hint" data-i18n="perk_hint">特典を見る ›</span></div>
+        <div class="hero-today" id="hero-today"></div>
       </div>
-
-      <div id="today-row"></div>
-
-      <div class="safety-line" id="safety-line" onclick="switchView('map')" role="button" tabindex="0" aria-label="警戒度とアラートをマップで確認"></div>
 
       <div class="statgrid">
         <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic">📸</span><b id="stat-posts">38</b><span class="stat-lbl" data-i18n="stat_posts_lbl">投稿数</span><div class="stat-tip"></div></div>
@@ -2374,17 +2354,16 @@ function todayRowHtml(){
   const patrolDone = DAILY.progress && (DAILY.progress['patrol'] || 0) > 0;
   const mDone = Object.keys(DAILY.done||{}).filter(k=>DAILY.done[k]).length;
   const mTotal = DAILY.picks ? DAILY.picks.length : 3;
-  return `<div class="today-row">
-    <div class="today-cell${postsToday>0?' active':''}" onclick="switchView('cam')" style="cursor:pointer">
-      <div class="tc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
+  return `
+    <div class="hero-cell${postsToday>0?' active':''}" onclick="switchView('cam')">
+      <div class="hc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
     </div>
-    <div class="today-cell${patrolDone?' done':''}" onclick="switchView('map')" style="cursor:pointer">
-      <div class="tc-ic">🚶</div><b>${patrolDone?'✓':(LANG==='en'?'–':'未')}</b><span>${t('td_patrol')}</span>
+    <div class="hero-cell${patrolDone?' done':''}" onclick="switchView('map')">
+      <div class="hc-ic">🚶</div><b>${patrolDone?'✓':(LANG==='en'?'–':'未')}</b><span>${t('td_patrol')}</span>
     </div>
-    <div class="today-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()" style="cursor:pointer">
-      <div class="tc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
-    </div>
-  </div>`;
+    <div class="hero-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()">
+      <div class="hc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
+    </div>`;
 }
 
 function showCheckinOverlay(basePts, streakDay, milestone){
@@ -2484,20 +2463,14 @@ function forecastLevel(){
             : {k:'safe', ic:'☀️', c:'#6ee7a8'};
   return { score, ...lvl };
 }
-// ホームの1行サマリー（詳細はマップに集約）
+// ヒーロー内の警戒度バッジ（タップでマップへ。詳細はマップに集約）
 function renderSafetyLine(){
-  const el = document.getElementById('safety-line');
+  const el = document.getElementById('fc-badge');
   if(!el) return;
   const lvl = forecastLevel();
   const newAlerts = ALERTS.filter(a=>a.isNew).length;
-  const alertTx = newAlerts>0
-    ? (LANG==='en' ? `${newAlerts} new alert${newAlerts>1?'s':''}` : `新着アラート${newAlerts}件`)
-    : (LANG==='en' ? `${ALERTS.length} alerts` : `アラート${ALERTS.length}件`);
-  el.innerHTML = `
-    <span class="sl-ic">${lvl.ic}</span>
-    <span class="sl-tx">${LANG==='en'?'Risk: ':'警戒度：'}<b style="color:${lvl.c}">${t('fc_'+lvl.k)}</b><span class="sl-sep">·</span>📢 ${alertTx}</span>
-    <div class="row-arr">›</div>`;
-  el.classList.toggle('has-new', newAlerts>0);
+  const alertTx = newAlerts>0 ? ` · 📢${newAlerts}` : '';
+  el.innerHTML = `${lvl.ic} ${t('fc_'+lvl.k)}${alertTx} ›`;
 }
 function openAlertSheet(){
   const sheet = document.getElementById('alert-sheet');
@@ -2904,7 +2877,7 @@ function updateRankData(gained){
 
 function renderHome(){
   const info = getLevelInfo(STATE.points);
-  const trEl = document.getElementById('today-row');
+  const trEl = document.getElementById('hero-today');
   if(trEl) trEl.innerHTML = todayRowHtml();
   document.getElementById('home-role').textContent = `${tx(info.cur,'title')} / Lv.${info.cur.lv}`;
   document.getElementById('home-name').textContent = `${txName(PROFILE.name)}${t('name_suffix')}`;
