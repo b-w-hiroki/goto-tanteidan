@@ -2571,10 +2571,10 @@ function renderHQBriefing(){
   const actions = [
     { ic:'🚶', title:LANG==='en'?'Patrol South Shibuya':'渋谷南部をパトロール',
       desc:LANG==='en'?'3 markings confirmed — early patrol recommended':'マーキング3件確認済み・早期パトロール推奨',
-      fn:`switchTab(1)` },
+      fn:`switchView('map')` },
     { ic:'📸', title:LANG==='en'?'Post a marking':'マーキングを投稿',
       desc:LANG==='en'?'Help keep the map up to date':'今日の情報でマップを更新しよう',
-      fn:`document.getElementById('cam-btn').click()` },
+      fn:`switchView('cam')` },
     { ic:'📋', title:LANG==='en'?'Daily missions':'デイリーミッション',
       desc:LANG==='en'?`${mDone}/${mTotal} done`:`${mDone}/${mTotal}件完了`,
       fn:`openMissionSheet()` },
