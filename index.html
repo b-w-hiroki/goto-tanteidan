@@ -825,11 +825,11 @@
   .book-empty { padding: 24px; text-align: center; color: var(--gray); font-size: 12px; }
 
   /* 閉じている状態のボトムシートはタップを透過させる（空の高さで下の要素を覆うのを防ぐ） */
-  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet, .mission-sheet, .book-sheet, .mark-sheet {
+  .notif-sheet, .rank-sheet, .area-sheet, .level-sheet, .mypage-sheet, .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet, .mission-sheet, .book-sheet, .mark-sheet, .report-sheet {
     pointer-events: none; visibility: hidden;
     transition: transform .3s ease, visibility 0s linear .3s;
   }
-  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open, .mission-sheet.open, .book-sheet.open, .mark-sheet.open {
+  .notif-sheet.open, .rank-sheet.open, .area-sheet.open, .level-sheet.open, .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open, .safety-sheet.open, .alert-sheet.open, .mission-sheet.open, .book-sheet.open, .mark-sheet.open, .report-sheet.open {
     pointer-events: auto; visibility: visible;
     transition: transform .3s ease, visibility 0s;
   }
@@ -1228,6 +1228,40 @@
     background: rgba(212,168,32,.15); border: 1px solid rgba(212,168,32,.35);
     border-radius: 12px; padding: 9px 16px; margin-top: 4px; }
 
+  /* ── 週刊 捜査報告書 ── */
+  .report-sheet {
+    position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
+    background: rgba(18,18,42,.98); backdrop-filter: blur(14px);
+    transform: translateY(110%); transition: transform .3s ease;
+    display: flex; flex-direction: column;
+  }
+  .rp-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-shrink: 0; }
+  .rp-hd b { font-size: 16px; font-weight: 800; }
+  .rp-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .rp-body { overflow-y: auto; flex: 1; }
+  .rp-body::-webkit-scrollbar { width: 0; }
+  .rp-doc {
+    border: 1px solid rgba(212,168,32,.35); border-radius: 14px; padding: 16px 16px 14px;
+    background: linear-gradient(160deg, rgba(212,168,32,.06), transparent 45%);
+    position: relative;
+  }
+  .rp-meta { font-size: 11px; color: var(--gray); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .rp-meta .rp-av { font-size: 20px; line-height: 1; }
+  .rp-sec { font-size: 10px; font-weight: 800; color: var(--gold); letter-spacing: .12em; margin: 14px 0 7px; }
+  .rp-sec:first-of-type { margin-top: 0; }
+  .rp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .rp-cell { background: rgba(0,0,0,.22); border-radius: 10px; padding: 9px 12px; }
+  .rp-cell b { display: block; font-size: 19px; font-weight: 800; color: var(--gold); }
+  .rp-cell span { font-size: 10px; color: var(--gray); }
+  .rp-impact {
+    display: flex; align-items: center; gap: 12px; background: rgba(45,106,79,.14);
+    border: 1px solid rgba(45,106,79,.4); border-radius: 12px; padding: 12px 14px;
+  }
+  .rp-impact .ri-ic { font-size: 26px; flex-shrink: 0; }
+  .rp-impact b { font-size: 13.5px; display: block; }
+  .rp-impact span { font-size: 11px; color: var(--gray); }
+  .rp-foot { text-align: center; font-size: 11px; color: var(--gray); margin-top: 14px; font-style: italic; }
+
   /* ── 最新情報ビュー ── */
   .info-btn {
     position: relative; background: none; border: none;
@@ -1436,7 +1470,7 @@
      （mark/book/area/notif）はボトムシートのまま（スワイプで閉じられる） */
   .rank-sheet, .level-sheet, .mypage-sheet,
   .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet,
-  .mission-sheet {
+  .mission-sheet, .report-sheet {
     top: 50%;
     left: 18px;
     right: 18px;
@@ -1454,14 +1488,14 @@
   }
   .rank-sheet.open, .level-sheet.open,
   .mypage-sheet.open, .quiz-sheet.open, .card-sheet.open, .stats-sheet.open,
-  .safety-sheet.open, .alert-sheet.open, .mission-sheet.open {
+  .safety-sheet.open, .alert-sheet.open, .mission-sheet.open, .report-sheet.open {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(-50%) scale(1);
   }
   .rank-sheet .grab, .level-sheet .grab,
   .mypage-sheet .grab, .quiz-sheet .grab, .card-sheet .grab, .stats-sheet .grab,
-  .safety-sheet .grab, .alert-sheet .grab, .mission-sheet .grab {
+  .safety-sheet .grab, .alert-sheet .grab, .mission-sheet .grab, .report-sheet .grab {
     display: none;
   }
 
@@ -1490,7 +1524,7 @@
   @media (max-height: 720px) {
     .rank-sheet, .level-sheet, .mypage-sheet,
     .quiz-sheet, .card-sheet, .stats-sheet, .safety-sheet, .alert-sheet,
-    .mission-sheet, .detail-modal {
+    .mission-sheet, .report-sheet, .detail-modal {
       max-height: calc(100% - 104px);
     }
   }
@@ -1678,6 +1712,7 @@
   <div class="hq-view" id="hq-view"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="mark-sheet" id="mark-sheet"></div>
+  <div class="report-sheet" id="report-sheet"></div>
   <div class="toast" id="toast"></div>
 
   <!-- Tab bar -->
@@ -2659,9 +2694,62 @@ function renderHQBriefing(){
           <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Total patrols':'総パトロール'}</span><span class="hq-score-val">${STATE.patrols||0}</span></div>
           <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Investigation score':'捜査スコア'}</span><span class="hq-score-val">${personalScore}<span style="font-size:10px;color:var(--gray)">/100</span></span></div>
         </div>
+        <button class="panel-btn" style="margin-top:12px" onclick="closeHQBriefing();openWeeklyReport()">📰 ${LANG==='en'?'Weekly Investigation Report':'週刊 捜査報告書を見る'}</button>
       </div>
 
     </div>`;
+}
+
+// ── 週刊 捜査報告書 ──
+function openWeeklyReport(){
+  const sheet = document.getElementById('report-sheet');
+  if(!sheet) return;
+  const fc = forecastLevel();
+  const weekMe = RANKS.week.find(r=>r.me);
+  const weekRank = RANKS.week.indexOf(weekMe) + 1;
+  const foundCount = MARK_CATALOG.filter(m=>(STATE.found||{})[m.mark]).length;
+  const riskReduced = STATE.riskReduced || 0;
+  // 今週（月〜日）の日付レンジ
+  const now = new Date();
+  const dow = (now.getDay()+6)%7;
+  const mon = new Date(now); mon.setDate(now.getDate()-dow);
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  const range = `${mon.getMonth()+1}/${mon.getDate()} – ${sun.getMonth()+1}/${sun.getDate()}`;
+  const impactHtml = riskReduced > 0
+    ? `<div class="rp-impact"><span class="ri-ic">🛡️</span><div>
+         <b>${LANG==='en'?`You lowered the area risk by ${riskReduced}`:`あなたの対処で警戒度を ${riskReduced} 下げました`}</b>
+         <span>${LANG==='en'?`Current area level: ${t('fc_'+fc.k)} ${fc.score}/100`:`現在のエリア警戒度: ${t('fc_'+fc.k)} ${fc.score}/100`}</span>
+       </div></div>`
+    : `<div class="rp-impact" style="background:rgba(212,168,32,.08);border-color:rgba(212,168,32,.3)"><span class="ri-ic">🔎</span><div>
+         <b>${LANG==='en'?'Resolve markings to lower the risk':'マーキングを対処すると警戒度が下がります'}</b>
+         <span>${LANG==='en'?`Current area level: ${t('fc_'+fc.k)} ${fc.score}/100`:`現在のエリア警戒度: ${t('fc_'+fc.k)} ${fc.score}/100`}</span>
+       </div></div>`;
+  sheet.innerHTML = `
+    <div class="grab"></div>
+    <div class="rp-hd"><b>📰 ${LANG==='en'?'Weekly Investigation Report':'週刊 捜査報告書'}</b><button class="rp-close" onclick="document.getElementById('report-sheet').classList.remove('open')">×</button></div>
+    <div class="rp-body">
+      <div class="rp-doc">
+        <div class="rp-meta"><span class="rp-av">${PROFILE.avatar}</span><span>${txName(PROFILE.name)}${t('name_suffix')} ・ ${range}</span><span class="hq-badge" style="margin-left:auto">${LANG==='en'?'CONFIDENTIAL':'機密情報'}</span></div>
+        <div class="rp-sec">${LANG==='en'?'THIS WEEK':'今週の活動'}</div>
+        <div class="rp-grid">
+          <div class="rp-cell"><b>${STATE.myPosts||0}</b><span>${LANG==='en'?'Posts':'投稿'}</span></div>
+          <div class="rp-cell"><b>${STATE.patrols||0}</b><span>${LANG==='en'?'Patrols':'パトロール'}</span></div>
+          <div class="rp-cell"><b>${STATE.resolved||0}</b><span>${LANG==='en'?'Resolved':'対処済み'}</span></div>
+          <div class="rp-cell"><b>+${fmt(STATE.earned||0)}</b><span>${LANG==='en'?'Points earned':'獲得ポイント'}</span></div>
+        </div>
+        <div class="rp-sec">${LANG==='en'?'IMPACT ON THE TOWN':'街への影響'}</div>
+        ${impactHtml}
+        <div class="rp-sec">${LANG==='en'?'STANDING':'成績'}</div>
+        <div class="rp-grid">
+          <div class="rp-cell"><b>${weekRank>0?weekRank+t('rank_suffix'):'–'}</b><span>${t('mp_week_rank')}</span></div>
+          <div class="rp-cell"><b>${STATE.streak||0}${LANG==='en'?'d':'日'}</b><span>${t('mp_streak')}</span></div>
+          <div class="rp-cell"><b>${foundCount}/${MARK_CATALOG.length}</b><span>${LANG==='en'?'Handbook':'図鑑'}</span></div>
+          <div class="rp-cell"><b>${Object.keys(ACH_UNLOCKED).length||ACH_UNLOCKED.length}</b><span>${LANG==='en'?'Badges':'実績'}</span></div>
+        </div>
+        <div class="rp-foot">${LANG==='en'?'— Keep the town safe next week too, Detective.':'— 来週も街の安全を頼むぞ、探偵。'}</div>
+      </div>
+    </div>`;
+  sheet.classList.add('open');
 }
 
 let infoCat = 'all';
@@ -3484,9 +3572,10 @@ function openDetail(idx){
   bindReactions(idx);
 }
 
-// 対処のビフォーアフター：警戒度の低下を即フィードバック
+// 対処のビフォーアフター：警戒度の低下を即フィードバック＋累積記録（週報用）
 function resolvedFeedbackToast(before){
   const after = forecastLevel().score;
+  if(before > after) STATE.riskReduced = (STATE.riskReduced||0) + (before - after);
   showToast(before > after
     ? `${t('toast_resolved')} ・ ${LANG==='en'?'Risk':'警戒度'} ${before}→${after}`
     : t('toast_resolved'));
@@ -4271,7 +4360,7 @@ function switchView(name){
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
   document.getElementById('info-view').classList.remove('open');
-  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet','mission-sheet','book-sheet','mark-sheet'].forEach(id=>{
+  ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet','mission-sheet','book-sheet','mark-sheet','report-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
   });
@@ -4478,7 +4567,7 @@ updateStatusTime();
 setInterval(updateStatusTime, 30000);
 
 // ── シート共通UX：背景タップ＆（ボトムシートは）下スワイプで閉じる ──
-const SHEET_SELECTOR = '.notif-sheet,.rank-sheet,.area-sheet,.level-sheet,.mypage-sheet,.quiz-sheet,.card-sheet,.stats-sheet,.safety-sheet,.alert-sheet,.mission-sheet,.book-sheet,.mark-sheet';
+const SHEET_SELECTOR = '.notif-sheet,.rank-sheet,.area-sheet,.level-sheet,.mypage-sheet,.quiz-sheet,.card-sheet,.stats-sheet,.safety-sheet,.alert-sheet,.mission-sheet,.book-sheet,.mark-sheet,.report-sheet';
 // ボトムシート（下から出る詳細系）だけスワイプで閉じられる。他は中央モーダル
 const BOTTOM_SHEETS = ['mark-sheet', 'book-sheet', 'area-sheet', 'notif-sheet'];
 // マップ上のシートは地図操作を妨げない非モーダル扱い（背景暗転なし）
