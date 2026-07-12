@@ -2488,8 +2488,9 @@ function bumpDaily(metric){
 // ── 地域アラート・警戒度 ──
 function alertCatLabel(cat){ return t('alert_cat_'+cat); }
 function forecastLevel(){
-  const danger = MARKINGS.filter(m=>m.type==='danger').length;
-  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  // 対処済みは脅威から除外 —「対処すると街の警戒度が下がる」因果を成立させる
+  const danger = MARKINGS.filter(m=>m.type==='danger' && !m.resolved).length;
+  const warn   = MARKINGS.filter(m=>m.type==='warn' && !m.resolved).length;
   const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
   const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'#E63946'}
             : score>=32 ? {k:'caution', ic:'⛅', c:'#F4A261'}
@@ -3483,9 +3484,17 @@ function openDetail(idx){
   bindReactions(idx);
 }
 
+// 対処のビフォーアフター：警戒度の低下を即フィードバック
+function resolvedFeedbackToast(before){
+  const after = forecastLevel().score;
+  showToast(before > after
+    ? `${t('toast_resolved')} ・ ${LANG==='en'?'Risk':'警戒度'} ${before}→${after}`
+    : t('toast_resolved'));
+}
 function resolveMarking(idx){
   const f = FEED[idx];
   if(f.resolved) return;
+  const beforeScore = forecastLevel().score;
   f.resolved = true;
   f.resolvedAt = new Date().toISOString();
   // mark the corresponding MARKING as resolved
@@ -3496,8 +3505,9 @@ function resolveMarking(idx){
   bumpDaily('resolve');
   checkAchievements();
   updateRankData(20);
-  showToast(t('toast_resolved'));
+  resolvedFeedbackToast(beforeScore);
   renderHome();
+  renderMapOverlay();
   // re-render map pins if map is open
   if(typeof markerLayer!=='undefined' && markerLayer) refreshMapPins();
   document.getElementById('detail-modal').classList.remove('open');
@@ -3790,12 +3800,13 @@ function openMarkingSheet(m){
   const resolveBtn = document.getElementById('ms-resolve-btn');
   if(resolveBtn){
     resolveBtn.onclick = () => {
+      const beforeScore = forecastLevel().score;
       m.resolved = true;
       if(feedIdx >= 0){ FEED[feedIdx].resolved = true; }
       STATE.resolved = (STATE.resolved||0) + 1;
       gainPoints(20); bumpDaily('resolve'); checkAchievements(); updateRankData(20);
-      showToast(t('toast_resolved'));
-      renderHome(); refreshMapPins(); saveState();
+      resolvedFeedbackToast(beforeScore);
+      renderHome(); renderMapOverlay(); refreshMapPins(); saveState();
       closeMarkingSheet();
     };
   }
@@ -4289,8 +4300,9 @@ function setMapFilter(type){
   renderMapOverlay();
 }
 function renderMapOverlay(){
-  const danger = MARKINGS.filter(m=>m.type==='danger').length;
-  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  // ピルは「未対処の脅威」件数（対処済みは警戒度からも除外済み）
+  const danger = MARKINGS.filter(m=>m.type==='danger' && !m.resolved).length;
+  const warn   = MARKINGS.filter(m=>m.type==='warn' && !m.resolved).length;
   const safe   = MARKINGS.filter(m=>m.type==='safe').length;
   const recent = MARKINGS.filter(m=>isRecent(m.ago)).length;
   const ov = document.getElementById('map-overlay');
