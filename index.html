@@ -470,6 +470,20 @@
     0%,100% { box-shadow: 0 8px 20px rgba(230,57,70,.45); }
     50% { box-shadow: 0 8px 28px rgba(230,57,70,.9); }
   }
+  /* ── タイムラプスHUD ── */
+  .tl-hud {
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 96px; z-index: 1050;
+    background: rgba(18,18,42,.95); backdrop-filter: blur(8px);
+    border: 1px solid rgba(212,168,32,.4); border-radius: 14px;
+    padding: 10px 18px 12px; display: none; text-align: center; min-width: 250px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.45);
+  }
+  .tl-hud.on { display: block; }
+  .tl-hud b { font-size: 14px; font-weight: 800; color: var(--gold); }
+  .tl-hud .tl-meta { font-size: 11px; color: var(--gray); margin: 3px 0 8px; }
+  .tl-hud .tl-track { height: 5px; background: var(--night); border-radius: 3px; overflow: hidden; }
+  .tl-hud .tl-track i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), var(--red)); border-radius: 3px; }
+
   .patrol-hud {
     position: absolute; top: 54px; left: 12px; right: 12px; z-index: 1002;
     background: rgba(14,12,24,.94); backdrop-filter: blur(10px);
@@ -4399,7 +4413,7 @@ function switchView(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelector(`.tab[data-view="${name}"]`).classList.add('active');
-  if (name!=='map') cancelPatrol();
+  if (name!=='map') { cancelPatrol(); if(typeof stopTimelapse==='function' && tlPlaying) stopTimelapse(); }
   if (name!=='cam') stopCamPreview();
   if (name==='map') { initMap(); bumpDaily('map'); saveState(); }
   if (name==='cam') camIdle();
@@ -4429,9 +4443,82 @@ document.getElementById('view-map').innerHTML = `
   </button>
   <div class="map-legend" id="map-legend"></div>
   <div class="patrol-done" id="patrol-done"></div>
-  <div class="area-sheet" id="area-sheet"></div>`;
+  <div class="area-sheet" id="area-sheet"></div>
+  <div class="tl-hud" id="tl-hud"></div>`;
 
 function isRecent(ago){ return /分前|時間前|たった今/.test(ago); }
+
+// ── タイムラプス：直近30日のマーキング出現→対処の推移を再生 ──
+let tlPlaying = false, tlTimer = null;
+function seedTimeline(){
+  MARKINGS.forEach(m => {
+    if(m.tlDay === undefined){
+      m.tlDay = hashStr((m.label||'') + (m.user||'') + m.lat) % 28;          // 出現日（0=30日前側）
+      if(m.resolved) m.tlResolveDay = Math.min(29, m.tlDay + 2 + hashStr((m.mark||'') + m.lng) % 6);
+    } else if(m.resolved && m.tlResolveDay === undefined){
+      m.tlResolveDay = Math.min(29, m.tlDay + 2 + hashStr((m.mark||'') + m.lng) % 6);
+    }
+  });
+}
+function timelapseStats(step){
+  const shown = MARKINGS.filter(m => m.tlDay <= step);
+  const isDone = m => m.tlResolveDay !== undefined && m.tlResolveDay <= step;
+  const active = shown.filter(m => !isDone(m));
+  const danger = active.filter(m => m.type==='danger').length;
+  const warn   = active.filter(m => m.type==='warn').length;
+  const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
+  return { shown, isDone, resolvedCount: shown.length - active.length, score };
+}
+function renderTimelapsePins(st){
+  if(!map || !markerLayer) return;
+  markerLayer.clearLayers();
+  st.shown.forEach(m => {
+    const done = st.isDone(m);
+    const color = done ? '#3B82F6' : TYPE_COLOR[m.type];
+    const opacity = done ? 'opacity:.55;filter:grayscale(.4)' : '';
+    const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};${opacity};animation:none"><span>${m.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
+    L.marker([m.lat, m.lng], { icon }).addTo(markerLayer);
+  });
+}
+function toggleTimelapse(){
+  if(tlPlaying){ stopTimelapse(); return; }
+  seedTimeline();
+  tlPlaying = true;
+  renderMapOverlay();
+  const hud = document.getElementById('tl-hud');
+  let step = 0;
+  const tick = () => {
+    const st = timelapseStats(step);
+    const d = new Date(); d.setDate(d.getDate() - (29 - step));
+    const dateLbl = `${d.getMonth()+1}/${d.getDate()}`;
+    if(hud){
+      hud.classList.add('on');
+      hud.innerHTML = `
+        <b>🎬 ${dateLbl}</b>
+        <div class="tl-meta">${LANG==='en'
+          ? `${st.shown.length} markings · ${st.resolvedCount} resolved · risk ${st.score}`
+          : `マーキング ${st.shown.length}件 ・ 対処 ${st.resolvedCount}件 ・ 警戒度 ${st.score}`}</div>
+        <div class="tl-track"><i style="width:${Math.round((step+1)/30*100)}%"></i></div>`;
+    }
+    renderTimelapsePins(st);
+    step++;
+    if(step >= 30){
+      if(hud) hud.innerHTML = `<b>📍 ${LANG==='en'?'Today':'現在'}</b><div class="tl-meta">${LANG==='en'?'Back to live map':'現在のマップに戻ります'}</div><div class="tl-track"><i style="width:100%"></i></div>`;
+      tlTimer = setTimeout(stopTimelapse, 1400);
+    } else {
+      tlTimer = setTimeout(tick, 190);
+    }
+  };
+  tick();
+}
+function stopTimelapse(){
+  tlPlaying = false;
+  clearTimeout(tlTimer);
+  const hud = document.getElementById('tl-hud');
+  if(hud) hud.classList.remove('on');
+  if(map && markerLayer) refreshMapPins();
+  renderMapOverlay();
+}
 function setMapFilter(type){
   mapTypeFilter = mapTypeFilter === type ? 'all' : type;
   refreshMapPins();
@@ -4462,13 +4549,15 @@ function renderMapOverlay(){
       <div class="map-pill filter-warn${mapTypeFilter==='warn'?' on':''}" id="pill-warn"><span class="dot" style="background:#F4A261"></span>${t('ov_warn')} ${warn}</div>
       <div class="map-pill filter-safe${mapTypeFilter==='safe'?' on':''}" id="pill-safe"><span class="dot" style="background:#64748B"></span>${LANG==='en'?'Safe':'偶然'} ${safe}</div>
       <div class="map-pill${heatOn?' active':''}" id="pill-heat">${t('ov_heat')}</div>
-      <div class="map-pill" id="pill-stats">${t('ov_stats')}</div>`;
+      <div class="map-pill" id="pill-stats">${t('ov_stats')}</div>
+      <div class="map-pill${tlPlaying?' active':''}" id="pill-timelapse">🎬 ${LANG==='en'?'Timeline':'推移'}</div>`;
     document.getElementById('map-brief').onclick = openAlertSheet;
     document.getElementById('pill-danger').onclick = () => setMapFilter('danger');
     document.getElementById('pill-warn').onclick   = () => setMapFilter('warn');
     document.getElementById('pill-safe').onclick   = () => setMapFilter('safe');
     document.getElementById('pill-heat').onclick = toggleHeat;
     document.getElementById('pill-stats').onclick = openAreaSheet;
+    document.getElementById('pill-timelapse').onclick = toggleTimelapse;
   }
   const lg = document.getElementById('map-legend');
   if(lg){
