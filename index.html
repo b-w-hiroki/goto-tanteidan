@@ -566,6 +566,17 @@
     display: inline-flex; width: 96px; height: 96px; border-radius: 24px;
     align-items: center; justify-content: center; font-size: 50px; margin-bottom: 10px;
   }
+  /* 実カメラ */
+  .viewfinder .cam-video, .viewfinder .cam-shot {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; border-radius: inherit; display: none;
+  }
+  .cam-stage.live .cam-video { display: block; }
+  .cam-stage.live .target { display: none; }
+  .viewfinder .cam-shot { display: block; filter: brightness(.75); }
+  .result-card .rc-photo { position: relative; width: 190px; margin: 0 auto 16px; }
+  .result-card .rc-photo img { width: 100%; height: 136px; object-fit: cover; border-radius: 18px; border: 1px solid var(--line); }
+  .result-card .rc-photo .rc-mark { position: absolute; right: -12px; bottom: -12px; width: 54px; height: 54px; font-size: 27px; border-radius: 15px; margin: 0; }
   .result-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
   .result-card .desc { font-size: 13px; color: #C0B090; line-height: 1.6; margin-bottom: 18px; }
   .pt-pop {
@@ -4024,26 +4035,60 @@ const CAM_SUBJECTS = [
   { target:'🏠', place:'渋谷区松濤付近', place_en:'near Shoto, Shibuya' },
   { target:'🔌', place:'渋谷区円山町付近', place_en:'near Maruyama-cho, Shibuya' },
 ];
+// ── 実カメラ（getUserMedia）: 許可されればライブプレビュー、不可なら絵文字モードのまま ──
+let camStream = null, camShot = null;
+async function startCamPreview(){
+  const vid = document.getElementById('cam-video');
+  if(!vid || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    vid.srcObject = camStream;
+    await vid.play();
+    const stage = document.getElementById('cam-stage');
+    if(stage) stage.classList.add('live');
+  } catch(e){ /* 権限拒否・非対応 → 絵文字モードのまま */ }
+}
+function stopCamPreview(){
+  if(camStream){ camStream.getTracks().forEach(tr=>tr.stop()); camStream = null; }
+  const stage = document.getElementById('cam-stage');
+  if(stage) stage.classList.remove('live');
+}
+function captureShot(){
+  const vid = document.getElementById('cam-video');
+  if(!camStream || !vid || !vid.videoWidth) return null;
+  const c = document.createElement('canvas');
+  c.width = vid.videoWidth; c.height = vid.videoHeight;
+  c.getContext('2d').drawImage(vid, 0, 0);
+  try { return c.toDataURL('image/jpeg', .8); } catch(e){ return null; }
+}
 function camIdle(){
   const s = CAM_SUBJECTS[Math.floor(Math.random()*CAM_SUBJECTS.length)];
+  camShot = null;
   document.getElementById('cam-stage').innerHTML = `
     <div class="viewfinder">
+      <video id="cam-video" class="cam-video" autoplay playsinline muted></video>
       <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
       <div class="scan"></div>
       <div class="target" id="vtarget">${s.target}</div>
     </div>
     <div class="cam-hint">📍 ${tx(s,'place')}<br>${t('cam_hint')}</div>
     <div class="shutter" id="shutter" role="button" aria-label="${LANG==='en'?'Take photo':'撮影する'}">📸</div>`;
-  document.getElementById('shutter').onclick = camAnalyze;
+  document.getElementById('shutter').onclick = () => {
+    camShot = captureShot();
+    stopCamPreview();
+    camAnalyze();
+  };
+  startCamPreview();
 }
 
 function camAnalyze(){
   const stage = document.getElementById('cam-stage');
   stage.innerHTML = `
     <div class="viewfinder">
+      ${camShot ? `<img src="${camShot}" class="cam-shot" alt="">` : ''}
       <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
       <div class="scan" style="display:block"></div>
-      <div class="target">🔍</div>
+      ${camShot ? '' : '<div class="target">🔍</div>'}
     </div>
     <div class="ai-box">
       <div class="ai-row" id="r1"><div class="spin"></div><span>${t('cam_r1')}</span></div>
@@ -4085,10 +4130,13 @@ function camResult(){
   const comboBadge = isCombo
     ? `<div class="combo-badge">🔥 ${LANG==='en'?'COMBO':'コンボ'} ×${comboCount}  +${comboBonus}pt!</div>` : '';
   const tileBg = { danger:'rgba(230,57,70,.18)', warn:'rgba(244,162,97,.18)', safe:'rgba(100,116,139,.18)' }[o.type];
+  const markVisual = camShot
+    ? `<div class="rc-photo"><img src="${camShot}" alt=""><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>`
+    : `<div><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>`;
   document.getElementById('cam-stage').innerHTML = `
     <div class="result-card">
       ${comboBadge}
-      <div><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>
+      ${markVisual}
       <h3 style="color:${color}">${tx(o,'title')}</h3>
       <div class="desc">${t('cam_conf')} <b>${conf}%</b><br>${tx(o,'desc')}<br>${t('cam_added')}</div>
       <div class="pt-pop"><div class="n">+${totalGained} ${t('pt')}</div><div class="l">${t('cam_got')}${bonus}</div></div>
@@ -4352,6 +4400,7 @@ function switchView(name){
   document.getElementById('view-'+name).classList.add('active');
   document.querySelector(`.tab[data-view="${name}"]`).classList.add('active');
   if (name!=='map') cancelPatrol();
+  if (name!=='cam') stopCamPreview();
   if (name==='map') { initMap(); bumpDaily('map'); saveState(); }
   if (name==='cam') camIdle();
   if (name==='book') renderBook();
