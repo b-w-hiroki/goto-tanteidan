@@ -1253,6 +1253,44 @@
     background: rgba(212,168,32,.15); border: 1px solid rgba(212,168,32,.35);
     border-radius: 12px; padding: 9px 16px; margin-top: 4px; }
 
+  /* ── チャート（7日間バー・行政ダッシュボード）── */
+  .bar7 { display: flex; gap: 6px; align-items: flex-end; padding: 4px 2px 0; }
+  .bar7-col { flex: 1; text-align: center; min-width: 0; }
+  .bar7-val { display: block; font-size: 10px; font-weight: 800; color: var(--gold); height: 14px; line-height: 14px; }
+  .bar7-track { height: 56px; display: flex; align-items: flex-end; }
+  .bar7-track i { display: block; width: 100%; background: var(--gold); border-radius: 4px 4px 0 0; min-height: 0; transition: height .4s ease; }
+  .bar7-lbl { display: block; font-size: 8.5px; color: var(--gray); margin-top: 4px; white-space: nowrap; }
+  .bar7-lbl.today { color: var(--gold); font-weight: 800; }
+  .hq-zone-bar { height: 5px; background: rgba(0,0,0,.3); border-radius: 3px; margin-top: 6px; }
+  .hq-zone-bar i { display: block; height: 100%; border-radius: 3px; }
+  .freq-dots { display: inline-flex; gap: 3px; margin-right: 6px; vertical-align: middle; }
+  .freq-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+  .freq-dots i.on { background: var(--gold); }
+  /* 行政ダッシュボード */
+  .gov-view .hq-title b { color: #93c5e8; }
+  .gd-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gd-kpi { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .gd-kpi b { display: block; font-size: 24px; font-weight: 800; color: #93c5e8; }
+  .gd-kpi b small { font-size: 13px; font-weight: 700; }
+  .gd-kpi span { font-size: 10.5px; color: var(--gray); }
+  .gd-chart { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px 10px; }
+  .gd-bars { display: flex; gap: 2px; align-items: flex-end; height: 72px; }
+  .gd-bcol { flex: 1; height: 100%; display: flex; align-items: flex-end; min-width: 0; }
+  .gd-bcol i { display: block; width: 100%; background: #5B7FA6; border-radius: 3px 3px 0 0; }
+  .gd-bcol:last-child i { background: #93c5e8; }
+  .gd-axis { display: flex; justify-content: space-between; font-size: 8.5px; color: var(--gray); margin-top: 6px; }
+  .gd-cats { display: flex; flex-direction: column; gap: 9px; }
+  .gd-cat { display: flex; align-items: center; gap: 10px; }
+  .gd-cat-lbl { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #aab4c8; width: 76px; flex-shrink: 0; }
+  .gd-cat-lbl i { width: 8px; height: 8px; border-radius: 3px; flex-shrink: 0; }
+  .gd-cat-bar { flex: 1; height: 12px; background: rgba(0,0,0,.3); border-radius: 6px; overflow: hidden; }
+  .gd-cat-bar i { display: block; height: 100%; border-radius: 6px; }
+  .gd-cat b { font-size: 13px; font-weight: 800; width: 24px; text-align: right; }
+  .gd-resolve { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .gd-resolve-bar { height: 10px; background: rgba(0,0,0,.3); border-radius: 6px; overflow: hidden; margin-bottom: 8px; }
+  .gd-resolve-bar i { display: block; height: 100%; background: linear-gradient(90deg, #3B82F6, #93c5e8); border-radius: 6px; }
+  .gd-resolve span { font-size: 11.5px; color: var(--gray); }
+
   /* ── 週刊 捜査報告書 ── */
   .report-sheet {
     position: absolute; left: 0; right: 0; bottom: 78px; z-index: 1100;
@@ -1735,6 +1773,7 @@
   <div class="mission-sheet" id="mission-sheet"></div>
   <div class="info-view" id="info-view"></div>
   <div class="hq-view" id="hq-view"></div>
+  <div class="hq-view gov-view" id="gov-view"></div>
   <div class="detail-modal" id="detail-modal"></div>
   <div class="mark-sheet" id="mark-sheet"></div>
   <div class="report-sheet" id="report-sheet"></div>
@@ -1979,6 +2018,12 @@ function txAgo(a){ if(LANG!=='en') return a; if(a==='たった今') return 'just
 function txChip(c0){ return c0==='ok'?t('ff_ok'):c0==='warn'?t('ff_warn'):c0==='ng'?t('ff_ng'):t('chip_resolved'); }
 function txArea(s){ if(LANG!=='en') return s; return s.replace('渋谷','Shibuya').replace('・',' · ').replace(/(\d+)件/,'$1 posts'); }
 function txFreq(f){ if(LANG!=='en') return f; return f==='高頻度'?'High':f==='中頻度'?'Medium':f==='低頻度'?'Low':f; }
+// 頻度のドットゲージ（テキストラベルと併記して使う）
+function freqDotsHtml(f){
+  const n = f==='高頻度'?3 : f==='中頻度'?2 : f==='低頻度'?1 : 0;
+  if(!n) return '';
+  return `<span class="freq-dots" aria-hidden="true">${'<i class="on"></i>'.repeat(n)}${'<i></i>'.repeat(3-n)}</span>`;
+}
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
@@ -2652,15 +2697,20 @@ function renderHQBriefing(){
       : `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
   })();
 
-  const zoneHtml = zones.map(z=>`
+  const zoneMax = Math.max(1, ...zones.map(z=>z.cnt));
+  const zoneHtml = zones.map(z=>{
+    const zc = z.type==='danger' ? '#E63946' : 'var(--gold)';
+    return `
     <div class="hq-zone">
-      <div class="hq-zone-dot" style="background:${z.type==='danger'?'var(--red)':'var(--gold)'}"></div>
+      <div class="hq-zone-dot" style="background:${zc}"></div>
       <div class="hq-zone-info">
         <b>${z.name}</b>
         <span>${z.type==='danger'?(LANG==='en'?'Marking likely':'マーキング濃厚'):(LANG==='en'?'Needs check':'要確認')}</span>
+        <div class="hq-zone-bar"><i style="width:${Math.round(z.cnt/zoneMax*100)}%;background:${zc}"></i></div>
       </div>
       <div class="hq-zone-cnt">${z.cnt}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   const actHtml = actions.map(a=>`
     <div class="hq-action" onclick="${a.fn};closeHQBriefing()">
@@ -2720,8 +2770,100 @@ function renderHQBriefing(){
           <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Investigation score':'捜査スコア'}</span><span class="hq-score-val">${personalScore}<span style="font-size:10px;color:var(--gray)">/100</span></span></div>
         </div>
         <button class="panel-btn" style="margin-top:12px" onclick="closeHQBriefing();openWeeklyReport()">📰 ${LANG==='en'?'Weekly Investigation Report':'週刊 捜査報告書を見る'}</button>
+        <button class="panel-btn" style="margin-top:2px" onclick="closeHQBriefing();openGovDash()">🏛 ${LANG==='en'?'City Dashboard (mock)':'行政ダッシュボード（モック）'}</button>
       </div>
 
+    </div>`;
+}
+
+// 直近7日の投稿バーチャート（単一系列・ゴールド／値ラベルは今日と最大値のみ）
+function weekBarsHtml(){
+  const days = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    days.push({ lbl:`${d.getMonth()+1}/${d.getDate()}`, v: STATE.history[dateKey(d)]||0 });
+  }
+  const mx = Math.max(1, ...days.map(x=>x.v));
+  return `<div class="bar7" role="img" aria-label="${LANG==='en'?'Posts in the last 7 days':'直近7日間の投稿数'}">
+    ${days.map((x,i)=>`
+      <div class="bar7-col" title="${x.lbl}: ${x.v}">
+        <span class="bar7-val">${(i===6||x.v===mx)&&x.v>0?x.v:''}</span>
+        <div class="bar7-track"><i style="height:${x.v>0?Math.max(8,Math.round(x.v/mx*100)):0}%"></i></div>
+        <span class="bar7-lbl${i===6?' today':''}">${i===6?(LANG==='en'?'Today':'今日'):x.lbl}</span>
+      </div>`).join('')}
+  </div>`;
+}
+
+// ── 行政ダッシュボード（自治体向けモック）──
+function openGovDash(){ renderGovDash(); document.getElementById('gov-view').classList.add('open'); }
+function closeGovDash(){ document.getElementById('gov-view').classList.remove('open'); }
+function renderGovDash(){
+  const el = document.getElementById('gov-view');
+  if(!el) return;
+  // 30日間の投稿推移（STATE.history から）
+  const days = [];
+  for(let i=29;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    days.push({ lbl:`${d.getMonth()+1}/${d.getDate()}`, v: STATE.history[dateKey(d)]||0 });
+  }
+  const mx = Math.max(1, ...days.map(x=>x.v));
+  const monthTotal = days.reduce((s,x)=>s+x.v, 0) + 26;   // コミュニティ分のダミー加算
+  const danger = MARKINGS.filter(m=>m.type==='danger').length;
+  const warn   = MARKINGS.filter(m=>m.type==='warn').length;
+  const safe   = MARKINGS.filter(m=>m.type==='safe').length;
+  const threats = danger + warn;
+  const resolvedCnt = MARKINGS.filter(m=>m.resolved).length;
+  const resolveRate = threats ? Math.round(resolvedCnt/threats*100) : 0;
+  const catTotal = Math.max(1, danger + warn + safe);
+  const bars30 = days.map(x=>`<div class="gd-bcol" title="${x.lbl}: ${x.v}${LANG==='en'?'':'件'}"><i style="height:${x.v>0?Math.max(6,Math.round(x.v/mx*100)):0}%"></i></div>`).join('');
+  const axisLbls = [days[0].lbl, days[10].lbl, days[20].lbl, LANG==='en'?'Today':'今日'];
+  const catRow = (lbl, cnt, color) => `
+    <div class="gd-cat">
+      <span class="gd-cat-lbl"><i style="background:${color}"></i>${lbl}</span>
+      <div class="gd-cat-bar"><i style="width:${Math.round(cnt/catTotal*100)}%;background:${color}"></i></div>
+      <b>${cnt}</b>
+    </div>`;
+  el.innerHTML = `
+    <div class="hq-hdr">
+      <button class="hq-back" onclick="closeGovDash()">←</button>
+      <div class="hq-title"><b>🏛 ${LANG==='en'?'Shibuya Safety Dashboard':'渋谷区 防犯ダッシュボード'}</b><span>${LANG==='en'?'For city officials · all dummy data':'行政向けモック ・ 全データはダミー'}</span></div>
+      <span class="hq-badge" style="background:var(--blue)">MOCK</span>
+    </div>
+    <div class="hq-body">
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'THIS MONTH':'今月のサマリー'}</div>
+        <div class="gd-kpis">
+          <div class="gd-kpi"><b>${fmt(monthTotal)}</b><span>${LANG==='en'?'Reports':'住民からの投稿'}</span></div>
+          <div class="gd-kpi"><b>${resolveRate}<small>%</small></b><span>${LANG==='en'?'Resolve rate':'対処率'}</span></div>
+          <div class="gd-kpi"><b>128</b><span>${LANG==='en'?'Active detectives':'参加探偵数'}</span></div>
+          <div class="gd-kpi"><b>26<small>h</small></b><span>${LANG==='en'?'Avg. response':'平均対処時間'}</span></div>
+        </div>
+      </div>
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'REPORTS — LAST 30 DAYS':'投稿推移（30日間）'}</div>
+        <div class="gd-chart">
+          <div class="gd-bars">${bars30}</div>
+          <div class="gd-axis">${axisLbls.map(a=>`<span>${a}</span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'BREAKDOWN BY VERDICT':'判定種別の内訳'}</div>
+        <div class="gd-cats">
+          ${catRow(LANG==='en'?'Likely':'濃厚', danger, '#E63946')}
+          ${catRow(LANG==='en'?'Needs check':'要確認', warn, '#F4A261')}
+          ${catRow(LANG==='en'?'Coincidence':'偶然', safe, '#64748B')}
+        </div>
+      </div>
+      <div class="hq-sec">
+        <div class="hq-sec-title">${LANG==='en'?'RESOLUTION PROGRESS':'対処の進捗'}</div>
+        <div class="gd-resolve">
+          <div class="gd-resolve-bar"><i style="width:${resolveRate}%"></i></div>
+          <span>${LANG==='en'?`${resolvedCnt} of ${threats} threats resolved`:`脅威 ${threats}件中 ${resolvedCnt}件 対処済み`}</span>
+        </div>
+      </div>
+      <div style="padding:4px 0 24px;text-align:center;font-size:10.5px;color:var(--gray)">
+        ${LANG==='en'?'Prototype mock — numbers are illustrative.':'※ 概念実証用のモック画面です。数値はすべてダミーです。'}
+      </div>
     </div>`;
 }
 
@@ -2762,6 +2904,8 @@ function openWeeklyReport(){
           <div class="rp-cell"><b>${STATE.resolved||0}</b><span>${LANG==='en'?'Resolved':'対処済み'}</span></div>
           <div class="rp-cell"><b>+${fmt(STATE.earned||0)}</b><span>${LANG==='en'?'Points earned':'獲得ポイント'}</span></div>
         </div>
+        <div class="rp-sec">${LANG==='en'?'7-DAY POSTS':'7日間の投稿'}</div>
+        ${weekBarsHtml()}
         <div class="rp-sec">${LANG==='en'?'IMPACT ON THE TOWN':'街への影響'}</div>
         ${impactHtml}
         <div class="rp-sec">${LANG==='en'?'STANDING':'成績'}</div>
@@ -3679,7 +3823,7 @@ function renderBook(){
       <div class="book-row-mark" style="background:${bg}">${m.mark}${found?'<span class="br-found">✓</span>':''}</div>
       <div class="book-row-info">
         <b>${tx(m,'name')} <span class="chip ${chipCls}" style="font-size:9px">${chipLbl}</span></b>
-        <div class="book-row-freq">${txFreq(m.frequency)}</div>
+        <div class="book-row-freq">${freqDotsHtml(m.frequency)}${txFreq(m.frequency)}</div>
       </div>
       <div class="book-row-arr">›</div>
     </div>`;
@@ -3709,7 +3853,7 @@ function openBookSheet(idx){
       </div>
       <div class="bs-section">
         <div class="bs-label">${LANG==='en'?'FREQUENCY':'出現頻度'}</div>
-        <div class="bs-text">${txFreq(m.frequency)}</div>
+        <div class="bs-text">${freqDotsHtml(m.frequency)}${txFreq(m.frequency)}</div>
       </div>
       <div class="bs-section">
         <div class="bs-label">${LANG==='en'?'WHERE IT APPEARS':'よく見られる場所'}</div>
@@ -4423,6 +4567,7 @@ function switchView(name){
   // タブ切替時はモーダル・シート類をすべて閉じる
   document.getElementById('detail-modal').classList.remove('open');
   document.getElementById('info-view').classList.remove('open');
+  document.getElementById('gov-view').classList.remove('open');
   ['notif-sheet','rank-sheet','area-sheet','level-sheet','mypage-sheet','quiz-sheet','card-sheet','stats-sheet','safety-sheet','alert-sheet','mission-sheet','book-sheet','mark-sheet','report-sheet'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
