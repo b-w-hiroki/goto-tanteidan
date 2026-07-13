@@ -470,6 +470,16 @@
     0%,100% { box-shadow: 0 8px 20px rgba(230,57,70,.45); }
     50% { box-shadow: 0 8px 28px rgba(230,57,70,.9); }
   }
+  /* ── デモモードインジケータ ── */
+  .demo-ind {
+    position: absolute; top: 54px; left: 50%; transform: translateX(-50%); z-index: 1400;
+    background: rgba(230,57,70,.92); color: #fff; font-size: 11px; font-weight: 800;
+    padding: 7px 14px; border-radius: 20px; white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(0,0,0,.45); cursor: pointer;
+    animation: demoPulse 2s ease-in-out infinite;
+  }
+  @keyframes demoPulse { 0%,100% { opacity: 1; } 50% { opacity: .65; } }
+
   /* ── タイムラプスHUD ── */
   .tl-hud {
     position: absolute; left: 50%; transform: translateX(-50%); bottom: 96px; z-index: 1050;
@@ -3402,6 +3412,7 @@ function openMyPage(){
       <div class="mp-achgrid">${achHtml}</div>
       <button class="panel-btn" id="mp-stats" style="margin-bottom:10px">${t('stats_btn')}</button>
       <button class="panel-btn accent" id="mp-card" style="margin-bottom:10px">${t('card_btn')}</button>
+      <button class="panel-btn" id="mp-demo" style="margin-bottom:10px">🎬 ${LANG==='en'?'Demo mode (auto-play)':'デモモード（自動再生）'}</button>
       <button class="mp-reset" id="mp-reset">${t('mp_reset')}</button>
     </div>`;
 
@@ -3456,6 +3467,7 @@ function openMyPage(){
   });
   document.getElementById('mp-stats').onclick = () => { sheet.classList.remove('open'); openStats(); };
   document.getElementById('mp-card').onclick = () => { sheet.classList.remove('open'); openStatsCard(); };
+  document.getElementById('mp-demo').onclick = () => { sheet.classList.remove('open'); startDemo(); };
   document.getElementById('mp-reset').onclick = () => {
     if (confirm(t('mp_reset_confirm'))) resetAll();
   };
@@ -4734,6 +4746,50 @@ function stopTimelapse(){
   if(hud) hud.classList.remove('on');
   if(map && markerLayer) refreshMapPins();
   renderMapOverlay();
+}
+
+// ── デモモード：主要フローを自動再生（展示・プレゼン用）──
+let demoOn = false, demoTimer = null;
+const DEMO_STEPS = [
+  [() => switchView('home'), 2600],
+  [() => openMissionSheet(), 3200],
+  [() => { document.getElementById('mission-sheet').classList.remove('open'); switchView('map'); }, 1800],
+  [() => { if(!tlPlaying) toggleTimelapse(); }, 9200],
+  [() => switchView('cam'), 1600],
+  [() => { const s = document.getElementById('shutter'); if(s) s.click(); }, 4200],
+  [() => { const b = document.getElementById('cam-done'); if(b) b.click(); }, 3200],
+  [() => switchView('book'), 1400],
+  [() => openBookSheet(Math.floor(Math.random()*MARK_CATALOG.length)), 3200],
+  [() => { closeBookSheet(); switchView('rank'); switchRankTab('team'); }, 3800],
+  [() => openWeeklyReport(), 4200],
+  [() => document.getElementById('report-sheet').classList.remove('open'), 700],
+];
+function demoTick(i){
+  if(!demoOn) return;
+  const [fn, wait] = DEMO_STEPS[i % DEMO_STEPS.length];
+  try { fn(); } catch(e) { /* デモ中の一時的な状態差異は無視して次へ */ }
+  demoTimer = setTimeout(() => demoTick(i + 1), wait);
+}
+function startDemo(){
+  if(demoOn) return;
+  demoOn = true;
+  const ind = document.createElement('div');
+  ind.className = 'demo-ind';
+  ind.id = 'demo-ind';
+  ind.textContent = LANG==='en' ? '🎬 Demo — tap anywhere to exit' : '🎬 デモ再生中 ・ タップで終了';
+  document.querySelector('.phone').appendChild(ind);
+  setTimeout(() => document.addEventListener('pointerdown', stopDemo, true), 400);
+  demoTick(0);
+}
+function stopDemo(){
+  if(!demoOn) return;
+  demoOn = false;
+  clearTimeout(demoTimer);
+  document.removeEventListener('pointerdown', stopDemo, true);
+  const ind = document.getElementById('demo-ind');
+  if(ind) ind.remove();
+  if(tlPlaying) stopTimelapse();
+  switchView('home');
 }
 function setMapFilter(type){
   mapTypeFilter = mapTypeFilter === type ? 'all' : type;
