@@ -631,6 +631,32 @@
   }
   .rank-tabs .rt.active { background: var(--red); border-color: var(--red); color: #fff; }
 
+  /* ── 今週の対抗戦 ── */
+  .battle-card {
+    background: var(--night2); border: 1px solid rgba(212,168,32,.3); border-radius: 16px;
+    padding: 14px 16px; margin-top: 10px;
+  }
+  .bc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .bc-head b { font-size: 13.5px; font-weight: 800; }
+  .bc-days { font-size: 10.5px; font-weight: 800; color: var(--gold); background: rgba(212,168,32,.15); border: 1px solid rgba(212,168,32,.35); padding: 3px 9px; border-radius: 10px; }
+  .bc-sides { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .bc-side { flex: 1; text-align: center; opacity: .75; }
+  .bc-side.lead { opacity: 1; }
+  .bc-side .bc-emoji { font-size: 26px; display: block; margin-bottom: 2px; }
+  .bc-side b { display: block; font-size: 19px; font-weight: 800; }
+  .bc-side.me b { color: var(--gold); }
+  .bc-side:not(.me) b { color: #93c5e8; }
+  .bc-side span:last-child { font-size: 10px; color: var(--gray); }
+  .bc-vs { font-size: 11px; font-weight: 800; color: var(--gray); flex-shrink: 0; }
+  .bc-bar { display: flex; gap: 2px; height: 10px; border-radius: 6px; overflow: hidden; background: rgba(0,0,0,.3); }
+  .bc-bar i { display: block; height: 100%; }
+  .bc-bar .bc-mine { background: var(--gold); border-radius: 6px 0 0 6px; }
+  .bc-bar .bc-rival { background: #5B7FA6; border-radius: 0 6px 6px 0; }
+  .bc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .bc-foot > span { font-size: 11.5px; font-weight: 700; color: #aab4c8; }
+  .bc-cta { background: none; border: 1px solid var(--line); border-radius: 10px; color: var(--gold); font-size: 11px; font-weight: 800; padding: 7px 12px; cursor: pointer; font-family: inherit; }
+  .bc-cta:active { background: var(--navy); }
+
   /* ── My team card ── */
   .myteam {
     background: linear-gradient(135deg, #2A1F40 0%, #1A1428 100%);
@@ -3886,11 +3912,56 @@ function renderRank(seg){
 }
 
 // ── 探偵団（チーム）ランキング ──
+// 今週の対抗戦：隣接順位のチームとの週間ポイントバトル（決定的なダミー生成＋自分の獲得分）
+function weeklyBattle(){
+  const sorted = teamsSorted();
+  const mine = myTeam();
+  const myIdx = sorted.findIndex(t=>t.id===mine.id);
+  const rival = sorted[myIdx === 0 ? 1 : myIdx - 1];       // 1つ上（首位なら2位）と対戦
+  const seed = hashStr(weekStr() + mine.id + rival.id);
+  const minePt  = 300 + (seed % 260) + Math.round((STATE.earned||0) * .4);
+  const rivalPt = 300 + (hashStr(weekStr() + rival.id) % 320);
+  const now = new Date();
+  const daysLeft = 7 - ((now.getDay() + 6) % 7);           // 日曜終わりまで
+  return { mine, rival, minePt, rivalPt, daysLeft };
+}
 function renderTeam(){
   const sorted = teamsSorted();
   const mine = myTeam();
   const myRank = sorted.findIndex(t=>t.id===mine.id) + 1;
   const memUnit = LANG==='en' ? '' : '名';
+  const b = weeklyBattle();
+  const total = Math.max(1, b.minePt + b.rivalPt);
+  const mySharePct = Math.round(b.minePt / total * 100);
+  const leading = b.minePt >= b.rivalPt;
+  const battleHtml = `
+    <div class="battle-card">
+      <div class="bc-head">
+        <b>⚔️ ${LANG==='en'?'Weekly Squad Battle':'今週の対抗戦'}</b>
+        <span class="bc-days">${LANG==='en'?`${b.daysLeft}d left`:`残り${b.daysLeft}日`}</span>
+      </div>
+      <div class="bc-sides">
+        <div class="bc-side me${leading?' lead':''}">
+          <span class="bc-emoji">${b.mine.emoji}</span>
+          <b>${fmt(b.minePt)}</b><span>${tx(b.mine,'name')}</span>
+        </div>
+        <div class="bc-vs">VS</div>
+        <div class="bc-side${leading?'':' lead'}">
+          <span class="bc-emoji">${b.rival.emoji}</span>
+          <b>${fmt(b.rivalPt)}</b><span>${tx(b.rival,'name')}</span>
+        </div>
+      </div>
+      <div class="bc-bar">
+        <i class="bc-mine" style="width:calc(${mySharePct}% - 1px)"></i>
+        <i class="bc-rival" style="width:calc(${100-mySharePct}% - 1px)"></i>
+      </div>
+      <div class="bc-foot">
+        <span>${leading
+          ? (LANG==='en'?`Leading by ${fmt(b.minePt-b.rivalPt)}pt!`:`${fmt(b.minePt-b.rivalPt)}pt リード中！`)
+          : (LANG==='en'?`${fmt(b.rivalPt-b.minePt)}pt behind`:`あと ${fmt(b.rivalPt-b.minePt)}pt で逆転`)}</span>
+        <button class="bc-cta" onclick="openMissionSheet()">${LANG==='en'?'Contribute →':'ミッションで貢献 →'}</button>
+      </div>
+    </div>`;
   document.getElementById('myteam-card').innerHTML = `
     <div class="myteam">
       <div class="mt-top">
@@ -3903,7 +3974,7 @@ function renderTeam(){
         <div class="mt-cell"><b>${mine.members}</b><span>${t('team_members')}</span></div>
         <div class="mt-cell"><b style="color:var(--gold)">${fmt(STATE.earned)}</b><span>${t('your_contrib')}</span></div>
       </div>
-    </div>`;
+    </div>` + battleHtml;
   document.getElementById('team-list').innerHTML = sorted.map((tm,i)=>{
     const cls = i===0?'g':i===1?'s':i===2?'b':'';
     const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
