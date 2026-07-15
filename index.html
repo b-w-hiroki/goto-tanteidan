@@ -172,6 +172,25 @@
   .view.active { display: block; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
 
+  /* ── タブ切替時のスタッガー（リスト項目が順に立ち上がる）── */
+  @keyframes riseIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .view.anim-in .feed-item, .view.anim-in .book-row, .view.anim-in .rank-row,
+  .view.anim-in .team-row, .view.anim-in .stat, .view.anim-in .hero,
+  .view.anim-in .battle-card, .view.anim-in .myteam, .view.anim-in .my-contrib,
+  .view.anim-in .lv-nudge, .view.anim-in .book-progress {
+    animation: riseIn .4s cubic-bezier(.2,.8,.3,1) backwards;
+  }
+  .view.anim-in :is(.feed-item,.book-row,.rank-row,.team-row,.stat):nth-child(1) { animation-delay: .04s; }
+  .view.anim-in :is(.feed-item,.book-row,.rank-row,.team-row,.stat):nth-child(2) { animation-delay: .08s; }
+  .view.anim-in :is(.feed-item,.book-row,.rank-row,.team-row,.stat):nth-child(3) { animation-delay: .12s; }
+  .view.anim-in :is(.feed-item,.book-row,.rank-row,.team-row,.stat):nth-child(4) { animation-delay: .16s; }
+  .view.anim-in :is(.feed-item,.book-row,.rank-row,.team-row,.stat):nth-child(5) { animation-delay: .20s; }
+  .view.anim-in :is(.feed-item,.book-row,.rank-row,.team-row,.stat):nth-child(6) { animation-delay: .24s; }
+  .view.anim-in :is(.feed-item,.book-row,.rank-row,.team-row,.stat):nth-child(7) { animation-delay: .28s; }
+  .view.anim-in :is(.feed-item,.book-row,.rank-row,.team-row,.stat):nth-child(n+8) { animation-delay: .32s; }
+  .view.anim-in .battle-card { animation-delay: .10s; }
+  .view.anim-in .my-contrib { animation-delay: .24s; }
+
   /* ── Common cards ── */
   .hdr {
     display: flex; align-items: center; justify-content: space-between;
@@ -4637,9 +4656,16 @@ document.getElementById('ob-next').onclick = () => {
 
 // ── Nav ──
 function switchView(name){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active','anim-in'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('view-'+name).classList.add('active');
+  const view = document.getElementById('view-'+name);
+  view.classList.add('active');
+  // スタッガー演出はタブ切替時のみ（renderHome等の再描画では再生しない）
+  if(name !== 'map' && name !== 'cam'){
+    view.classList.add('anim-in');
+    clearTimeout(view._animT);
+    view._animT = setTimeout(()=>view.classList.remove('anim-in'), 700);
+  }
   document.querySelector(`.tab[data-view="${name}"]`).classList.add('active');
   if (name!=='map') { cancelPatrol(); if(typeof stopTimelapse==='function' && tlPlaying) stopTimelapse(); }
   if (name!=='cam') stopCamPreview();
@@ -4971,6 +4997,12 @@ if (ONBOARDED) {
   if (ob) ob.remove();
 }
 renderHome();
+// 初回表示にもスタッガー演出
+(() => {
+  const hv = document.getElementById('view-home');
+  hv.classList.add('anim-in');
+  setTimeout(()=>hv.classList.remove('anim-in'), 700);
+})();
 if(isNewDay) setTimeout(doCheckin, 900);
 renderRank('week');
 renderMapOverlay();
