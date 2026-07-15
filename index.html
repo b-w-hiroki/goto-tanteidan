@@ -46,6 +46,7 @@
     --green: #2D6A4F;
     --gold: #D4A820;
     --light: #F5EDDC;
+    --ink: #ECEAF2;   /* データ数値用ニュートラル（金と視覚的に分離） */
     --gray: #8A8498;
     --line: #28243C;
   }
@@ -219,7 +220,7 @@
 
   .statgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
   .stat { background: var(--night2); border-radius: 14px; padding: 10px 6px 8px; text-align: center; border: 1px solid var(--line); cursor: pointer; position: relative; overflow: hidden; }
-  .stat b { display: block; font-size: 21px; font-weight: 800; color: var(--red); }
+  .stat b { display: block; font-size: 21px; font-weight: 800; color: var(--ink); }
   .stat .stat-ic { display: block; font-size: 13px; margin-bottom: 1px; }
   .stat .stat-lbl { display: block; font-size: 9.5px; color: var(--gray); margin-top: 3px; line-height: 1; }
   .stat-tip { font-size: 9.5px; color: var(--gold); text-align: center; max-height: 0; overflow: hidden;
@@ -763,7 +764,7 @@
   .rs-prof .rs-close { margin-left: auto; background: none; border: none; color: var(--gray); font-size: 22px; cursor: pointer; align-self: flex-start; }
   .rs-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; flex-shrink:0; }
   .rs-stat { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; text-align: center; }
-  .rs-stat b { display: block; font-size: 18px; font-weight: 800; color: var(--gold); }
+  .rs-stat b { display: block; font-size: 18px; font-weight: 800; color: var(--ink); }
   .rs-stat span { font-size: 10px; color: var(--gray); }
   .rs-sub { font-size: 13px; font-weight: 700; color: #aab4c8; margin-bottom: 8px; flex-shrink:0; }
   .rs-posts { overflow-y: auto; flex: 1; }
@@ -1295,7 +1296,7 @@
   .bar7-val { display: block; font-size: 10px; font-weight: 800; color: var(--gold); height: 14px; line-height: 14px; }
   .bar7-track { height: 56px; display: flex; align-items: flex-end; }
   .bar7-track i { display: block; width: 100%; background: var(--gold); border-radius: 4px 4px 0 0; min-height: 0; transition: height .4s ease; }
-  .bar7-lbl { display: block; font-size: 8.5px; color: var(--gray); margin-top: 4px; white-space: nowrap; }
+  .bar7-lbl { display: block; font-size: 9.5px; color: var(--gray); margin-top: 4px; white-space: nowrap; }
   .bar7-lbl.today { color: var(--gold); font-weight: 800; }
   .hq-zone-bar { height: 5px; background: rgba(0,0,0,.3); border-radius: 3px; margin-top: 6px; }
   .hq-zone-bar i { display: block; height: 100%; border-radius: 3px; }
@@ -1314,7 +1315,7 @@
   .gd-bcol { flex: 1; height: 100%; display: flex; align-items: flex-end; min-width: 0; }
   .gd-bcol i { display: block; width: 100%; background: #5B7FA6; border-radius: 3px 3px 0 0; }
   .gd-bcol:last-child i { background: #93c5e8; }
-  .gd-axis { display: flex; justify-content: space-between; font-size: 8.5px; color: var(--gray); margin-top: 6px; }
+  .gd-axis { display: flex; justify-content: space-between; font-size: 9.5px; color: var(--gray); margin-top: 6px; }
   .gd-cats { display: flex; flex-direction: column; gap: 9px; }
   .gd-cat { display: flex; align-items: center; gap: 10px; }
   .gd-cat-lbl { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #aab4c8; width: 76px; flex-shrink: 0; }
@@ -1350,7 +1351,7 @@
   .rp-sec:first-of-type { margin-top: 0; }
   .rp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
   .rp-cell { background: rgba(0,0,0,.22); border-radius: 10px; padding: 9px 12px; }
-  .rp-cell b { display: block; font-size: 19px; font-weight: 800; color: var(--gold); }
+  .rp-cell b { display: block; font-size: 19px; font-weight: 800; color: var(--ink); }
   .rp-cell span { font-size: 10px; color: var(--gray); }
   .rp-impact {
     display: flex; align-items: center; gap: 12px; background: rgba(45,106,79,.14);
@@ -1518,7 +1519,7 @@
   .my-contrib-title::before { content: '⭐'; font-size: 12px; }
   .my-contrib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .mc-cell { background: rgba(0,0,0,.22); border-radius: 12px; padding: 10px 12px; border: 1px solid rgba(212,168,32,.12); }
-  .mc-cell b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); }
+  .mc-cell b { display: block; font-size: 22px; font-weight: 800; color: var(--ink); }
   .mc-cell span { font-size: 10px; color: var(--gray); }
   .hq-btn { background:none; border:none; font-size:19px; cursor:pointer; padding:5px; line-height:1; }
   .hq-btn:active { opacity:.6; }
@@ -2938,7 +2939,7 @@ function openWeeklyReport(){
           <div class="rp-cell"><b>${STATE.myPosts||0}</b><span>${LANG==='en'?'Posts':'投稿'}</span></div>
           <div class="rp-cell"><b>${STATE.patrols||0}</b><span>${LANG==='en'?'Patrols':'パトロール'}</span></div>
           <div class="rp-cell"><b>${STATE.resolved||0}</b><span>${LANG==='en'?'Resolved':'対処済み'}</span></div>
-          <div class="rp-cell"><b>+${fmt(STATE.earned||0)}</b><span>${LANG==='en'?'Points earned':'獲得ポイント'}</span></div>
+          <div class="rp-cell"><b style="color:var(--gold)">+${fmt(STATE.earned||0)}</b><span>${LANG==='en'?'Points earned':'獲得ポイント'}</span></div>
         </div>
         <div class="rp-sec">${LANG==='en'?'7-DAY POSTS':'7日間の投稿'}</div>
         ${weekBarsHtml()}
@@ -3860,7 +3861,7 @@ function renderBook(){
     return `<div class="book-row" onclick="openBookSheet(${i})">
       <div class="book-row-mark" style="background:${bg}">${m.mark}${found?'<span class="br-found">✓</span>':''}</div>
       <div class="book-row-info">
-        <b>${tx(m,'name')} <span class="chip ${chipCls}" style="font-size:9px">${chipLbl}</span></b>
+        <b>${tx(m,'name')} <span class="chip ${chipCls}" style="font-size:10px">${chipLbl}</span></b>
         <div class="book-row-freq">${freqDotsHtml(m.frequency)}${txFreq(m.frequency)}</div>
       </div>
       <div class="book-row-arr">›</div>
