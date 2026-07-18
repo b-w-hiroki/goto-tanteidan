@@ -209,11 +209,20 @@
 
   /* ── Home hero ── */
   .hero {
-    background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
+    background: linear-gradient(150deg, #2A2140 0%, #1A1428 70%);
     border-radius: 18px; padding: 12px 16px 0; margin-bottom: 12px; position: relative; overflow: hidden;
-    cursor: pointer; border: 2px solid transparent;
+    cursor: pointer; border: 1px solid rgba(212,168,32,.35);
     transition: border-color .4s ease, box-shadow .4s ease;
   }
+  .hero .pt { color: var(--gold); }
+  .hero .role { color: var(--gold); opacity: 1; }
+  .hero .lvbar { background: rgba(255,255,255,.12); }
+  .hero .lvbar i { background: var(--gold); }
+  .hero .lvtx { color: var(--gray); opacity: 1; }
+  .hero .lvtx .perk-hint { color: var(--gold); }
+  .hero-today { border-top-color: var(--line); }
+  .hero-cell { border-right-color: var(--line); }
+  .fc-badge { background: rgba(0,0,0,.35); }
   .hero .glasswm { position: absolute; right: -10px; top: -16px; font-size: 90px; opacity: .12; }
   .hero .hero-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .hero .hero-id { display: flex; flex-direction: column; }
