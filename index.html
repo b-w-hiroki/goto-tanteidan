@@ -47,15 +47,16 @@
     --gold: #D4A820;
     --light: #F5EDDC;
     --ink: #ECEAF2;   /* データ数値用ニュートラル（金と視覚的に分離） */
+    --accent-ink: #fff;  /* アクセント色上の文字色（アクセント毎に上書き） */
     --gray: #8A8498;
     --line: #28243C;
   }
   /* アクセントテーマ（chromeのアクセント色のみ変更。危険＝赤の意味色は据え置き） */
-  [data-accent="amber"]  { --red:#C8960A; --red-dk:#96700A; }
-  [data-accent="blue"]   { --red:#3E8FD0; --red-dk:#2c6aa0; }
-  [data-accent="green"]  { --red:#2FA56E; --red-dk:#1f7350; }
-  [data-accent="purple"] { --red:#8B5CF6; --red-dk:#6d3ed6; }
-  [data-accent="pink"]   { --red:#EC4899; --red-dk:#be2d72; }
+  [data-accent="amber"]  { --red:#C8960A; --red-dk:#96700A; --accent-ink:#12122a; }
+  [data-accent="blue"]   { --red:#3E8FD0; --red-dk:#2c6aa0; --accent-ink:#12122a; }
+  [data-accent="green"]  { --red:#2FA56E; --red-dk:#1f7350; --accent-ink:#12122a; }
+  [data-accent="purple"] { --red:#8B5CF6; --red-dk:#6d3ed6; --accent-ink:#12122a; }
+  [data-accent="pink"]   { --red:#EC4899; --red-dk:#be2d72; --accent-ink:#12122a; }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
@@ -280,8 +281,8 @@
   /* ── Resolve feature ── */
   .feed-item.resolved .thumb { opacity: .55; filter: grayscale(.45); }
   .resolve-btn { width: 100%; margin-top: 14px; padding: 13px; background: rgba(59,130,246,.15);
-    border: 1.5px solid rgba(59,130,246,.4); border-radius: 12px; color: #7dd3fc;
-    font-size: 13px; font-weight: 800; cursor: pointer; transition: background .15s, transform .1s; }
+    border: 1px solid rgba(59,130,246,.4); border-radius: 14px; color: #7dd3fc;
+    font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s, transform .1s; }
   .resolve-btn:active { background: rgba(59,130,246,.28); transform: scale(.97); }
   .resolve-badge { display: flex; align-items: center; gap: 10px; margin-top: 14px;
     padding: 12px 14px; background: rgba(59,130,246,.12); border-radius: 12px;
@@ -295,7 +296,7 @@
   .mission.done { opacity: .6; border-color: rgba(45,106,79,.45); background: rgba(45,106,79,.07); }
   .mission.done .mi { background: rgba(45,106,79,.25) !important; }
   .mission.done .mt b { text-decoration: line-through; text-decoration-color: rgba(110,231,168,.5); }
-  .m-action { background:var(--gold); color:#12122a; border:none; border-radius:8px; padding:5px 10px; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; flex-shrink:0; margin-left:6px; }
+  .m-action { background:var(--gold); color:#12122a; border:none; border-radius:10px; padding:5px 10px; font-size:11px; font-weight:800; cursor:pointer; white-space:nowrap; flex-shrink:0; margin-left:6px; }
   .m-action:active { opacity:.75; }
   .done-badge { font-size: 12px; font-weight: 800; color: #6ee7a8; white-space: nowrap; }
 
@@ -634,7 +635,7 @@
     width: 100%; padding: 15px; border-radius: 14px; border: none; cursor: pointer;
     font-size: 15px; font-weight: 700; font-family: inherit;
   }
-  .btn.primary { background: var(--red); color: #fff; }
+  .btn.primary { background: var(--red); color: var(--accent-ink); }
   .btn.ghost { background: transparent; color: #C0B090; border: 1px solid var(--line); margin-top: 10px; }
 
   /* ── Ranking ── */
@@ -894,7 +895,7 @@
   .mp-ach .ach-ic { font-size: 24px; flex-shrink:0; }
   .mp-ach .ach-tx b { font-size: 12px; display: block; }
   .mp-ach .ach-tx span { font-size: 10px; color: var(--gray); line-height: 1.4; }
-  .mp-reset { width: 100%; padding: 13px; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--gray); font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; }
+  .mp-reset { width: 100%; padding: 13px; border-radius: 14px; border: 1px solid var(--line); background: transparent; color: var(--gray); font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; }
 
   /* ── Book search/filter ── */
   .book-search {
@@ -1236,7 +1237,7 @@
     font-size: 10px; color: var(--gray); white-space: nowrap; }
   .rg-node.reached .rg-at { color: var(--gold); font-weight: 700; }
   .rg-claim {
-    margin-top: 14px; width: 100%; padding: 11px; border-radius: 11px; border: none; cursor: pointer;
+    margin-top: 14px; width: 100%; padding: 12px; border-radius: 14px; border: none; cursor: pointer;
     background: linear-gradient(135deg, var(--gold), var(--red)); color: #fff; font-size: 13px; font-weight: 800;
     animation: rgGlow 1.6s infinite; transition: transform .1s;
   }
