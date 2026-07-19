@@ -283,7 +283,7 @@
   .feed-item .ft span { font-size: 11px; color: var(--gray); display: block; margin-top: 1px; }
   .chip { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
   .chip.ok { background: rgba(230,57,70,.22); color: #ff9aa3; }
-  .chip.warn { background: rgba(244,162,97,.22); color: var(--gold); }
+  .chip.warn { background: rgba(244,162,97,.22); color: #F4A261; }
   .chip.ng { background: rgba(100,116,139,.25); color: #9aa6ba; }
   .chip.resolved { background: rgba(59,130,246,.2); color: #7dd3fc; }
 
@@ -551,7 +551,7 @@
   .patrol-done .pd-ic { font-size: 60px; animation: pop .5s; }
   .patrol-done h3 { font-size: 22px; font-weight: 800; }
   .patrol-done .pd-stats { display: flex; gap: 22px; margin: 14px 0 6px; }
-  .patrol-done .pd-stat b { display: block; font-size: 26px; font-weight: 800; color: var(--gold); }
+  .patrol-done .pd-stat b { display: block; font-size: 26px; font-weight: 800; color: var(--ink); }
   .patrol-done .pd-stat span { font-size: 11px; color: var(--gray); }
   .patrol-done .pd-pts { font-size: 16px; font-weight: 800; color: #6ee7a8; margin-bottom: 16px; }
   .patrol-done .pd-close {
@@ -896,7 +896,7 @@
   .mp-name:focus { outline: none; border-color: var(--red); }
   .mp-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
   .mp-scell { background: var(--night2); border: 1px solid rgba(212,168,32,.16); border-radius: 12px; padding: 11px 12px; }
-  .mp-scell b { display: block; font-size: 20px; font-weight: 800; color: var(--gold); line-height: 1.1; }
+  .mp-scell b { display: block; font-size: 20px; font-weight: 800; color: var(--ink); line-height: 1.1; }
   .mp-scell span { font-size: 11px; color: var(--gray); }
   .mp-achgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
   .mp-ach { display: flex; gap: 10px; align-items: center; background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 11px; }
@@ -1085,7 +1085,7 @@
   .st-card { background: var(--night2); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
   .st-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 2px; }
   .st-kpi { background: var(--night2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-  .st-kpi b { display: block; font-size: 22px; font-weight: 800; color: var(--gold); }
+  .st-kpi b { display: block; font-size: 22px; font-weight: 800; color: var(--ink); }
   .st-kpi span { font-size: 11px; color: var(--gray); }
   .st-bars { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; height: 110px; }
   .st-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%; }
@@ -1786,6 +1786,7 @@
         <button class="ff-chip" data-bfilter="danger" data-i18n="bf_danger">要注意</button>
         <button class="ff-chip" data-bfilter="warn" data-i18n="bf_warn">要確認</button>
         <button class="ff-chip" data-bfilter="safe" data-i18n="bf_safe">偶然</button>
+        <button class="ff-chip" data-bfilter="unfound" data-i18n="bf_unfound">未発見</button>
       </div>
       <div id="book-list"></div>
       <div class="book-sheet" id="book-sheet"></div>
@@ -1898,7 +1899,7 @@ const I18N = {
     book_title:'探偵手帳', book_sub:'マーキング図鑑',
     book_desc:'侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。',
     book_search_ph:'🔎 記号名・意味で検索…', book_empty:'該当する記号が見つかりません',
-    bf_all:'すべて', bf_danger:'要注意', bf_warn:'要確認', bf_safe:'偶然',
+    bf_all:'すべて', bf_danger:'要注意', bf_warn:'要確認', bf_safe:'偶然', bf_unfound:'未発見',
     chip_danger:'要注意', chip_warn:'要確認', chip_safe:'偶然多め',
     book_freq:'出現頻度', book_ex:'例',
     tab_home:'ホーム', tab_map:'マップ', tab_rank:'ランク', tab_book:'手帳',
@@ -1991,7 +1992,7 @@ const I18N = {
     book_title:'Detective Handbook', book_sub:'Marking Encyclopedia',
     book_desc:'A list of marking symbols said to be used in break-in crimes. If you spot one, post it from the camera.',
     book_search_ph:'🔎 Search by name or meaning…', book_empty:'No matching symbols found',
-    bf_all:'All', bf_danger:'Caution', bf_warn:'Check', bf_safe:'Coincidence',
+    bf_all:'All', bf_danger:'Caution', bf_warn:'Check', bf_safe:'Coincidence', bf_unfound:'Not found',
     chip_danger:'Caution', chip_warn:'Check', chip_safe:'Often false',
     book_freq:'Frequency', book_ex:'e.g.',
     tab_home:'Home', tab_map:'Map', tab_rank:'Rank', tab_book:'Book',
@@ -3434,7 +3435,7 @@ function openMyPage(){
       <div class="mp-sec">${t('mp_summary')}</div>
       <div class="mp-summary">
         <div class="mp-scell"><b>${STATE.myPosts}</b><span>${t('mp_week_posts')}</span></div>
-        <div class="mp-scell"><b>${fmt(STATE.earned)}</b><span>${t('mp_earned')}</span></div>
+        <div class="mp-scell"><b style="color:var(--gold)">${fmt(STATE.earned)}</b><span>${t('mp_earned')}</span></div>
         <div class="mp-scell"><b>${weekRank}${t('rank_suffix')}</b><span>${t('mp_week_rank')}</span></div>
         <div class="mp-scell"><b>${STATE.streak}</b><span>${t('mp_streak')}</span></div>
       </div>
@@ -3870,7 +3871,8 @@ function renderBook(){
   const q = bookQuery.trim().toLowerCase();
   const allList = MARK_CATALOG.map((m,i)=>({m,i}));
   const list = allList.filter(({m})=>{
-    if(bookFilter !== 'all' && m.color !== bookFilter) return false;
+    if(bookFilter === 'unfound'){ if(STATE.found[m.mark]) return false; }
+    else if(bookFilter !== 'all' && m.color !== bookFilter) return false;
     if(!q) return true;
     const hay = (m.name + ' ' + m.meaning + ' ' + m.examples.join(' ') + ' ' +
       (m.name_en||'') + ' ' + (m.meaning_en||'') + ' ' + m.examples.map(txLabel).join(' ')).toLowerCase();
