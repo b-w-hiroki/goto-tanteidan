@@ -38,4 +38,14 @@
 - PWA（Service Worker によるオフラインキャッシュ。地図UIも2回目以降はオフライン動作）
 - GitHub Pages で自動デプロイ
 
+## テスト
+
+主要フロー11項目のスモークテストを同梱（GitHub Actions で main への push / PR ごとに自動実行）:
+
+```bash
+npm install --no-save playwright
+npx playwright install chromium
+node tests/smoke.js
+```
+
 > これは概念実証用のプロトタイプです。地図・投稿・AI判定・ポイントはすべてダミーデータで動作します。
