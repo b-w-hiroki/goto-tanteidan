@@ -67,6 +67,17 @@ function check(name, ok, detail) {
   }
   check('起動＋全タブ巡回でJSエラーなし', pageErrors.length === 0, pageErrors[0]);
 
+  // 1b. マップにピンが描画される（サイズ0キャッシュ退行の検知）
+  await page.evaluate(() => document.querySelector('.tab[data-view="map"]').click());
+  await page.waitForTimeout(800);
+  const mapState = await page.evaluate(() => ({
+    h: map ? map.getSize().y : 0,
+    pins: document.querySelectorAll('.leaflet-marker-icon').length,
+  }));
+  check('マップが実サイズで初期化されピン描画', mapState.h > 0 && mapState.pins > 0, `h:${mapState.h} pins:${mapState.pins}`);
+  await page.evaluate(() => document.querySelector('.tab[data-view="home"]').click());
+  await page.waitForTimeout(300);
+
   // 2. 警戒度スケールの全画面一致（home badge / map brief / HQ / area sheet）
   const scale = await page.evaluate(() => {
     const s = forecastLevel().score;

@@ -32,9 +32,9 @@
 <meta name="twitter:image" content="https://b-w-hiroki.github.io/goto-tanteidan/ogp.png" />
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8D%3C/text%3E%3C/svg%3E" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+<link rel="stylesheet" href="vendor/leaflet/MarkerCluster.css" />
+<link rel="stylesheet" href="vendor/leaflet/MarkerCluster.Default.css" />
 <style>
   :root {
     --night: #0E0C18;
@@ -171,6 +171,9 @@
 
   .view { display: none; padding: 10px 14px 16px; animation: fade .25s; }
   .view.active { display: block; }
+  /* マップはフェード対象外: アニメ中の transform が絶対配置 #map の包含ブロックになり
+     高さ0の瞬間を Leaflet がキャッシュしてしまう（ピン・タイルが描画されない） */
+  #view-map { animation: none; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
 
   /* ── タブ切替時のスタッガー（リスト項目が順に立ち上がる）── */
@@ -360,7 +363,7 @@
 
   /* ── Detail modal ── */
   .detail-modal {
-    position: absolute; inset: 0; z-index: 150;
+    position: absolute; inset: 0; z-index: 1100;
     background: var(--night); overflow-y: auto;
     transform: translateY(100%); transition: transform .32s cubic-bezier(.4,0,.2,1);
   }
@@ -1639,9 +1642,7 @@
     pointer-events: none;
     transform: translateY(calc(-50% + 20px)) scale(.96);
     transition: opacity .2s ease, transform .24s cubic-bezier(.2,.8,.2,1);
-    box-shadow:
-      0 22px 70px rgba(0,0,0,.62),
-      0 0 0 999px rgba(3,2,10,.62);
+    box-shadow: 0 22px 70px rgba(0,0,0,.62);
   }
   .detail-modal.open {
     opacity: 1;
@@ -1695,7 +1696,7 @@
       <div class="hdr">
         <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
         <div style="display:flex;gap:4px;align-items:center">
-          <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く">🗂</button>
+          <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く">📁</button>
           <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く">🔔<span class="info-badge" id="info-badge"></span></button>
           <button class="mission-btn" onclick="openMissionSheet()" aria-label="ミッションを開く">📋<span class="mission-count" id="mission-count"></span></button>
           <button class="avatar-btn" id="profile-btn" style="font-size:24px;padding:5px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
@@ -1776,7 +1777,7 @@
         <div><h2 data-i18n="book_title">探偵手帳</h2><div class="sub" data-i18n="book_sub">マーキング図鑑</div></div>
         <div style="display:flex;gap:6px;align-items:center">
           <button class="hq-btn" id="quiz-btn" aria-label="今日の防犯クイズ" title="今日の防犯クイズ">🧠</button>
-          <button class="hq-btn" id="safety-btn" aria-label="防犯Tips・緊急" title="防犯Tips・緊急">🛡</button>
+          <button class="hq-btn" id="safety-btn" aria-label="防犯Tips・緊急" title="防犯Tips・緊急">🛡️</button>
           <div style="font-size:26px">📖</div>
         </div>
       </div>
@@ -1867,9 +1868,9 @@
   </nav>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="vendor/leaflet/leaflet-heat.js"></script>
+<script src="vendor/leaflet/leaflet.markercluster.js"></script>
 <script>
 // ───────────────────────────── i18n ─────────────────────────────
 let LANG = 'ja';
@@ -1927,7 +1928,7 @@ const I18N = {
     cam_hint:'怪しい記号にカメラを向けて撮影', cam_r1:'画像をアップロード中…', cam_r2:'AIがマーキングを解析中…', cam_r3:'位置情報とマップを照合中…',
     cam_conf:'AI信頼度', cam_added:'防犯マップに追加されます。', cam_got:'捜査ポイント獲得！', cam_bonus:' 初回ボーナス込み',
     cam_reflect:'マップに反映する', cam_again:'もう一度撮影', cam_share:'📤 結果をシェア',
-    toast_posted:'✅ 投稿完了！+', toast_pt_got:'pt 獲得', toast_daily:'🎯 デイリー達成！', toast_weekly:'🏆 ウィークリー達成！', toast_ach:'🏆 実績解除！', toast_copy:'📋 クリップボードにコピーしました', toast_heat_err:'⚠️ ヒートマップを読み込めませんでした',
+    toast_posted:'✅ 投稿完了！+', toast_pt_got:'pt 獲得', toast_daily:'🎯 デイリー達成！', toast_weekly:'🏆 ウィークリー達成！', toast_ach:'🏆 実績解除！', toast_copy:'📋 クリップボードにコピーしました', toast_heat_err:'⚠️ ヒートマップを読み込めませんでした', toast_map_need:'⚠️ マップの読み込み後に利用できます',
     chip_resolved:'対処済み', resolve_btn:'✅ 対処済みとして報告する', toast_resolved:'🔵 対処済み報告 +20pt',
     resolve_badge_title:'対処済み', resolve_badge_sub:'この記号は撤去・対処されました',
     patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'⚠️ マップを読み込めませんでした',
@@ -2020,7 +2021,7 @@ const I18N = {
     cam_hint:'Point the camera at a suspicious symbol', cam_r1:'Uploading image…', cam_r2:'AI analyzing marking…', cam_r3:'Matching location with map…',
     cam_conf:'AI confidence', cam_added:'It will be added to the map.', cam_got:'Investigation points earned!', cam_bonus:' incl. first-time bonus',
     cam_reflect:'Add to map', cam_again:'Shoot again', cam_share:'📤 Share result',
-    toast_posted:'✅ Posted! +', toast_pt_got:' pts', toast_daily:'🎯 Daily done! ', toast_weekly:'🏆 Weekly done! ', toast_ach:'🏆 Unlocked! ', toast_copy:'📋 Copied to clipboard', toast_heat_err:'⚠️ Could not load the heatmap',
+    toast_posted:'✅ Posted! +', toast_pt_got:' pts', toast_daily:'🎯 Daily done! ', toast_weekly:'🏆 Weekly done! ', toast_ach:'🏆 Unlocked! ', toast_copy:'📋 Copied to clipboard', toast_heat_err:'⚠️ Could not load the heatmap', toast_map_need:'⚠️ Available after the map loads',
     chip_resolved:'Resolved', resolve_btn:'✅ Report as resolved', toast_resolved:'🔵 Resolved! +20pt',
     resolve_badge_title:'Resolved', resolve_badge_sub:'This marking has been removed or addressed',
     patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'⚠️ Could not load the map',
@@ -2069,6 +2070,7 @@ const LABELS = {
   'インターホン側面の傷':'Scratch on intercom side', '郵便受け裏の記号':'Mark behind the mailbox',
   '表札周りのシール':'Sticker near the nameplate', 'メーターボックスの矢印':'Arrow on the meter box',
   '玄関枠の小さな点':'Small dot on the door frame', '誤検知（落書き）':'False positive (graffiti)',
+  '玄関柱のアルファベット':'Letter on the entrance pillar', 'ベランダ柵の三点マーク':'Three dots on the balcony rail',
   'ベランダ柵のテープ':'Tape on the balcony rail', 'ガスメーターの数字':'Number on the gas meter',
   '分電盤近くの線刻':'Scoring near the breaker', '塀の上の引っかき傷':'Scratch atop the wall',
   '郵便受けの点':'Dot on the mailbox', 'ドア枠の傷':'Scratch on the door frame',
@@ -2095,7 +2097,9 @@ function freqDotsHtml(f){
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
 const STATE = { points: 2480, posts: 38, unread: 0, streak: 5,
   myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, patrols: 0, patrolKm: 0, lastCheckin: '', history: {}, checklist: { date:'', done:{} }, camCombo: 0,
-  found: {} };  // 手帳コレクション: 自分が投稿した記号（mark文字 → true）
+  // 手帳コレクション: 自分が投稿した記号（mark文字 → true）。
+  // 初期プロフィール（38投稿のベテラン）と辻褄が合うよう、主要4種は発見済みで開始
+  found: { '⚡': true, '→': true, '●': true, '○': true } };
 
 const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent: 'amber', frame: 'amber' };
 
@@ -2882,7 +2886,8 @@ function renderGovDash(){
   const resolvedCnt = MARKINGS.filter(m=>m.resolved).length;
   const resolveRate = threats ? Math.round(resolvedCnt/threats*100) : 0;
   const catTotal = Math.max(1, danger + warn + safe);
-  const bars30 = days.map(x=>`<div class="gd-bcol" title="${x.lbl}: ${x.v}${LANG==='en'?'':'件'}"><i style="height:${x.v>0?Math.max(6,Math.round(x.v/mx*100)):0}%"></i></div>`).join('');
+  // 投稿0の日も薄いスタブを描き、グラフが歯抜けに見えないようにする
+  const bars30 = days.map(x=>`<div class="gd-bcol" title="${x.lbl}: ${x.v}${LANG==='en'?'':'件'}"><i style="${x.v>0?`height:${Math.max(6,Math.round(x.v/mx*100))}%`:'height:3px;opacity:.28'}"></i></div>`).join('');
   const axisLbls = [days[0].lbl, days[10].lbl, days[20].lbl, LANG==='en'?'Today':'今日'];
   const catRow = (lbl, cnt, color) => `
     <div class="gd-cat">
@@ -2903,7 +2908,7 @@ function renderGovDash(){
           <div class="gd-kpi"><b>${fmt(monthTotal)}</b><span>${LANG==='en'?'Reports':'住民からの投稿'}</span></div>
           <div class="gd-kpi"><b>${resolveRate}<small>%</small></b><span>${LANG==='en'?'Resolve rate':'対処率'}</span></div>
           <div class="gd-kpi"><b>128</b><span>${LANG==='en'?'Active detectives':'参加探偵数'}</span></div>
-          <div class="gd-kpi"><b>26<small>h</small></b><span>${LANG==='en'?'Avg. response':'平均対処時間'}</span></div>
+          <div class="gd-kpi"><b>${resolvedCnt>0?'26<small>h</small>':'—'}</b><span>${LANG==='en'?'Avg. response':'平均対処時間'}</span></div>
         </div>
       </div>
       <div class="hq-sec">
@@ -4119,7 +4124,7 @@ function retryMap(){
   const done = () => { mapFailed = false; initMap(); if (map) renderMapOverlay(); };
   if (typeof L !== 'undefined' && typeof L.map === 'function'){ done(); return; }
   const s = document.createElement('script');
-  s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.src = 'vendor/leaflet/leaflet.js';
   s.onload = done;
   s.onerror = done; // 失敗時は initMap が再びエラー表示を出す
   document.head.appendChild(s);
@@ -4631,19 +4636,19 @@ function finishSetup(){
 function renderMyContrib(){
   const el = document.getElementById('my-contrib-wrap');
   if(!el) return;
-  const postsThisWeek = Object.values(STATE.history||{}).reduce((s,v)=>s+v,0);
-  const score = Math.min(999, Math.round(
-    (STATE.myPosts||0)*15 + (STATE.patrols||0)*25 + (STATE.resolved||0)*20 + (STATE.streak||0)*5
-  ));
+  // 週間ランキングの自分の行と同じデータ源から導出し、画面間で数字を一致させる
+  const meRow = RANKS.week.find(r=>r.me);
+  const weekPosts = meRow ? +(meRow.area.match(/(\d+)件/)||[0,0])[1] : (STATE.myPosts||0);
+  const weekScore = meRow ? meRow.pt : 0;
   const title = LANG==='en' ? 'YOUR CONTRIBUTION' : 'あなたの今週の貢献';
   el.innerHTML = `
     <div class="my-contrib">
       <div class="my-contrib-title">${title}</div>
       <div class="my-contrib-grid">
-        <div class="mc-cell"><b>${STATE.myPosts||0}</b><span>${LANG==='en'?'Posts':'投稿数'}</span></div>
+        <div class="mc-cell"><b>${weekPosts}</b><span>${LANG==='en'?'Posts':'投稿数'}</span></div>
         <div class="mc-cell"><b>${STATE.patrols||0}</b><span>${LANG==='en'?'Patrols':'パトロール'}</span></div>
         <div class="mc-cell"><b>${STATE.resolved||0}</b><span>${LANG==='en'?'Resolved':'対処済み'}</span></div>
-        <div class="mc-cell"><b>${score}</b><span>${LANG==='en'?'Week score':'週間スコア'}</span></div>
+        <div class="mc-cell"><b>${fmt(weekScore)}</b><span>${LANG==='en'?'Week score':'週間スコア'}</span></div>
       </div>
     </div>`;
 }
@@ -4749,6 +4754,7 @@ function renderTimelapsePins(st){
 }
 function toggleTimelapse(){
   if(tlPlaying){ stopTimelapse(); return; }
+  if(!map || mapFailed){ showToast(t('toast_map_need')); return; }
   seedTimeline();
   tlPlaying = true;
   renderMapOverlay();
@@ -4888,7 +4894,7 @@ function buildHeat(){
     gradient:{0.3:'#457B9D', 0.55:'#F4A261', 0.8:'#E63946'} });
 }
 function toggleHeat(){
-  if(!map) return;
+  if(!map || mapFailed){ showToast(t('toast_map_need')); return; }
   if(typeof L.heatLayer !== 'function'){ showToast(t('toast_heat_err')); return; }
   heatOn = !heatOn;
   if(heatOn){ heatLayer = buildHeat(); heatLayer.addTo(map); }
@@ -5022,7 +5028,7 @@ updateStatusTime();
 setInterval(updateStatusTime, 30000);
 
 // ── シート共通UX：背景タップ＆（ボトムシートは）下スワイプで閉じる ──
-const SHEET_SELECTOR = '.notif-sheet,.rank-sheet,.area-sheet,.level-sheet,.mypage-sheet,.quiz-sheet,.card-sheet,.stats-sheet,.safety-sheet,.alert-sheet,.mission-sheet,.book-sheet,.mark-sheet,.report-sheet';
+const SHEET_SELECTOR = '.notif-sheet,.rank-sheet,.area-sheet,.level-sheet,.mypage-sheet,.quiz-sheet,.card-sheet,.stats-sheet,.safety-sheet,.alert-sheet,.mission-sheet,.book-sheet,.mark-sheet,.report-sheet,.detail-modal';
 // ボトムシート（下から出る詳細系）だけスワイプで閉じられる。他は中央モーダル
 const BOTTOM_SHEETS = ['mark-sheet', 'book-sheet', 'area-sheet', 'notif-sheet'];
 // マップ上のシートは地図操作を妨げない非モーダル扱い（背景暗転なし）
@@ -5041,6 +5047,16 @@ function initSheetUX(){
   document.getElementById('sheet-backdrop').onclick = () => {
     openModalSheets().forEach(s => s.classList.remove('open'));
   };
+  // Escで最前面のモーダル/シート → フルスクリーンビューの順に閉じる
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const opens = [...document.querySelectorAll(SHEET_SELECTOR)].filter(s => s.classList.contains('open'));
+    if (opens.length){ opens.forEach(s => s.classList.remove('open')); return; }
+    for (const id of ['info-view', 'gov-view', 'hq-view']){
+      const el = document.getElementById(id);
+      if (el && el.classList.contains('open')){ el.classList.remove('open'); return; }
+    }
+  });
   [...sheets].filter(s => BOTTOM_SHEETS.includes(s.id)).forEach(sheet => {
     let startY = null, dy = 0, dragging = false;
     sheet.addEventListener('touchstart', e => {
