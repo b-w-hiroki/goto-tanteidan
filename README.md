@@ -34,13 +34,13 @@
 
 ## 技術
 
-- 単一HTML（依存はCDN: Leaflet）
-- PWA（Service Worker によるオフラインキャッシュ。地図UIも2回目以降はオフライン動作）
+- 単一HTML（Leaflet 一式は `vendor/` に同梱。外部CDNへの依存なし）
+- PWA（Service Worker によるオフラインキャッシュ。地図UIは初回からオフライン動作。地図タイル画像のみ通信が必要）
 - GitHub Pages で自動デプロイ
 
 ## テスト
 
-主要フロー11項目のスモークテストを同梱（GitHub Actions で main への push / PR ごとに自動実行）:
+主要フロー12項目のスモークテストを同梱（GitHub Actions で main への push / PR ごとに自動実行）:
 
 ```bash
 npm install --no-save playwright
