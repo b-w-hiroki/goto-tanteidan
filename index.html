@@ -16,7 +16,7 @@
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
-<meta property="og:title" content="🔍 GO-TO 探偵団 — 市民参加型防犯アプリ" />
+<meta property="og:title" content="GO-TO 探偵団 — 市民参加型防犯アプリ" />
 <meta property="og:description" content="市民が「探偵」となり、街のマーキングを発見・投稿。AIが判定し、防犯マップがリアルタイムに育つ。実際のタブを操作できるプロトタイプ。" />
 <meta property="og:url" content="https://b-w-hiroki.github.io/goto-tanteidan/" />
 <meta property="og:site_name" content="GO-TO 探偵団" />
@@ -27,7 +27,7 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="🔍 GO-TO 探偵団 — 市民参加型防犯アプリ" />
+<meta name="twitter:title" content="GO-TO 探偵団 — 市民参加型防犯アプリ" />
 <meta name="twitter:description" content="市民が「探偵」となり、街のマーキングを発見・投稿。AIが判定し、防犯マップがリアルタイムに育つ。" />
 <meta name="twitter:image" content="https://b-w-hiroki.github.io/goto-tanteidan/ogp.png" />
 
@@ -95,11 +95,13 @@
   .pitch h1 .glass { font-size: 38px; }
   .pitch .lead { color: #C4B090; font-size: 15px; line-height: 1.7; margin-bottom: 24px; }
   .pitch .feat { display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start; }
-  .pitch .feat .ic {
+  .pitch .feat .ic-box {
     width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center; font-size: 18px;
-    background: rgba(230,57,70,.15);
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(230,57,70,.15); color: var(--red);
   }
+  .hdr-ic { color: var(--gray); }
+  .statusbar .sb-ic { display: inline-flex; align-items: center; gap: 5px; }
   .pitch .feat .tx b { display: block; font-size: 14px; margin-bottom: 2px; }
   .pitch .feat .tx span { font-size: 13px; color: var(--gray); line-height: 1.5; }
   .pitch .note { margin-top: 22px; font-size: 11px; color: #5a6478; line-height: 1.6; }
@@ -146,6 +148,12 @@
     border: none; background: none; padding-top: 10px;
   }
   .tab svg { width: 23px; height: 23px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  /* 線画アイコン共通（絵文字の置き換え） */
+  .ic {
+    stroke: currentColor; fill: none; stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+    vertical-align: -.16em; flex-shrink: 0;
+  }
   .tab.active { color: var(--red); }
   .tab.active svg { filter: drop-shadow(0 0 3px currentColor); }
   .tab.active::after {
@@ -226,7 +234,7 @@
   .hero-today { border-top-color: var(--line); }
   .hero-cell { border-right-color: var(--line); }
   .fc-badge { background: rgba(0,0,0,.35); }
-  .hero .glasswm { position: absolute; right: -10px; top: -16px; font-size: 90px; opacity: .12; }
+  .hero .glasswm { position: absolute; right: -14px; top: -18px; opacity: .09; color: #fff; }
   .hero .hero-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .hero .hero-id { display: flex; flex-direction: column; }
   .hero .role { font-size: 11px; opacity: .8; }
@@ -256,7 +264,7 @@
     gap: 6px; margin: 2px 0 12px; padding: 0 4px; }
   .stat { text-align: center; cursor: pointer; position: relative; overflow: hidden; padding: 4px 2px; }
   .stat b { font-size: 16px; font-weight: 800; color: var(--ink); }
-  .stat .stat-ic { font-size: 12px; margin-right: 4px; }
+  .stat .stat-ic { margin-right: 5px; color: var(--gray); }
   .stat .stat-lbl { font-size: 11px; color: var(--gray); margin-left: 5px; }
   .stat-tip { font-size: 10px; color: var(--gold); text-align: center; max-height: 0; overflow: hidden;
     transition: max-height .25s ease; pointer-events: none; }
@@ -1316,13 +1324,15 @@
   .al-item-body { font-size: 13px; color: #C0B090; line-height: 1.7; }
 
   /* ── 称号フレーム（ヒーローカードの光るボーダー） ── */
-  .hero.frame-copper  { border-color: #CD7F32; box-shadow: 0 4px 22px rgba(205,127,50,.50); }
-  .hero.frame-silver  { border-color: #B0BCC8; box-shadow: 0 4px 22px rgba(176,188,200,.50); }
-  .hero.frame-amber   { border-color: #C8960A; box-shadow: 0 4px 22px rgba(200,150,10,.60); }
-  .hero.frame-gold    { border-color: #D4A820; box-shadow: 0 4px 26px rgba(212,168,32,.65); }
-  .hero.frame-crimson { border-color: #DC143C; box-shadow: 0 4px 24px rgba(220,20,60,.60); }
-  .hero.frame-violet  { border-color: #8B5CF6; box-shadow: 0 4px 24px rgba(139,92,246,.60); }
-  .hero.frame-legend  { border-color: #FFD700; box-shadow: 0 0 32px rgba(255,215,0,.75), 0 4px 20px rgba(255,215,0,.4); }
+  /* 称号は「縁の色」で示す。広く強い光彩は既製テンプレートの見た目になるため、
+     halo は落として色の識別性だけ残す */
+  .hero.frame-copper  { border-color: #CD7F32; box-shadow: 0 2px 14px rgba(205,127,50,.22); }
+  .hero.frame-silver  { border-color: #B0BCC8; box-shadow: 0 2px 14px rgba(176,188,200,.22); }
+  .hero.frame-amber   { border-color: #C8960A; box-shadow: 0 2px 14px rgba(200,150,10,.26); }
+  .hero.frame-gold    { border-color: #D4A820; box-shadow: 0 2px 14px rgba(212,168,32,.28); }
+  .hero.frame-crimson { border-color: #DC143C; box-shadow: 0 2px 14px rgba(220,20,60,.26); }
+  .hero.frame-violet  { border-color: #8B5CF6; box-shadow: 0 2px 14px rgba(139,92,246,.26); }
+  .hero.frame-legend  { border-color: #FFD700; box-shadow: 0 2px 16px rgba(255,215,0,.34); }
 
   /* ── デイリーチェックイン ── */
   .ci-overlay {
@@ -1571,7 +1581,7 @@
     font-size: 10px; font-weight: 800; color: var(--gold); letter-spacing: .1em;
     margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
   }
-  .my-contrib-title::before { content: '⭐'; font-size: 12px; }
+  .my-contrib-title::before { content: ''; width: 3px; height: 11px; border-radius: 2px; background: var(--gold); }
   .my-contrib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .mc-cell { background: rgba(0,0,0,.22); border-radius: 12px; padding: 10px 12px; border: 1px solid rgba(212,168,32,.12); }
   .mc-cell b { display: block; font-size: 22px; font-weight: 800; color: var(--ink); }
@@ -1688,19 +1698,19 @@
 <!-- ── Side pitch ── -->
 <div class="pitch">
   <span class="badge">PROTOTYPE · 2026</span>
-  <h1><span class="glass">🔍</span> GO-TO 探偵団</h1>
+  <h1><span class="glass"><svg class="ic" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.6-4.6"/></svg></span> GO-TO 探偵団</h1>
   <p class="lead" data-i18n="pitch_lead">市民が「探偵」となり、街のマーキングを発見・投稿。AIが判定し、防犯マップがリアルタイムに育つ。</p>
 
   <div class="feat">
-    <div class="ic">📸</div>
+    <div class="ic-box"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
     <div class="tx"><b data-i18n="pitch_f1t">撮って投稿</b><span data-i18n="pitch_f1d">通勤・通学路の不審な記号を撮影しGPS付きで投稿</span></div>
   </div>
   <div class="feat">
-    <div class="ic">🤖</div>
+    <div class="ic-box"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="4.5" y="4.5" width="15" height="15" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 1.5V4M15 1.5V4M9 20v2.5M15 20v2.5M20 9h2.5M20 15h2.5M1.5 9H4M1.5 15H4"/></svg></div>
     <div class="tx"><b data-i18n="pitch_f2t">AIが自動判定</b><span data-i18n="pitch_f2d">マーキングか偶然かをAIが判別しマップへ反映</span></div>
   </div>
   <div class="feat">
-    <div class="ic">⭐</div>
+    <div class="ic-box"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8 21h8M12 17v4M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M6 5H3.5v1.5A3.5 3.5 0 0 0 6 9.9M18 5h2.5v1.5A3.5 3.5 0 0 1 18 9.9"/></svg></div>
     <div class="tx"><b data-i18n="pitch_f3t">ポイント＆ランキング</b><span data-i18n="pitch_f3d">貢献に応じて捜査ポイント・特典・地域ランク</span></div>
   </div>
 
@@ -1710,7 +1720,7 @@
 <!-- ── Phone ── -->
 <div class="phone">
   <div class="notch"></div>
-  <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+  <div class="statusbar"><span>9:41</span><span class="sb-ic"><svg class="ic" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M2 20h2M8 20v-5M14 20V9M20 20V3" stroke-width="2.4"/></svg><svg class="ic" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11.5v2"/><path d="M5 11.5h8" stroke-width="3"/></svg></span></div>
 
   <div class="screen" id="screen">
 
@@ -1719,15 +1729,15 @@
       <div class="hdr">
         <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
         <div style="display:flex;gap:4px;align-items:center">
-          <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く">📁</button>
-          <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く">🔔<span class="info-badge" id="info-badge"></span></button>
-          <button class="mission-btn" onclick="openMissionSheet()" aria-label="ミッションを開く">📋<span class="mission-count" id="mission-count"></span></button>
+          <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く"><svg class="ic" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></button>
+          <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く"><svg class="ic" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="info-badge" id="info-badge"></span></button>
+          <button class="mission-btn" onclick="openMissionSheet()" aria-label="ミッションを開く"><svg class="ic" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg><span class="mission-count" id="mission-count"></span></button>
           <button class="avatar-btn" id="profile-btn" style="font-size:24px;padding:5px" data-i18n-aria="aria_profile" aria-label="マイページを開く">🕵️</button>
         </div>
       </div>
 
       <div class="hero" id="home-hero">
-        <div class="glasswm">🔍</div>
+        <div class="glasswm"><svg class="ic" viewBox="0 0 24 24" width="80" height="80" aria-hidden="true"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.6-4.6"/></svg></div>
         <div class="hero-top">
           <div class="hero-id">
             <div class="role" id="home-role">特級探偵 / Lv.7</div>
@@ -1744,14 +1754,14 @@
       </div>
 
       <div class="statgrid">
-        <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic">📸</span><b id="stat-posts">38</b><span class="stat-lbl" data-i18n="stat_posts_lbl">投稿数</span><div class="stat-tip"></div></div>
-        <div class="stat" onclick="showStatTip(this,'stat_areas')"><span class="stat-ic">🔓</span><b>12</b><span class="stat-lbl" data-i18n="stat_areas_lbl">エリア</span><div class="stat-tip"></div></div>
-        <div class="stat" onclick="showStatTip(this,'stat_streak')"><span class="stat-ic">🔥</span><b id="stat-streak">5</b><span class="stat-lbl" data-i18n="stat_streak_lbl">連続日</span><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_posts')"><span class="stat-ic"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span><b id="stat-posts">38</b><span class="stat-lbl" data-i18n="stat_posts_lbl">投稿数</span><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_areas')"><span class="stat-ic"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span><b>12</b><span class="stat-lbl" data-i18n="stat_areas_lbl">エリア</span><div class="stat-tip"></div></div>
+        <div class="stat" onclick="showStatTip(this,'stat_streak')"><span class="stat-ic"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><b id="stat-streak">5</b><span class="stat-lbl" data-i18n="stat_streak_lbl">連続日</span><div class="stat-tip"></div></div>
       </div>
 
       <div class="lv-nudge" id="lv-nudge" style="display:none" onclick="openLevelSheet()" tabindex="0" role="button" aria-label="レベルアップ詳細"></div>
 
-      <div class="sec-title" data-i18n="sec_feed">🕐 みんなの捜査ログ</div>
+      <div class="sec-title" data-i18n="sec_feed">みんなの捜査ログ</div>
       <div class="feed-filter" id="feed-filter">
         <button class="ff-chip active" data-filter="all" data-i18n="ff_all">すべて</button>
         <button class="ff-chip" data-filter="ok" data-i18n="ff_ok">濃厚</button>
@@ -1773,10 +1783,10 @@
 
     <!-- RANKING -->
     <section class="view" id="view-rank">
-      <div class="hdr"><div><h2 data-i18n="rank_title">ランキング</h2><div class="sub" data-i18n="rank_sub">渋谷区エリア</div></div><div style="font-size:26px">🏆</div></div>
+      <div class="hdr"><div><h2 data-i18n="rank_title">ランキング</h2><div class="sub" data-i18n="rank_sub">渋谷区エリア</div></div><svg class="ic hdr-ic" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 21h8M12 17v4M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M6 5H3.5v1.5A3.5 3.5 0 0 0 6 9.9M18 5h2.5v1.5A3.5 3.5 0 0 1 18 9.9"/></svg></div>
       <div class="rank-tabs" id="rank-tabs">
-        <button class="rt active" data-rtab="solo" data-i18n="rt_solo">👤 個人</button>
-        <button class="rt" data-rtab="team" data-i18n="rt_team">🛡 探偵団</button>
+        <button class="rt active" data-rtab="solo" data-i18n="rt_solo">個人</button>
+        <button class="rt" data-rtab="team" data-i18n="rt_team">探偵団</button>
       </div>
       <div id="rank-solo">
         <div class="seg">
@@ -1799,12 +1809,12 @@
       <div class="hdr">
         <div><h2 data-i18n="book_title">探偵手帳</h2><div class="sub" data-i18n="book_sub">マーキング図鑑</div></div>
         <div style="display:flex;gap:6px;align-items:center">
-          <button class="hq-btn" id="quiz-btn" aria-label="今日の防犯クイズ" title="今日の防犯クイズ">🧠</button>
-          <button class="hq-btn" id="safety-btn" aria-label="防犯Tips・緊急" title="防犯Tips・緊急">🛡️</button>
-          <div style="font-size:26px">📖</div>
+          <button class="hq-btn" id="quiz-btn" aria-label="今日の防犯クイズ" title="今日の防犯クイズ"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 18.5h6M10 22h4"/><path d="M15.1 14.5c.2-1 .6-1.7 1.4-2.5A4.6 4.6 0 0 0 18 8.5a6 6 0 0 0-12 0c0 1 .2 2.2 1.5 3.5.8.8 1.2 1.5 1.4 2.5"/></svg></button>
+          <button class="hq-btn" id="safety-btn" aria-label="防犯Tips・緊急" title="防犯Tips・緊急"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></button>
+          <svg class="ic hdr-ic" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         </div>
       </div>
-      <input class="book-search" id="book-search" type="text" data-i18n-ph="book_search_ph" placeholder="🔎 記号名・意味で検索…" />
+      <input class="book-search" id="book-search" type="text" data-i18n-ph="book_search_ph" placeholder="記号名・意味で検索" />
       <div class="book-filter" id="book-filter">
         <button class="ff-chip active" data-bfilter="all" data-i18n="bf_all">すべて</button>
         <button class="ff-chip" data-bfilter="danger" data-i18n="bf_danger">要注意</button>
@@ -1823,22 +1833,22 @@
   <div class="onboard" id="onboard">
     <div class="ob-wrap">
       <div class="ob-slide" style="transform:translateX(0%)">
-        <div class="ob-icon">🔍</div>
+        <div class="ob-icon"><svg class="ic" viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.6-4.6"/></svg></div>
         <div class="ob-title" data-i18n="ob1t">GO-TO 探偵団へ<br>ようこそ</div>
         <div class="ob-desc" data-i18n="ob1d">市民が「探偵」となり、街の不審なマーキングを発見・投稿。AIが判定し、防犯マップをリアルタイムに育てるアプリです。</div>
         <div class="ob-feats">
-          <div class="ob-feat"><span>📸</span><b data-i18n="ob_f1">見つけて撮影</b></div>
-          <div class="ob-feat"><span>🤖</span><b data-i18n="ob_f2">AIが自動判定</b></div>
-          <div class="ob-feat"><span>🗺️</span><b data-i18n="ob_f3">マップが育つ</b></div>
+          <div class="ob-feat"><span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span><b data-i18n="ob_f1">見つけて撮影</b></div>
+          <div class="ob-feat"><span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="4.5" y="4.5" width="15" height="15" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 1.5V4M15 1.5V4M9 20v2.5M15 20v2.5M20 9h2.5M20 15h2.5M1.5 9H4M1.5 15H4"/></svg></span><b data-i18n="ob_f2">AIが自動判定</b></div>
+          <div class="ob-feat"><span><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M1.5 6.2v15.3l7-3.7 7 3.7 7-3.7V2.5l-7 3.7-7-3.7-7 3.7z"/><path d="M8.5 2.5v15.3M15.5 6.2v15.3"/></svg></span><b data-i18n="ob_f3">マップが育つ</b></div>
         </div>
       </div>
       <div class="ob-slide" style="transform:translateX(100%)">
-        <div class="ob-icon">📸</div>
+        <div class="ob-icon"><svg class="ic" viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
         <div class="ob-title" data-i18n="ob2t">撮影して投稿しよう</div>
         <div class="ob-desc" data-i18n="ob2d">中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。</div>
       </div>
       <div class="ob-slide" style="transform:translateX(200%)">
-        <div class="ob-icon">🗺️</div>
+        <div class="ob-icon"><svg class="ic" viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M1.5 6.2v15.3l7-3.7 7 3.7 7-3.7V2.5l-7 3.7-7-3.7-7 3.7z"/><path d="M8.5 2.5v15.3M15.5 6.2v15.3"/></svg></div>
         <div class="ob-title" data-i18n="ob3t">地図で街を守ろう</div>
         <div class="ob-desc" data-i18n="ob3d">投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。</div>
       </div>
@@ -1895,6 +1905,59 @@
 <script src="vendor/leaflet/leaflet-heat.js"></script>
 <script src="vendor/leaflet/leaflet.markercluster.js"></script>
 <script>
+// ───────────────────────────── アイコン ─────────────────────────────
+// UIの部品に絵文字を使うと、OS任せの色と形が混ざって画面の統一感が崩れる。
+// タブバーと同じ作法（24×24・線幅1.8・currentColor）で描いた線画に統一する。
+// 絵文字を残すのは「中身そのもの」＝アバターとマーキング記号だけ。
+const ICONS = {
+  folder:   '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  bell:     '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  clipboard:'<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/>',
+  camera:   '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  unlock:   '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+  flame:    '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  clock:    '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  chart:    '<path d="M18 20V10M12 20V4M6 20v-6"/>',
+  film:     '<rect x="2" y="3" width="20" height="18" rx="2"/><path d="M7 3v18M17 3v18M2 12h20M2 7.5h5M2 16.5h5M17 16.5h5M17 7.5h5"/>',
+  sun:      '<circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v2.5M12 20v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M1.5 12H4M20 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8"/>',
+  cloudSun: '<circle cx="8.5" cy="8" r="3.4"/><path d="M8.5 1.6v1.6M3.3 3.3l1.2 1.2M1.6 8.5h1.6M13.7 3.3l-1.2 1.2"/><path d="M18 21H9a4 4 0 0 1-.5-7.97A4.6 4.6 0 0 1 17.4 13 4 4 0 0 1 18 21z"/>',
+  alert:    '<path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4.5M12 17.5h.01"/>',
+  megaphone:'<path d="M4 9.5v5l14 5V4.5z"/><path d="M4 9.5H2.8v5H4M8 15.5v3a2 2 0 0 0 4 0v-1.6"/>',
+  book:     '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  search:   '<circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.6-4.6"/>',
+  trophy:   '<path d="M8 21h8M12 17v4M6 4h12v5a6 6 0 0 1-12 0z"/><path d="M6 5H3.5v1.5A3.5 3.5 0 0 0 6 9.9M18 5h2.5v1.5A3.5 3.5 0 0 1 18 9.9"/>',
+  user:     '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  shield:   '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  target:   '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
+  share:    '<circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.4 13.4l7.2 4.2M15.6 6.4L8.4 10.6"/>',
+  check:    '<path d="M20 6L9 17l-5-5"/>',
+  checkCircle:'<path d="M21.5 11.1V12a9.5 9.5 0 1 1-5.6-8.7"/><path d="M21.5 4.5L12 14l-2.8-2.8"/>',
+  zap:      '<path d="M13 2L3.5 14H12l-1 8 9.5-12H12l1-8z"/>',
+  map:      '<path d="M1.5 6.2v15.3l7-3.7 7 3.7 7-3.7V2.5l-7 3.7-7-3.7-7 3.7z"/><path d="M8.5 2.5v15.3M15.5 6.2v15.3"/>',
+  award:    '<circle cx="12" cy="8.5" r="6"/><path d="M8.2 13.7L7 22l5-2.8 5 2.8-1.2-8.3"/>',
+  crown:    '<path d="M2.5 6.5l4 4.5 5.5-7 5.5 7 4-4.5-1.8 12H4.3z"/><path d="M4.5 22h15"/>',
+  gem:      '<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3L8 9l4 12 4-12-3-6M2 9h20"/>',
+  bulb:     '<path d="M9 18.5h6M10 22h4"/><path d="M15.1 14.5c.2-1 .6-1.7 1.4-2.5A4.6 4.6 0 0 0 18 8.5a6 6 0 0 0-12 0c0 1 .2 2.2 1.5 3.5.8.8 1.2 1.5 1.4 2.5"/>',
+  cpu:      '<rect x="4.5" y="4.5" width="15" height="15" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 1.5V4M15 1.5V4M9 20v2.5M15 20v2.5M20 9h2.5M20 15h2.5M1.5 9H4M1.5 15H4"/>',
+  building: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-2"/><path d="M10 6h4M10 10h4M10 14h4"/>',
+  phone:    '<path d="M21.5 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.6 4.2 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L7.6 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
+  gift:     '<path d="M20 12.5V21a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8.5"/><rect x="2" y="7.5" width="20" height="5" rx="1"/><path d="M12 22V7.5"/><path d="M12 7.5H7.8a2.5 2.5 0 1 1 0-5C11 2.5 12 7.5 12 7.5zM12 7.5h4.2a2.5 2.5 0 1 0 0-5C13 2.5 12 7.5 12 7.5z"/>',
+  star:     '<path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.1-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/>',
+  trendUp:  '<path d="M22.5 6.5L13.5 15.5l-5-5-7 7"/><path d="M16.5 6.5h6v6"/>',
+  route:    '<circle cx="6" cy="19" r="2.6"/><circle cx="18" cy="5" r="2.6"/><path d="M9 19h5.5a3.5 3.5 0 0 0 0-7h-5a3.5 3.5 0 0 1 0-7H15"/>',
+  square:   '<rect x="4" y="4" width="16" height="16" rx="2"/>',
+  siren:    '<path d="M7.9 2.5h8.2L21.5 8v8.2l-5.4 5.3H7.9L2.5 16.1V7.9z"/><path d="M12 8v4.5M12 16h.01"/>',
+  signal:   '<path d="M2 20h2M8 20v-5M14 20V9M20 20V3" stroke-width="2.4"/>',
+  battery:  '<rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11.5v2"/><path d="M5 11.5h8" stroke-width="3"/>',
+  arrowRight:'<path d="M4.5 12h15M13 5.5l6.5 6.5-6.5 6.5"/>',
+  lock:     '<rect x="4" y="11" width="16" height="10.5" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+};
+function icon(name, size = 16, extra = ''){
+  const body = ICONS[name];
+  if(!body) return '';
+  return `<svg class="ic" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true"${extra?` style="${extra}"`:''}>${body}</svg>`;
+}
+
 // ───────────────────────────── i18n ─────────────────────────────
 let LANG = 'ja';
 const I18N = {
@@ -1913,16 +1976,16 @@ const I18N = {
     aria_cam:'カメラで撮影する', aria_profile:'マイページを開く', aria_notif:'新着通知を開く',
     stat_posts:'投稿数', stat_areas:'解放エリア', stat_streak:'連続記録',
     stat_posts_lbl:'投稿数', stat_areas_lbl:'エリア', stat_streak_lbl:'連続日',
-    sec_missions:'📋 今日のミッション', sec_weekly:'🗓 今週のチャレンジ', sec_feed:'🕐 みんなの捜査ログ',
+    sec_missions:'今日のミッション', sec_weekly:'今週のチャレンジ', sec_feed:'みんなの捜査ログ',
     ff_all:'すべて', ff_ok:'濃厚', ff_warn:'要確認', ff_ng:'偶然',
     feed_empty:'該当する投稿はありません',
     rank_title:'ランキング', rank_sub:'渋谷区エリア',
-    rt_solo:'👤 個人', rt_team:'🛡 探偵団',
+    rt_solo:'個人', rt_team:'探偵団',
     seg_week:'今週', seg_month:'今月', seg_all:'総合',
     team_rank_title:'探偵団ランキング',
     book_title:'探偵手帳', book_sub:'マーキング図鑑',
     book_desc:'侵入犯罪で使われるとされるマーキング記号の一覧。発見したらカメラで投稿してください。',
-    book_search_ph:'🔎 記号名・意味で検索…', book_empty:'該当する記号が見つかりません',
+    book_search_ph:'記号名・意味で検索…', book_empty:'該当する記号が見つかりません',
     bf_all:'すべて', bf_danger:'要注意', bf_warn:'要確認', bf_safe:'偶然', bf_unfound:'未発見',
     chip_danger:'要注意', chip_warn:'要確認', chip_safe:'偶然多め',
     book_freq:'出現頻度', book_ex:'例',
@@ -1932,63 +1995,63 @@ const I18N = {
     ob3t:'地図で街を守ろう', ob3d:'投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。',
     ob_next:'次へ', ob_start:'はじめる',
     ob_f1:'見つけて撮影', ob_f2:'AIが自動判定', ob_f3:'マップが育つ',
-    next_rank:'次のランク', to_next:'まで あと', pt:'pt', max_rank:'最高ランク到達！',
-    perks_title:'🎖 ランク特典', now_lv:'現在', next_is:'次は', promote_in:'で昇格', reach_max:'最高ランクに到達！', all_unlocked:'すべての特典が解放されています',
+    next_rank:'次のランク', to_next:'まで あと', pt:'pt', max_rank:'最高ランク',
+    perks_title:'ランク特典', now_lv:'現在', next_is:'次は', promote_in:'で昇格', reach_max:'最高ランクに到達しています', all_unlocked:'すべての特典が解放されています',
     st_done:'達成済み', st_cur:'現在', st_left:'あと',
     mypage:'マイページ', mp_avatar:'アバター', mp_name:'探偵名', mp_team:'所属探偵団',
     mp_summary:'今週のまとめ', mp_week_posts:'今週の投稿', mp_earned:'獲得ポイント', mp_week_rank:'週間ランキング', mp_streak:'連続記録',
     mp_badges:'実績バッジ', mp_reset:'データをリセット', mp_reset_confirm:'すべての記録（ポイント・投稿・実績）を初期化します。よろしいですか？',
     mp_lang:'言語 / Language', rank_suffix:'位', mp_accent:'アクセントカラー',
     mp_frames:'称号フレーム', frame_equipped:'装備中', frame_lv_need:'Lv.{0}で解放',
-    notif_title:'🔔 新着通知',
-    recent_posts:'📌 最近の投稿', detected_danger:'濃厚 検出', detected_warn:'要確認',
+    notif_title:'新着通知',
+    recent_posts:'最近の投稿', detected_danger:'濃厚 検出', detected_warn:'要確認',
     my_team_sub:'あなたの所属する探偵団', team_total:'団の総ポイント', team_members:'団員数', your_contrib:'あなたの貢献',
     teams_suffix:'団', members_unit:'名', your_team:'あなたの団',
-    ov_danger:'危険', ov_warn:'要確認', ov_recent:'24h以内', ov_count:'件', ov_heat:'🔥 ヒートマップ', ov_stats:'📊 エリア統計',
+    ov_danger:'危険', ov_warn:'要確認', ov_recent:'24h以内', ov_count:'件', ov_heat:'ヒートマップ', ov_stats:'エリア統計',
     lg_danger:'マーキング濃厚', lg_warn:'要確認', lg_safe:'偶然・誤検知',
-    as_title:'📊 渋谷区宇田川町 今週の危険度', as_alert:'警戒', as_caution:'やや注意', as_safe:'比較的安全',
+    as_title:'渋谷区宇田川町 今週の危険度', as_alert:'警戒', as_caution:'やや注意', as_safe:'比較的安全',
     as_danger:'マーキング濃厚', as_warn:'要確認', as_safe2:'偶然・誤検知', as_total:'累計投稿', as_24h:'24時間以内',
     cam_hint:'怪しい記号にカメラを向けて撮影', cam_r1:'画像をアップロード中…', cam_r2:'AIがマーキングを解析中…', cam_r3:'位置情報とマップを照合中…',
-    cam_conf:'AI信頼度', cam_added:'防犯マップに追加されます。', cam_got:'捜査ポイント獲得！', cam_bonus:' 初回ボーナス込み',
-    cam_reflect:'マップに反映する', cam_again:'もう一度撮影', cam_share:'📤 結果をシェア',
-    toast_posted:'✅ 投稿完了！+', toast_pt_got:'pt 獲得', toast_daily:'🎯 デイリー達成！', toast_weekly:'🏆 ウィークリー達成！', toast_ach:'🏆 実績解除！', toast_copy:'📋 クリップボードにコピーしました', toast_heat_err:'⚠️ ヒートマップを読み込めませんでした', toast_map_need:'⚠️ マップの読み込み後に利用できます',
-    chip_resolved:'対処済み', resolve_btn:'✅ 対処済みとして報告する', toast_resolved:'🔵 対処済み報告 +20pt',
+    cam_conf:'AI信頼度', cam_added:'防犯マップに追加されます。', cam_got:'捜査ポイント', cam_bonus:' 初回ボーナス込み',
+    cam_reflect:'マップに反映する', cam_again:'もう一度撮影', cam_share:'結果をシェア',
+    toast_posted:'投稿しました +', toast_pt_got:'pt 獲得', toast_daily:'デイリー達成 ', toast_weekly:'ウィークリー達成 ', toast_ach:'実績を解除 ', toast_copy:'クリップボードにコピーしました', toast_heat_err:'ヒートマップを読み込めませんでした', toast_map_need:'マップの読み込み後に利用できます',
+    chip_resolved:'対処済み', resolve_btn:'対処済みとして報告する', toast_resolved:'対処済み報告 +20pt',
     resolve_badge_title:'対処済み', resolve_badge_sub:'この記号は撤去・対処されました',
-    patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'⚠️ マップを読み込めませんでした',
-    patrol_done_title:'パトロール完了！', patrol_time:'所要時間', patrol_close:'閉じる',
-    reward_gauge_title:'今日の報酬ゲージ', reward_claim:'受け取る', reward_claimed:'🎁 ボーナス獲得！', reward_allclaimed:'本日の報酬はすべて受け取り済み',
+    patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'マップを読み込めませんでした',
+    patrol_done_title:'パトロール完了', patrol_time:'所要時間', patrol_close:'閉じる',
+    reward_gauge_title:'今日の報酬ゲージ', reward_claim:'受け取る', reward_claimed:'ボーナスを獲得しました', reward_allclaimed:'本日の報酬はすべて受け取り済み',
     dm_title:'投稿詳細', dm_posted_by:'投稿:', dm_catalog:'探偵手帳で詳しく見る →',
-    lvup_title:'レベルアップ！', lvup_to:'に昇進しました',
+    lvup_title:'レベルアップ', lvup_to:'に昇進しました',
     just_now:'たった今', posted_suffix:'を投稿', your_new_post:'あなたの新規投稿',
     map_fail:'地図の読み込みに失敗しました。<br>通信環境を確認して再読み込みしてください。',
     fc_label:'今日の地域の警戒度', fc_safe:'落ち着いています', fc_caution:'やや注意', fc_alert:'警戒',
     fc_safe_msg:'目立った不審情報は少なめ。油断せずパトロールを。', fc_caution_msg:'要確認の投稿が増加中。周辺に注意を。', fc_alert_msg:'濃厚なマーキングが多発。戸締まりを厳重に。',
-    quiz_btn:'🧠 今日の防犯クイズ', quiz_title:'🧠 防犯クイズ', quiz_q:'この記号の意味は？', quiz_done_today:'本日のクイズは回答済み',
-    quiz_correct:'正解！', quiz_wrong:'残念、不正解', quiz_reward:'クイズ正解', quiz_next:'閉じる', quiz_answered_msg:'また明日チャレンジしてください',
-    card_btn:'🎴 戦績カードを作成', card_title:'🎴 戦績カード', card_save:'画像を保存', card_share:'シェア', card_close:'閉じる',
+    quiz_btn:'今日の防犯クイズ', quiz_title:'防犯クイズ', quiz_q:'この記号の意味は？', quiz_done_today:'本日のクイズは回答済み',
+    quiz_correct:'正解', quiz_wrong:'残念、不正解', quiz_reward:'クイズ正解', quiz_next:'閉じる', quiz_answered_msg:'また明日チャレンジしてください',
+    card_btn:'戦績カードを作成', card_title:'戦績カード', card_save:'画像を保存', card_share:'シェア', card_close:'閉じる',
     card_role:'称号', card_posts:'投稿', card_rank:'週間順位', card_made:'GO-TO 探偵団で活動中',
-    stats_btn:'📊 アクティビティ統計', stats_title:'📊 アクティビティ統計',
+    stats_btn:'アクティビティ統計', stats_title:'アクティビティ統計',
     stats_activity:'週間アクティビティ', stats_breakdown:'種類別の内訳', stats_calendar:'投稿カレンダー',
     stats_total_posts:'累計投稿', stats_active_days:'活動日数', stats_no_data:'データがありません',
     cal_today:'今日', wd_sun:'日', wd_mon:'月', wd_tue:'火', wd_wed:'水', wd_thu:'木', wd_fri:'金', wd_sat:'土',
     react_up:'役立った', react_warn:'注意', react_check:'確認した',
-    safety_btn:'🛡 防犯Tips・緊急', safety_title:'🛡 防犯Tips・緊急',
-    tips_sec:'💡 今日の防犯Tip', checklist_sec:'✅ 外出前チェック', emergency_sec:'🆘 緊急連絡先',
+    safety_btn:'防犯Tips・緊急', safety_title:'防犯Tips・緊急',
+    tips_sec:'今日の防犯Tip', checklist_sec:'外出前チェック', emergency_sec:'緊急連絡先',
     emergency_note:'タップで発信できます（実機）',
     sec_alerts:'地域アラート',
     alert_cat_police:'警察署', alert_cat_city:'区役所', alert_cat_watch:'自警団',
     alerts_viewall:'すべてのアラートを見る →',
-    alerts_title:'📢 地域アラート',
+    alerts_title:'地域アラート',
     info_title:'最新情報', info_sub:'地域のアラート・活動',
-    info_breaking:'⚡ 速報', info_community:'コミュニティ活動',
-    info_cat_all:'すべて', info_cat_police:'🚔 警察', info_cat_city:'🏛️ 区役所', info_cat_watch:'👥 自警団', info_cat_activity:'🚶 活動',
+    info_breaking:'速報', info_community:'コミュニティ活動',
+    info_cat_all:'すべて', info_cat_police:'警察', info_cat_city:'区役所', info_cat_watch:'自警団', info_cat_activity:'活動',
     info_unread:'未読', info_today_danger:'今日の危険', info_activities:'コミュ活動',
     info_no_alerts:'この分類のアラートはありません',
-    ci_streak_day:'日連続！',
+    ci_streak_day:'日連続',
     ci_bonus:'チェックインボーナス',
-    ci_milestone_7:'🎉 7日連続達成！ボーナス +30pt',
-    ci_milestone_14:'🎉 2週間連続！ボーナス +50pt',
-    ci_milestone_30:'🎉 1ヶ月連続！ボーナス +100pt',
+    ci_milestone_7:'7日連続達成 ・ ボーナス +30pt',
+    ci_milestone_14:'2週間連続 ・ ボーナス +50pt',
+    ci_milestone_30:'1ヶ月連続 ・ ボーナス +100pt',
     td_posts:'今日の投稿', td_patrol:'パトロール', td_missions:'完了ミッション',
   },
   en: {
@@ -2006,16 +2069,16 @@ const I18N = {
     aria_cam:'Open camera', aria_profile:'Open my page', aria_notif:'Open notifications',
     stat_posts:'Posts', stat_areas:'Areas', stat_streak:'Streak',
     stat_posts_lbl:'posts', stat_areas_lbl:'areas', stat_streak_lbl:'days',
-    sec_missions:'📋 Today\'s Missions', sec_weekly:'🗓 Weekly Challenges', sec_feed:'🕐 Community Log',
+    sec_missions:'Today\'s Missions', sec_weekly:'Weekly Challenges', sec_feed:'Community Log',
     ff_all:'All', ff_ok:'Likely', ff_warn:'Check', ff_ng:'Coincidence',
     feed_empty:'No matching posts',
     rank_title:'Ranking', rank_sub:'Shibuya area',
-    rt_solo:'👤 Solo', rt_team:'🛡 Squad',
+    rt_solo:'Solo', rt_team:'Squad',
     seg_week:'Week', seg_month:'Month', seg_all:'All-time',
     team_rank_title:'Squad Ranking',
     book_title:'Detective Handbook', book_sub:'Marking Encyclopedia',
     book_desc:'A list of marking symbols said to be used in break-in crimes. If you spot one, post it from the camera.',
-    book_search_ph:'🔎 Search by name or meaning…', book_empty:'No matching symbols found',
+    book_search_ph:'Search by name or meaning…', book_empty:'No matching symbols found',
     bf_all:'All', bf_danger:'Caution', bf_warn:'Check', bf_safe:'Coincidence', bf_unfound:'Not found',
     chip_danger:'Caution', chip_warn:'Check', chip_safe:'Often false',
     book_freq:'Frequency', book_ex:'e.g.',
@@ -2025,63 +2088,63 @@ const I18N = {
     ob3t:'Protect the Town on the Map', ob3d:'The more posts, the richer the map. Grasp danger spots via the heatmap and stats.',
     ob_next:'Next', ob_start:'Start',
     ob_f1:'Spot & shoot', ob_f2:'AI verdict', ob_f3:'Map grows',
-    next_rank:'Next rank', to_next:'— left:', pt:'pt', max_rank:'Max rank reached!',
-    perks_title:'🎖 Rank Perks', now_lv:'Now', next_is:'Next:', promote_in:'to promote', reach_max:'Max rank reached!', all_unlocked:'All perks are unlocked',
+    next_rank:'Next rank', to_next:'— left:', pt:'pt', max_rank:'Max rank',
+    perks_title:'Rank Perks', now_lv:'Now', next_is:'Next:', promote_in:'to promote', reach_max:'Max rank', all_unlocked:'All perks are unlocked',
     st_done:'Achieved', st_cur:'Current', st_left:'left:',
     mypage:'My Page', mp_avatar:'Avatar', mp_name:'Detective name', mp_team:'Your squad',
     mp_summary:'This week', mp_week_posts:'Posts this week', mp_earned:'Points earned', mp_week_rank:'Weekly rank', mp_streak:'Streak',
     mp_badges:'Achievements', mp_reset:'Reset data', mp_reset_confirm:'This will reset all records (points, posts, achievements). Are you sure?',
     mp_lang:'言語 / Language', rank_suffix:'', mp_accent:'Accent color',
     mp_frames:'Title Frames', frame_equipped:'Equipped', frame_lv_need:'Unlocks at Lv.{0}',
-    notif_title:'🔔 New notifications',
-    recent_posts:'📌 Recent posts', detected_danger:'Likely found', detected_warn:'To check',
+    notif_title:'New notifications',
+    recent_posts:'Recent posts', detected_danger:'Likely found', detected_warn:'To check',
     my_team_sub:'The squad you belong to', team_total:'Squad total pts', team_members:'Members', your_contrib:'Your contribution',
     teams_suffix:' squads', members_unit:'', your_team:'Your squad',
-    ov_danger:'Danger', ov_warn:'Check', ov_recent:'<24h', ov_count:'', ov_heat:'🔥 Heatmap', ov_stats:'📊 Area stats',
+    ov_danger:'Danger', ov_warn:'Check', ov_recent:'<24h', ov_count:'', ov_heat:'Heatmap', ov_stats:'Area stats',
     lg_danger:'Marking likely', lg_warn:'Needs check', lg_safe:'Coincidence',
-    as_title:'📊 Udagawa-cho, Shibuya — danger this week', as_alert:'Alert', as_caution:'Caution', as_safe:'Relatively safe',
+    as_title:'Udagawa-cho, Shibuya — danger this week', as_alert:'Alert', as_caution:'Caution', as_safe:'Relatively safe',
     as_danger:'Marking likely', as_warn:'Needs check', as_safe2:'Coincidence', as_total:'Total posts', as_24h:'Within 24h',
     cam_hint:'Point the camera at a suspicious symbol', cam_r1:'Uploading image…', cam_r2:'AI analyzing marking…', cam_r3:'Matching location with map…',
-    cam_conf:'AI confidence', cam_added:'It will be added to the map.', cam_got:'Investigation points earned!', cam_bonus:' incl. first-time bonus',
-    cam_reflect:'Add to map', cam_again:'Shoot again', cam_share:'📤 Share result',
-    toast_posted:'✅ Posted! +', toast_pt_got:' pts', toast_daily:'🎯 Daily done! ', toast_weekly:'🏆 Weekly done! ', toast_ach:'🏆 Unlocked! ', toast_copy:'📋 Copied to clipboard', toast_heat_err:'⚠️ Could not load the heatmap', toast_map_need:'⚠️ Available after the map loads',
-    chip_resolved:'Resolved', resolve_btn:'✅ Report as resolved', toast_resolved:'🔵 Resolved! +20pt',
+    cam_conf:'AI confidence', cam_added:'It will be added to the map.', cam_got:'investigation points', cam_bonus:' incl. first-time bonus',
+    cam_reflect:'Add to map', cam_again:'Shoot again', cam_share:'Share result',
+    toast_posted:'Posted! +', toast_pt_got:' pts', toast_daily:'Daily done ', toast_weekly:'Weekly done ', toast_ach:'Unlocked ', toast_copy:'Copied to clipboard', toast_heat_err:'Could not load the heatmap', toast_map_need:'Available after the map loads',
+    chip_resolved:'Resolved', resolve_btn:'Report as resolved', toast_resolved:'Resolved +20pt',
     resolve_badge_title:'Resolved', resolve_badge_sub:'This marking has been removed or addressed',
-    patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'⚠️ Could not load the map',
-    patrol_done_title:'Patrol complete!', patrol_time:'Time', patrol_close:'Close',
-    reward_gauge_title:"Today's reward gauge", reward_claim:'Claim', reward_claimed:'🎁 Bonus earned!', reward_allclaimed:"All of today's rewards claimed",
+    patrol_start:'START', patrol_stop:'STOP', patrol_need_map:'Could not load the map',
+    patrol_done_title:'Patrol complete', patrol_time:'Time', patrol_close:'Close',
+    reward_gauge_title:"Today's reward gauge", reward_claim:'Claim', reward_claimed:'Bonus earned', reward_allclaimed:"All of today's rewards claimed",
     dm_title:'Post detail', dm_posted_by:'By:', dm_catalog:'See details in the handbook →',
-    lvup_title:'Level up!', lvup_to:'',
+    lvup_title:'Level up', lvup_to:'',
     just_now:'just now', posted_suffix:'', your_new_post:'Your new post',
     map_fail:'Failed to load the map.<br>Check your connection and reload.',
     fc_label:"Today's area alert level", fc_safe:'Calm', fc_caution:'Some caution', fc_alert:'Alert',
     fc_safe_msg:'Few notable reports. Stay vigilant on patrol.', fc_caution_msg:'"Needs-check" posts are rising. Watch your surroundings.', fc_alert_msg:'Many strong markings reported. Lock up carefully.',
-    quiz_btn:"🧠 Today's crime-prevention quiz", quiz_title:'🧠 Crime-Prevention Quiz', quiz_q:'What does this symbol mean?', quiz_done_today:"Today's quiz is answered",
-    quiz_correct:'Correct!', quiz_wrong:'Sorry, wrong', quiz_reward:'Quiz correct', quiz_next:'Close', quiz_answered_msg:'Come back tomorrow',
-    card_btn:'🎴 Create stats card', card_title:'🎴 Stats Card', card_save:'Save image', card_share:'Share', card_close:'Close',
+    quiz_btn:"Today's crime-prevention quiz", quiz_title:'Crime-Prevention Quiz', quiz_q:'What does this symbol mean?', quiz_done_today:"Today's quiz is answered",
+    quiz_correct:'Correct', quiz_wrong:'Sorry, wrong', quiz_reward:'Quiz correct', quiz_next:'Close', quiz_answered_msg:'Come back tomorrow',
+    card_btn:'Create stats card', card_title:'Stats Card', card_save:'Save image', card_share:'Share', card_close:'Close',
     card_role:'Title', card_posts:'Posts', card_rank:'Weekly rank', card_made:'Active in GO-TO Detectives',
-    stats_btn:'📊 Activity stats', stats_title:'📊 Activity Stats',
+    stats_btn:'Activity stats', stats_title:'Activity Stats',
     stats_activity:'Weekly activity', stats_breakdown:'By category', stats_calendar:'Post calendar',
     stats_total_posts:'Total posts', stats_active_days:'Active days', stats_no_data:'No data yet',
     cal_today:'Today', wd_sun:'S', wd_mon:'M', wd_tue:'T', wd_wed:'W', wd_thu:'T', wd_fri:'F', wd_sat:'S',
     react_up:'Helpful', react_warn:'Caution', react_check:'Confirmed',
-    safety_btn:'🛡 Tips & Emergency', safety_title:'🛡 Tips & Emergency',
-    tips_sec:"💡 Today's tip", checklist_sec:'✅ Before you go out', emergency_sec:'🆘 Emergency contacts',
+    safety_btn:'Tips & Emergency', safety_title:'Tips & Emergency',
+    tips_sec:"Today's tip", checklist_sec:'Before you go out', emergency_sec:'Emergency contacts',
     emergency_note:'Tap to call (on device)',
     sec_alerts:'Area Alerts',
     alert_cat_police:'Police', alert_cat_city:'City Hall', alert_cat_watch:'Neighborhood Watch',
     alerts_viewall:'View all alerts →',
-    alerts_title:'📢 Area Alerts',
+    alerts_title:'Area Alerts',
     info_title:'Latest Info', info_sub:'Area alerts & community',
-    info_breaking:'⚡ Breaking', info_community:'Community Activity',
-    info_cat_all:'All', info_cat_police:'🚔 Police', info_cat_city:'🏛️ City Hall', info_cat_watch:'👥 Watch', info_cat_activity:'🚶 Activity',
+    info_breaking:'Breaking', info_community:'Community Activity',
+    info_cat_all:'All', info_cat_police:'Police', info_cat_city:'City Hall', info_cat_watch:'Watch', info_cat_activity:'Activity',
     info_unread:'Unread', info_today_danger:"Today's dangers", info_activities:'Activities',
     info_no_alerts:'No alerts in this category',
-    ci_streak_day:' day streak!',
+    ci_streak_day:' day streak',
     ci_bonus:'Check-in bonus',
-    ci_milestone_7:'🎉 7-day streak! Bonus +30pt',
-    ci_milestone_14:'🎉 2-week streak! Bonus +50pt',
-    ci_milestone_30:'🎉 1-month streak! Bonus +100pt',
+    ci_milestone_7:'7-day streak · Bonus +30pt',
+    ci_milestone_14:'2-week streak · Bonus +50pt',
+    ci_milestone_30:'1-month streak · Bonus +100pt',
     td_posts:"Today's posts", td_patrol:'Patrol', td_missions:'Missions done',
   }
 };
@@ -2128,14 +2191,14 @@ const PROFILE = { name: 'ユウキ', avatar: '🕵️', team: 'shibuya', accent:
 
 // 称号フレーム（レベルで解放・ヒーローカードに装備）
 const TITLE_FRAMES = [
-  { id:'none',    name:'フレームなし',   name_en:'No Frame',          icon:'◻️', unlockLv:1, color:'transparent' },
-  { id:'copper',  name:'古銅の探偵',     name_en:'Copper Detective',  icon:'🥉', unlockLv:1, color:'#CD7F32' },
-  { id:'silver',  name:'銀の鑑識',       name_en:'Silver Analyst',    icon:'🥈', unlockLv:3, color:'#B0BCC8' },
-  { id:'amber',   name:'琥珀の目',       name_en:'Amber Eye',         icon:'🔍', unlockLv:5, color:'#C8960A' },
-  { id:'gold',    name:'黄金の鑑識官',   name_en:'Gold Inspector',    icon:'🥇', unlockLv:6, color:'#D4A820' },
-  { id:'crimson', name:'深紅の守護者',   name_en:'Crimson Guardian',  icon:'🛡️', unlockLv:7, color:'#DC143C' },
-  { id:'violet',  name:'紫煙の謎解き',   name_en:'Violet Sleuth',     icon:'🔮', unlockLv:8, color:'#8B5CF6' },
-  { id:'legend',  name:'伝説のエース',   name_en:'Legendary Ace',     icon:'👑', unlockLv:9, color:'#FFD700' },
+  { id:'none',    name:'フレームなし',   name_en:'No Frame',          icon:'square', unlockLv:1, color:'transparent' },
+  { id:'copper',  name:'古銅の探偵',     name_en:'Copper Detective',  icon:'award', unlockLv:1, color:'#CD7F32' },
+  { id:'silver',  name:'銀の鑑識',       name_en:'Silver Analyst',    icon:'award', unlockLv:3, color:'#B0BCC8' },
+  { id:'amber',   name:'琥珀の目',       name_en:'Amber Eye',         icon:'search', unlockLv:5, color:'#C8960A' },
+  { id:'gold',    name:'黄金の鑑識官',   name_en:'Gold Inspector',    icon:'award', unlockLv:6, color:'#D4A820' },
+  { id:'crimson', name:'深紅の守護者',   name_en:'Crimson Guardian',  icon:'shield', unlockLv:7, color:'#DC143C' },
+  { id:'violet',  name:'紫煙の謎解き',   name_en:'Violet Sleuth',     icon:'gem', unlockLv:8, color:'#8B5CF6' },
+  { id:'legend',  name:'伝説のエース',   name_en:'Legendary Ace',     icon:'crown', unlockLv:9, color:'#FFD700' },
 ];
 const ACCENTS = [
   { id:'amber',  color:'#C8960A' }, { id:'red',  color:'#E63946' },
@@ -2169,45 +2232,45 @@ function teamsSorted(){ return TEAMS.slice().sort((a,b)=>teamDisplayPt(b)-teamDi
 
 // 実績バッジ
 const ACHIEVEMENTS = [
-  { id:'first',  icon:'🎉', title:'初投稿',          desc:'はじめて投稿した',         title_en:'First Post',      desc_en:'Made your first post',     cond:()=>STATE.myPosts>=1 },
-  { id:'patrol', icon:'📸', title:'パトロール開始',   desc:'5件投稿した',             title_en:'On Patrol',       desc_en:'Posted 5 times',           cond:()=>STATE.myPosts>=5 },
-  { id:'vet',    icon:'🏅', title:'ベテラン探偵',     desc:'15件投稿した',            title_en:'Veteran',         desc_en:'Posted 15 times',          cond:()=>STATE.myPosts>=15 },
-  { id:'hunter', icon:'⚡', title:'危険ハンター',     desc:'危険を5件発見した',       title_en:'Danger Hunter',   desc_en:'Found 5 dangers',          cond:()=>STATE.dangerFound>=5 },
-  { id:'streak', icon:'🔥', title:'継続は力なり',     desc:'連続記録10を達成',        title_en:'Persistence',     desc_en:'Reached a 10-day streak',  cond:()=>STATE.streak>=10 },
-  { id:'share',  icon:'📤', title:'街に拡散',         desc:'結果をシェアした',         title_en:'Spread the Word', desc_en:'Shared a result',          cond:()=>STATE.shares>=1 },
-  { id:'ace',    icon:'👑', title:'エース昇格',       desc:'Lv.8 に到達した',         title_en:'Ace Promotion',   desc_en:'Reached Lv.8',             cond:()=>STATE.points>=3000 },
-  { id:'master', icon:'💎', title:'ポイントマスター', desc:'5,000pt に到達した',      title_en:'Point Master',    desc_en:'Reached 5,000 pts',        cond:()=>STATE.points>=5000 },
-  { id:'collect3',   icon:'📖', title:'図鑑コレクター',   desc:'3種の記号を発見した',   title_en:'Collector',          desc_en:'Found 3 mark types',    cond:()=>MARK_CATALOG.filter(m=>(STATE.found||{})[m.mark]).length>=3 },
-  { id:'collectall', icon:'🎖️', title:'図鑑コンプリート', desc:'全種の記号を発見した', title_en:'Complete Handbook',  desc_en:'Found every mark type', cond:()=>MARK_CATALOG.filter(m=>(STATE.found||{})[m.mark]).length>=MARK_CATALOG.length },
+  { id:'first',  icon:'star', title:'初投稿',          desc:'はじめて投稿した',         title_en:'First Post',      desc_en:'Made your first post',     cond:()=>STATE.myPosts>=1 },
+  { id:'patrol', icon:'camera', title:'パトロール開始',   desc:'5件投稿した',             title_en:'On Patrol',       desc_en:'Posted 5 times',           cond:()=>STATE.myPosts>=5 },
+  { id:'vet',    icon:'award', title:'ベテラン探偵',     desc:'15件投稿した',            title_en:'Veteran',         desc_en:'Posted 15 times',          cond:()=>STATE.myPosts>=15 },
+  { id:'hunter', icon:'zap', title:'危険ハンター',     desc:'危険を5件発見した',       title_en:'Danger Hunter',   desc_en:'Found 5 dangers',          cond:()=>STATE.dangerFound>=5 },
+  { id:'streak', icon:'flame', title:'継続は力なり',     desc:'連続記録10を達成',        title_en:'Persistence',     desc_en:'Reached a 10-day streak',  cond:()=>STATE.streak>=10 },
+  { id:'share',  icon:'share', title:'街に拡散',         desc:'結果をシェアした',         title_en:'Spread the Word', desc_en:'Shared a result',          cond:()=>STATE.shares>=1 },
+  { id:'ace',    icon:'crown', title:'エース昇格',       desc:'Lv.8 に到達した',         title_en:'Ace Promotion',   desc_en:'Reached Lv.8',             cond:()=>STATE.points>=3000 },
+  { id:'master', icon:'gem', title:'ポイントマスター', desc:'5,000pt に到達した',      title_en:'Point Master',    desc_en:'Reached 5,000 pts',        cond:()=>STATE.points>=5000 },
+  { id:'collect3',   icon:'book', title:'図鑑コレクター',   desc:'3種の記号を発見した',   title_en:'Collector',          desc_en:'Found 3 mark types',    cond:()=>MARK_CATALOG.filter(m=>(STATE.found||{})[m.mark]).length>=3 },
+  { id:'collectall', icon:'trophy', title:'図鑑コンプリート', desc:'全種の記号を発見した', title_en:'Complete Handbook',  desc_en:'Found every mark type', cond:()=>MARK_CATALOG.filter(m=>(STATE.found||{})[m.mark]).length>=MARK_CATALOG.length },
 ];
 let ACH_UNLOCKED = [];
 
 // デイリーミッション
 const DAILY_POOL = [
-  { id:'post2',   icon:'🔍', title:'2件調査する',     desc:'今日2件投稿する',       title_en:'Investigate 2',    desc_en:'Post 2 times today',      reward:50, goal:2, metric:'posts'  },
-  { id:'post3',   icon:'🎯', title:'3件パトロール',   desc:'今日3件投稿する',       title_en:'Patrol 3',         desc_en:'Post 3 times today',      reward:90, goal:3, metric:'posts'  },
-  { id:'post5',   icon:'🔦', title:'集中パトロール',   desc:'今日5件投稿する',       title_en:'Focused Patrol',   desc_en:'Post 5 times today',      reward:150, goal:5, metric:'posts' },
-  { id:'danger1', icon:'⚡', title:'危険を1件発見',   desc:'濃厚判定を1件出す',     title_en:'Find 1 danger',    desc_en:'Get one "likely" result', reward:80, goal:1, metric:'danger' },
-  { id:'danger2', icon:'🚨', title:'危険を2件発見',   desc:'濃厚判定を2件出す',     title_en:'Find 2 dangers',   desc_en:'Get two "likely" results',reward:130, goal:2, metric:'danger'},
-  { id:'map',     icon:'🗺️', title:'防犯マップを確認', desc:'マップタブを開く',       title_en:'Check the map',    desc_en:'Open the map tab',        reward:30, goal:1, metric:'map'    },
-  { id:'share',   icon:'📤', title:'結果をシェア',     desc:'判定結果を1回シェア',   title_en:'Share a result',   desc_en:'Share a result once',     reward:40, goal:1, metric:'share'  },
-  { id:'safe1',   icon:'🟢', title:'安全を確認',       desc:'偶然判定を1件記録',     title_en:'Confirm safety',   desc_en:'Log one coincidence',     reward:30, goal:1, metric:'safe'   },
-  { id:'quiz1',   icon:'🧠', title:'クイズに挑戦',     desc:'防犯クイズに正解する',   title_en:'Take the quiz',    desc_en:'Answer the quiz correctly',reward:40, goal:1, metric:'quiz'  },
-  { id:'check1',  icon:'✅', title:'外出前チェック',   desc:'チェックリストを完了',   title_en:'Pre-departure check',desc_en:'Finish the checklist',   reward:50, goal:5, metric:'check' },
-  { id:'resolve1',icon:'🔵', title:'対処済みを報告',   desc:'投稿を1件対処済みにする', title_en:'Report resolved',    desc_en:'Mark one post resolved', reward:60, goal:1, metric:'resolve' },
-  { id:'patrol1', icon:'🚶', title:'パトロールに出る', desc:'パトロールを1回完了する', title_en:'Go on patrol',       desc_en:'Finish one patrol',     reward:70, goal:1, metric:'patrol' },
+  { id:'post2',   icon:'search', title:'2件調査する',     desc:'今日2件投稿する',       title_en:'Investigate 2',    desc_en:'Post 2 times today',      reward:50, goal:2, metric:'posts'  },
+  { id:'post3',   icon:'target', title:'3件パトロール',   desc:'今日3件投稿する',       title_en:'Patrol 3',         desc_en:'Post 3 times today',      reward:90, goal:3, metric:'posts'  },
+  { id:'post5',   icon:'camera', title:'集中パトロール',   desc:'今日5件投稿する',       title_en:'Focused Patrol',   desc_en:'Post 5 times today',      reward:150, goal:5, metric:'posts' },
+  { id:'danger1', icon:'zap', title:'危険を1件発見',   desc:'濃厚判定を1件出す',     title_en:'Find 1 danger',    desc_en:'Get one "likely" result', reward:80, goal:1, metric:'danger' },
+  { id:'danger2', icon:'siren', title:'危険を2件発見',   desc:'濃厚判定を2件出す',     title_en:'Find 2 dangers',   desc_en:'Get two "likely" results',reward:130, goal:2, metric:'danger'},
+  { id:'map',     icon:'map', title:'防犯マップを確認', desc:'マップタブを開く',       title_en:'Check the map',    desc_en:'Open the map tab',        reward:30, goal:1, metric:'map'    },
+  { id:'share',   icon:'share', title:'結果をシェア',     desc:'判定結果を1回シェア',   title_en:'Share a result',   desc_en:'Share a result once',     reward:40, goal:1, metric:'share'  },
+  { id:'safe1',   icon:'checkCircle', title:'安全を確認',       desc:'偶然判定を1件記録',     title_en:'Confirm safety',   desc_en:'Log one coincidence',     reward:30, goal:1, metric:'safe'   },
+  { id:'quiz1',   icon:'bulb', title:'クイズに挑戦',     desc:'防犯クイズに正解する',   title_en:'Take the quiz',    desc_en:'Answer the quiz correctly',reward:40, goal:1, metric:'quiz'  },
+  { id:'check1',  icon:'check', title:'外出前チェック',   desc:'チェックリストを完了',   title_en:'Pre-departure check',desc_en:'Finish the checklist',   reward:50, goal:5, metric:'check' },
+  { id:'resolve1',icon:'checkCircle', title:'対処済みを報告',   desc:'投稿を1件対処済みにする', title_en:'Report resolved',    desc_en:'Mark one post resolved', reward:60, goal:1, metric:'resolve' },
+  { id:'patrol1', icon:'route', title:'パトロールに出る', desc:'パトロールを1回完了する', title_en:'Go on patrol',       desc_en:'Finish one patrol',     reward:70, goal:1, metric:'patrol' },
 ];
 // 週替わりのチャレンジ（目標が大きく、報酬も高い）
 const WEEKLY_POOL = [
-  { id:'wpost10', icon:'📸', title:'週間パトロール隊', desc:'今週10件投稿する',      title_en:'Weekly Patroller', desc_en:'Post 10 times this week',  reward:300, goal:10, metric:'posts' },
-  { id:'wpost20', icon:'🎖️', title:'週間エース',       desc:'今週20件投稿する',      title_en:'Weekly Ace',       desc_en:'Post 20 times this week',  reward:650, goal:20, metric:'posts' },
-  { id:'wdanger5',icon:'⚡', title:'危険ハンター',     desc:'今週濃厚判定を5件',     title_en:'Danger Hunter',    desc_en:'Get 5 "likely" results',   reward:400, goal:5,  metric:'danger'},
-  { id:'wshare3', icon:'📣', title:'情報拡散',         desc:'今週3回シェアする',     title_en:'Spread the Word',  desc_en:'Share 3 times this week',  reward:220, goal:3,  metric:'share' },
-  { id:'wquiz5',  icon:'🧠', title:'防犯マスター',     desc:'今週クイズに5回正解',   title_en:'Safety Master',    desc_en:'Get 5 quizzes right',      reward:280, goal:5,  metric:'quiz'  },
-  { id:'wmap5',   icon:'🗺️', title:'マップ巡回',       desc:'今週マップを5回確認',   title_en:'Map Rounds',       desc_en:'Open the map 5 times',     reward:180, goal:5,  metric:'map'   },
-  { id:'wsafe3',   icon:'🟢', title:'安全確認の達人',   desc:'今週偶然判定を3件記録', title_en:'Safety Verifier',   desc_en:'Log 3 coincidences',         reward:200, goal:3,  metric:'safe'    },
-  { id:'wresolve3',icon:'🔵', title:'対処済み処理班',   desc:'今週3件対処済みにする', title_en:'Resolution Crew',   desc_en:'Mark 3 posts resolved',      reward:250, goal:3,  metric:'resolve' },
-  { id:'wpatrol3', icon:'🚶', title:'週間パトロール部', desc:'今週3回パトロール完了', title_en:'Patrol Squad',      desc_en:'Finish 3 patrols this week', reward:300, goal:3,  metric:'patrol'  },
+  { id:'wpost10', icon:'camera', title:'週間パトロール隊', desc:'今週10件投稿する',      title_en:'Weekly Patroller', desc_en:'Post 10 times this week',  reward:300, goal:10, metric:'posts' },
+  { id:'wpost20', icon:'award', title:'週間エース',       desc:'今週20件投稿する',      title_en:'Weekly Ace',       desc_en:'Post 20 times this week',  reward:650, goal:20, metric:'posts' },
+  { id:'wdanger5',icon:'zap', title:'危険ハンター',     desc:'今週濃厚判定を5件',     title_en:'Danger Hunter',    desc_en:'Get 5 "likely" results',   reward:400, goal:5,  metric:'danger'},
+  { id:'wshare3', icon:'megaphone', title:'情報拡散',         desc:'今週3回シェアする',     title_en:'Spread the Word',  desc_en:'Share 3 times this week',  reward:220, goal:3,  metric:'share' },
+  { id:'wquiz5',  icon:'bulb', title:'防犯マスター',     desc:'今週クイズに5回正解',   title_en:'Safety Master',    desc_en:'Get 5 quizzes right',      reward:280, goal:5,  metric:'quiz'  },
+  { id:'wmap5',   icon:'map', title:'マップ巡回',       desc:'今週マップを5回確認',   title_en:'Map Rounds',       desc_en:'Open the map 5 times',     reward:180, goal:5,  metric:'map'   },
+  { id:'wsafe3',   icon:'checkCircle', title:'安全確認の達人',   desc:'今週偶然判定を3件記録', title_en:'Safety Verifier',   desc_en:'Log 3 coincidences',         reward:200, goal:3,  metric:'safe'    },
+  { id:'wresolve3',icon:'checkCircle', title:'対処済み処理班',   desc:'今週3件対処済みにする', title_en:'Resolution Crew',   desc_en:'Mark 3 posts resolved',      reward:250, goal:3,  metric:'resolve' },
+  { id:'wpatrol3', icon:'route', title:'週間パトロール部', desc:'今週3回パトロール完了', title_en:'Patrol Squad',      desc_en:'Finish 3 patrols this week', reward:300, goal:3,  metric:'patrol'  },
 ];
 const DAILY = { date:'', picks:[], progress:{}, done:{}, earned:0, claimed:[] };
 const WEEKLY = { week:'', picks:[], progress:{}, done:{} };
@@ -2340,37 +2403,37 @@ const EMERGENCY = [
 
 // コミュニティ活動フィード（他の探偵団メンバーの最近の活動）
 const COMMUNITY_ACTIVITY = [
-  { type:'patrol',  user:'タカシ',  user_en:'Takashi', icon:'🚶', desc:'代々木公園周辺パトロール完了',     desc_en:'Completed patrol around Yoyogi Park',        pts:173, ago:'8分前'  },
-  { type:'resolve', user:'ミク',    user_en:'Miku',    icon:'🔵', desc:'マーキングの対処済み報告',          desc_en:'Reported a marking as resolved',              pts:20,  ago:'15分前' },
-  { type:'post',    user:'ソウタ',  user_en:'Sota',    icon:'📸', desc:'南平台で要確認の記号を投稿',        desc_en:'Posted a check-needed marking in Minamidai',  pts:30,  ago:'22分前' },
-  { type:'patrol',  user:'アヤ',    user_en:'Aya',     icon:'🚶', desc:'松濤エリアパトロール完了',           desc_en:'Completed patrol in Shouto area',             pts:128, ago:'1時間前' },
-  { type:'post',    user:'ケン',    user_en:'Ken',     icon:'📸', desc:'渋谷駅付近で濃厚マーキング検出',    desc_en:'Detected strong marking near Shibuya Sta.',   pts:50,  ago:'2時間前' },
-  { type:'resolve', user:'ハナ',    user_en:'Hana',    icon:'🔵', desc:'対処済み報告が確認された',          desc_en:'Resolve report confirmed',                    pts:20,  ago:'3時間前' },
+  { type:'patrol',  user:'タカシ',  user_en:'Takashi', icon:'route', desc:'代々木公園周辺パトロール完了',     desc_en:'Completed patrol around Yoyogi Park',        pts:173, ago:'8分前'  },
+  { type:'resolve', user:'ミク',    user_en:'Miku',    icon:'checkCircle', desc:'マーキングの対処済み報告',          desc_en:'Reported a marking as resolved',              pts:20,  ago:'15分前' },
+  { type:'post',    user:'ソウタ',  user_en:'Sota',    icon:'camera', desc:'南平台で要確認の記号を投稿',        desc_en:'Posted a check-needed marking in Minamidai',  pts:30,  ago:'22分前' },
+  { type:'patrol',  user:'アヤ',    user_en:'Aya',     icon:'route', desc:'松濤エリアパトロール完了',           desc_en:'Completed patrol in Shouto area',             pts:128, ago:'1時間前' },
+  { type:'post',    user:'ケン',    user_en:'Ken',     icon:'camera', desc:'渋谷駅付近で濃厚マーキング検出',    desc_en:'Detected strong marking near Shibuya Sta.',   pts:50,  ago:'2時間前' },
+  { type:'resolve', user:'ハナ',    user_en:'Hana',    icon:'checkCircle', desc:'対処済み報告が確認された',          desc_en:'Resolve report confirmed',                    pts:20,  ago:'3時間前' },
 ];
 
 // 地域アラート（自治体・警察・自警団からのお知らせ）
 const ALERTS = [
-  { id:1, src:'🚔', org:'渋谷警察署', org_en:'Shibuya Police Station', cat:'police',
+  { id:1, src:'shield', org:'渋谷警察署', org_en:'Shibuya Police Station', cat:'police',
     title:'侵入盗の被害増加に関する注意喚起', title_en:'Burglary increase alert',
     body:'本年度に入り渋谷区内での侵入盗被害が前年比120%増加しています。外出前の施錠確認と、見慣れない記号の投稿へのご協力をお願いします。',
     body_en:'Burglary damage in Shibuya has risen 120% year-on-year. Please ensure locks are checked before going out, and continue reporting unfamiliar markings.',
     date:'2026-06-20', isNew:true },
-  { id:2, src:'🏛️', org:'渋谷区役所', org_en:'Shibuya City Hall', cat:'city',
+  { id:2, src:'building', org:'渋谷区役所', org_en:'Shibuya City Hall', cat:'city',
     title:'防犯カメラ設置箇所の更新について', title_en:'CCTV location update',
     body:'区内の防犯カメラ42台を高解像度モデルに更新しました。設置場所は区公式サイトの「防犯マップ」ページでご確認いただけます。',
     body_en:'42 CCTV cameras in the ward have been upgraded to high-resolution models. See the latest locations on the ward\'s official "Safety Map" page.',
     date:'2026-06-18', isNew:false },
-  { id:3, src:'👥', org:'代々木上原自警団', org_en:'Yoyogi-Uehara Neighborhood Watch', cat:'watch',
+  { id:3, src:'user', org:'代々木上原自警団', org_en:'Yoyogi-Uehara Neighborhood Watch', cat:'watch',
     title:'不審者目撃情報 — 代々木上原駅周辺', title_en:'Suspicious person sighting near station',
     body:'6/17夜20時頃、代々木上原駅北口付近で不審者の目撃情報が寄せられています。見慣れない人物を見かけた際は無理に近づかず110番通報をお願いします。',
     body_en:'A suspicious person was reported near Yoyogi-Uehara Station north exit around 8 pm on Jun 17. Do not approach; call 110 if you see an unfamiliar individual.',
     date:'2026-06-17', isNew:false },
-  { id:4, src:'🚔', org:'渋谷警察署', org_en:'Shibuya Police Station', cat:'police',
+  { id:4, src:'shield', org:'渋谷警察署', org_en:'Shibuya Police Station', cat:'police',
     title:'マーキング被害相談窓口を設置しました', title_en:'Marking consultation office opened',
     body:'マーキング等の特殊詐欺前兆事案に関する専用相談窓口を設置しました。相談は月〜金 9:00〜17:00。お気軽にご連絡ください。',
     body_en:'A dedicated consultation service for marking-related suspicious activity has opened. Available Mon–Fri 9:00–17:00. Feel free to call.',
     date:'2026-06-14', isNew:false },
-  { id:5, src:'🏛️', org:'渋谷区役所', org_en:'Shibuya City Hall', cat:'city',
+  { id:5, src:'building', org:'渋谷区役所', org_en:'Shibuya City Hall', cat:'city',
     title:'防犯パトロール強化月間（7月）のお知らせ', title_en:'Reinforced patrol month — July',
     body:'7月を「防犯パトロール強化月間」と定め、区内12か所でパトロールイベントを開催します。詳細は後日、区公式サイトよりお知らせします。',
     body_en:'July is designated "Reinforced Patrol Month," with 12 patrol events across the ward. Full details will be posted on the ward\'s official site.',
@@ -2378,24 +2441,24 @@ const ALERTS = [
 ];
 
 const LEVELS = [
-  { lv:1, title:'見習い探偵', min:0,    icon:'🔰', perk:'撮影・投稿・防犯マップ閲覧の基本機能',          title_en:'Trainee Detective',  perk_en:'Basics: shoot, post, view the map' },
-  { lv:2, title:'初級探偵',   min:200,  icon:'🧭', perk:'投稿履歴の閲覧と探偵バッジの獲得',              title_en:'Junior Detective',   perk_en:'View post history and earn badges' },
-  { lv:3, title:'中級探偵',   min:500,  icon:'🔥', perk:'ヒートマップ表示とエリア統計が解放',            title_en:'Detective',          perk_en:'Unlock heatmap and area stats' },
-  { lv:4, title:'上級探偵',   min:900,  icon:'📊', perk:'週間活動レポートと優先通知が届く',              title_en:'Senior Detective',   perk_en:'Weekly reports and priority alerts' },
-  { lv:5, title:'熟練探偵',   min:1400, icon:'⭐', perk:'カスタムエリア監視・限定アバター',              title_en:'Expert Detective',   perk_en:'Custom area watch and exclusive avatars' },
-  { lv:6, title:'特上探偵',   min:2000, icon:'🎖️', perk:'地域ランキング表彰と特別ミッション',            title_en:'Elite Detective',    perk_en:'Area-ranking honors and special missions' },
-  { lv:7, title:'特級探偵',   min:2400, icon:'🏅', perk:'自治体連携データ閲覧・探偵団リーダー権限',      title_en:'Special-Class',      perk_en:'Civic data access and squad-leader rights' },
-  { lv:8, title:'エース探偵', min:3000, icon:'👑', perk:'AI判定の詳細レポートと新機能の先行利用',        title_en:'Ace Detective',      perk_en:'Detailed AI reports and early feature access' },
-  { lv:9, title:'伝説の探偵', min:4000, icon:'🏆', perk:'殿堂入り・全特典開放とプレミアム称号',          title_en:'Legendary Detective',perk_en:'Hall of fame, all perks and premium title' },
+  { lv:1, title:'見習い探偵', min:0,    icon:'search', perk:'撮影・投稿・防犯マップ閲覧の基本機能',          title_en:'Trainee Detective',  perk_en:'Basics: shoot, post, view the map' },
+  { lv:2, title:'初級探偵',   min:200,  icon:'clipboard', perk:'投稿履歴の閲覧と探偵バッジの獲得',              title_en:'Junior Detective',   perk_en:'View post history and earn badges' },
+  { lv:3, title:'中級探偵',   min:500,  icon:'flame', perk:'ヒートマップ表示とエリア統計が解放',            title_en:'Detective',          perk_en:'Unlock heatmap and area stats' },
+  { lv:4, title:'上級探偵',   min:900,  icon:'chart', perk:'週間活動レポートと優先通知が届く',              title_en:'Senior Detective',   perk_en:'Weekly reports and priority alerts' },
+  { lv:5, title:'熟練探偵',   min:1400, icon:'star', perk:'カスタムエリア監視・限定アバター',              title_en:'Expert Detective',   perk_en:'Custom area watch and exclusive avatars' },
+  { lv:6, title:'特上探偵',   min:2000, icon:'award', perk:'地域ランキング表彰と特別ミッション',            title_en:'Elite Detective',    perk_en:'Area-ranking honors and special missions' },
+  { lv:7, title:'特級探偵',   min:2400, icon:'shield', perk:'自治体連携データ閲覧・探偵団リーダー権限',      title_en:'Special-Class',      perk_en:'Civic data access and squad-leader rights' },
+  { lv:8, title:'エース探偵', min:3000, icon:'crown', perk:'AI判定の詳細レポートと新機能の先行利用',        title_en:'Ace Detective',      perk_en:'Detailed AI reports and early feature access' },
+  { lv:9, title:'伝説の探偵', min:4000, icon:'trophy', perk:'殿堂入り・全特典開放とプレミアム称号',          title_en:'Legendary Detective',perk_en:'Hall of fame, all perks and premium title' },
 ];
 
 // 撮影結果のパターン（毎回ランダムに抽選）
 const CAM_OUTCOMES = [
-  { weight:3, type:'danger', mark:'⚡', title:'マーキング濃厚！', title_en:'Marking likely!', conf:[88,96], pts:50,
+  { weight:3, type:'danger', mark:'⚡', title:'マーキング濃厚', title_en:'Marking likely', conf:[88,96], pts:50,
     label:'インターホン側面の傷', desc:'「侵入経路の目印」と判定されました。', desc_en:'Judged a "marker for an entry route."', verdict:'マーキング濃厚' },
-  { weight:2, type:'danger', mark:'→', title:'マーキング濃厚！', title_en:'Marking likely!', conf:[85,94], pts:50,
+  { weight:2, type:'danger', mark:'→', title:'マーキング濃厚', title_en:'Marking likely', conf:[85,94], pts:50,
     label:'メーターボックスの矢印', desc:'「方向を示す記号」と判定されました。', desc_en:'Judged a "symbol indicating direction."', verdict:'マーキング濃厚' },
-  { weight:2, type:'danger', mark:'M', title:'マーキング濃厚！', title_en:'Marking likely!', conf:[82,93], pts:50,
+  { weight:2, type:'danger', mark:'M', title:'マーキング濃厚', title_en:'Marking likely', conf:[82,93], pts:50,
     label:'玄関柱のアルファベット', desc:'「属性を記録する記号」と判定されました。', desc_en:'Judged a "symbol encoding household info."', verdict:'マーキング濃厚' },
   { weight:3, type:'warn', mark:'●', title:'要確認', title_en:'Needs check', conf:[58,74], pts:30,
     label:'表札周りのシール', desc:'マーキングの可能性あり。再調査を推奨します。', desc_en:'Possibly a marking. Re-investigation is advised.', verdict:'要確認' },
@@ -2588,13 +2651,13 @@ function todayRowHtml(){
   const mTotal = DAILY.picks ? DAILY.picks.length : 3;
   return `
     <div class="hero-cell${postsToday>0?' active':''}" onclick="switchView('cam')">
-      <div class="hc-ic">📸</div><b>${postsToday}</b><span>${t('td_posts')}</span>
+      <div class="hc-ic">${icon('camera',15)}</div><b>${postsToday}</b><span>${t('td_posts')}</span>
     </div>
     <div class="hero-cell${patrolDone?' done':''}" onclick="switchView('map')">
-      <div class="hc-ic">🚶</div><b>${patrolDone?'✓':(LANG==='en'?'–':'未')}</b><span>${t('td_patrol')}</span>
+      <div class="hc-ic">${icon('route',15)}</div><b>${patrolDone?'✓':(LANG==='en'?'–':'未')}</b><span>${t('td_patrol')}</span>
     </div>
     <div class="hero-cell${mDone>=mTotal&&mTotal>0?' done':mDone>0?' active':''}" onclick="openMissionSheet()">
-      <div class="hc-ic">📋</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
+      <div class="hc-ic">${icon('clipboard',15)}</div><b>${mDone}/${mTotal}</b><span>${t('td_missions')}</span>
     </div>`;
 }
 
@@ -2605,7 +2668,7 @@ function showCheckinOverlay(basePts, streakDay, milestone){
   el.className = 'ci-overlay';
   const streakLbl = LANG==='en' ? `${streakDay}${t('ci_streak_day')}` : `${streakDay}${t('ci_streak_day')}`;
   const milestoneHtml = milestone ? `<div class="ci-milestone">${milestone}</div>` : '';
-  el.innerHTML = `<div class="ci-flame">🔥</div>
+  el.innerHTML = `<div class="ci-flame">${icon('flame',54)}</div>
     <div class="ci-streak">${streakDay}</div>
     <div class="ci-streak-lbl">${streakLbl}</div>
     <div class="ci-pts">+${basePts}pt ${t('ci_bonus')}</div>${milestoneHtml}`;
@@ -2626,12 +2689,12 @@ function doCheckin(){
 }
 
 function missionActionLabel(metric){
-  if(metric==='posts'||metric==='danger'||metric==='safe') return LANG==='en'?'📸 Shoot':'📸 撮影';
-  if(metric==='patrol') return LANG==='en'?'🚶 Patrol':'🚶 出発';
-  if(metric==='quiz')   return LANG==='en'?'🧠 Quiz':'🧠 クイズ';
-  if(metric==='map')    return LANG==='en'?'🗺 Map':'🗺 マップ';
-  if(metric==='check')  return LANG==='en'?'✅ Check':'✅ チェック';
-  if(metric==='resolve') return LANG==='en'?'🔵 Resolve':'🔵 確認';
+  if(metric==='posts'||metric==='danger'||metric==='safe') return icon('camera',13)+(LANG==='en'?' Shoot':' 撮影');
+  if(metric==='patrol') return icon('route',13)+(LANG==='en'?' Patrol':' 出発');
+  if(metric==='quiz')   return icon('bulb',13)+(LANG==='en'?' Quiz':' クイズ');
+  if(metric==='map')    return icon('map',13)+(LANG==='en'?' Map':' マップ');
+  if(metric==='check')  return icon('check',13)+(LANG==='en'?' Check':' チェック');
+  if(metric==='resolve') return icon('checkCircle',13)+(LANG==='en'?' Resolve':' 確認');
   return '→';
 }
 function missionAction(metric){
@@ -2653,9 +2716,9 @@ function missionCard(store, pool, id, weekly){
   const barHtml = (m.goal>1 && !done) ? `<div class="m-bar"><i style="width:${Math.round(prog/m.goal*100)}%"></i></div>` : '';
   const actionBtn = !done ? `<button class="m-action" onclick="event.stopPropagation();missionAction('${m.metric}')">${missionActionLabel(m.metric)}</button>` : '';
   return `<div class="card mission${weekly?' weekly':''}${done?' done':''}">
-    <div class="mi">${done?'✅':m.icon}</div>
+    <div class="mi">${done?icon('check',19):icon(m.icon,19)}</div>
     <div class="mt"><b>${tx(m,'title')}${progTxt}</b><span>${tx(m,'desc')}</span>${barHtml}</div>
-    ${done?`<span class="done-badge">${LANG==='en'?'Done!':'完了！'}</span>`:actionBtn+'<div class="mr">+'+m.reward+t('pt')+'</div>'}
+    ${done?`<span class="done-badge">${LANG==='en'?'Done':'完了'}</span>`:actionBtn+'<div class="mr">+'+m.reward+t('pt')+'</div>'}
   </div>`;
 }
 function renderMissions(){
@@ -2691,9 +2754,9 @@ function forecastLevel(){
   const danger = MARKINGS.filter(m=>m.type==='danger' && !m.resolved).length;
   const warn   = MARKINGS.filter(m=>m.type==='warn' && !m.resolved).length;
   const score  = Math.min(100, danger*10 + warn*4 + (dayHash()%18));
-  const lvl = score>=60 ? {k:'alert', ic:'⚠️', c:'#E63946'}
-            : score>=32 ? {k:'caution', ic:'⛅', c:'#F4A261'}
-            : {k:'safe', ic:'☀️', c:'#6ee7a8'};
+  const lvl = score>=60 ? {k:'alert', ic:'alert', c:'#E63946'}
+            : score>=32 ? {k:'caution', ic:'cloudSun', c:'#F4A261'}
+            : {k:'safe', ic:'sun', c:'#6ee7a8'};
   return { score, ...lvl };
 }
 // ヒーロー内の警戒度バッジ（タップでマップへ。詳細はマップに集約）
@@ -2702,8 +2765,8 @@ function renderSafetyLine(){
   if(!el) return;
   const lvl = forecastLevel();
   const newAlerts = ALERTS.filter(a=>a.isNew).length;
-  const alertTx = newAlerts>0 ? ` · 📢${newAlerts}` : '';
-  el.innerHTML = `${lvl.ic} ${t('fc_'+lvl.k)}${alertTx} ›`;
+  const alertTx = newAlerts>0 ? ` · ${icon('megaphone',13)} ${newAlerts}` : '';
+  el.innerHTML = `${icon(lvl.ic,15)} ${t('fc_'+lvl.k)}${alertTx} ›`;
 }
 function openAlertSheet(){
   const sheet = document.getElementById('alert-sheet');
@@ -2714,7 +2777,7 @@ function openAlertSheet(){
     const bodyTx  = LANG==='en' ? (a.body_en||a.body)   : a.body;
     return `<div class="al-item">
       <div class="al-item-top">
-        <div class="al-item-src alert-src-ic ${a.cat}">${a.src}</div>
+        <div class="al-item-src alert-src-ic ${a.cat}">${icon(a.src,18)}</div>
         <div class="al-item-info">
           <b>${titleTx}</b>
           <div class="al-item-meta">
@@ -2769,13 +2832,13 @@ function renderHQBriefing(){
   const mTotal = DAILY.picks ? DAILY.picks.length : 3;
 
   const actions = [
-    { ic:'🚶', title:LANG==='en'?'Patrol South Shibuya':'渋谷南部をパトロール',
+    { ic:'route', title:LANG==='en'?'Patrol South Shibuya':'渋谷南部をパトロール',
       desc:LANG==='en'?'3 markings confirmed — early patrol recommended':'マーキング3件確認済み・早期パトロール推奨',
       fn:`switchView('map')` },
-    { ic:'📸', title:LANG==='en'?'Post a marking':'マーキングを投稿',
+    { ic:'camera', title:LANG==='en'?'Post a marking':'マーキングを投稿',
       desc:LANG==='en'?'Help keep the map up to date':'今日の情報でマップを更新しよう',
       fn:`switchView('cam')` },
-    { ic:'📋', title:LANG==='en'?'Daily missions':'デイリーミッション',
+    { ic:'clipboard', title:LANG==='en'?'Daily missions':'デイリーミッション',
       desc:LANG==='en'?`${mDone}/${mTotal} done`:`${mDone}/${mTotal}件完了`,
       fn:`openMissionSheet()` },
   ];
@@ -2808,7 +2871,7 @@ function renderHQBriefing(){
 
   const actHtml = actions.map(a=>`
     <div class="hq-action" onclick="${a.fn};closeHQBriefing()">
-      <div class="hq-action-ic">${a.ic}</div>
+      <div class="hq-action-ic">${icon(a.ic,20)}</div>
       <div class="hq-action-body"><b>${a.title}</b><span>${a.desc}</span></div>
       <div class="hq-action-arr">›</div>
     </div>`).join('');
@@ -2817,7 +2880,7 @@ function renderHQBriefing(){
     <div class="hq-hdr">
       <button class="hq-back" onclick="closeHQBriefing()">✕</button>
       <div class="hq-title">
-        <b>🗂 ${LANG==='en'?'HQ Briefing':'捜査本部'}</b>
+        <b>${icon('folder',15)} ${LANG==='en'?'HQ Briefing':'捜査本部'}</b>
         <span>${dateStr}</span>
       </div>
       <span class="hq-badge">${LANG==='en'?'TOP SECRET':'機密情報'}</span>
@@ -2832,7 +2895,7 @@ function renderHQBriefing(){
             <div class="hq-threat-sub">${LANG==='en'?'Shibuya area · now':'渋谷エリア · 現在'}</div>
             <div class="hq-threat-track"><div class="hq-threat-fill" style="width:${tPct}%;background:${tc}"></div></div>
           </div>
-          <div class="hq-threat-ic">${fc.ic}</div>
+          <div class="hq-threat-ic" style="color:${tc}">${icon(fc.ic,38)}</div>
         </div>
       </div>
 
@@ -2863,8 +2926,8 @@ function renderHQBriefing(){
           <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Total patrols':'総パトロール'}</span><span class="hq-score-val">${STATE.patrols||0}</span></div>
           <div class="hq-score-row"><span class="hq-score-lbl">${LANG==='en'?'Investigation score':'捜査スコア'}</span><span class="hq-score-val">${personalScore}<span style="font-size:10px;color:var(--gray)">/100</span></span></div>
         </div>
-        <button class="panel-btn" style="margin-top:12px" onclick="closeHQBriefing();openWeeklyReport()">📰 ${LANG==='en'?'Weekly Investigation Report':'週刊 捜査報告書を見る'}</button>
-        <button class="panel-btn" style="margin-top:2px" onclick="closeHQBriefing();openGovDash()">🏛 ${LANG==='en'?'City Dashboard (mock)':'行政ダッシュボード（モック）'}</button>
+        <button class="panel-btn" style="margin-top:12px" onclick="closeHQBriefing();openWeeklyReport()">${icon('clipboard',15)} ${LANG==='en'?'Weekly Investigation Report':'週刊 捜査報告書を見る'}</button>
+        <button class="panel-btn" style="margin-top:2px" onclick="closeHQBriefing();openGovDash()">${icon('building',15)} ${LANG==='en'?'City Dashboard (mock)':'行政ダッシュボード（モック）'}</button>
       </div>
 
     </div>`;
@@ -2921,7 +2984,7 @@ function renderGovDash(){
   el.innerHTML = `
     <div class="hq-hdr">
       <button class="hq-back" onclick="closeGovDash()">←</button>
-      <div class="hq-title"><b>🏛 ${LANG==='en'?'Shibuya Safety Dashboard':'渋谷区 防犯ダッシュボード'}</b><span>${LANG==='en'?'For city officials · all dummy data':'行政向けモック ・ 全データはダミー'}</span></div>
+      <div class="hq-title"><b>${icon('building',15)} ${LANG==='en'?'Shibuya Safety Dashboard':'渋谷区 防犯ダッシュボード'}</b><span>${LANG==='en'?'For city officials · all dummy data':'行政向けモック ・ 全データはダミー'}</span></div>
       <span class="hq-badge" style="background:var(--blue)">MOCK</span>
     </div>
     <div class="hq-body">
@@ -2978,17 +3041,17 @@ function openWeeklyReport(){
   const sun = new Date(mon); sun.setDate(mon.getDate()+6);
   const range = `${mon.getMonth()+1}/${mon.getDate()} – ${sun.getMonth()+1}/${sun.getDate()}`;
   const impactHtml = riskReduced > 0
-    ? `<div class="rp-impact"><span class="ri-ic">🛡️</span><div>
+    ? `<div class="rp-impact"><span class="ri-ic">${icon('shield',26)}</span><div>
          <b>${LANG==='en'?`You lowered the area risk by ${riskReduced}`:`あなたの対処で警戒度を ${riskReduced} 下げました`}</b>
          <span>${LANG==='en'?`Current area level: ${t('fc_'+fc.k)} ${fc.score}/100`:`現在のエリア警戒度: ${t('fc_'+fc.k)} ${fc.score}/100`}</span>
        </div></div>`
-    : `<div class="rp-impact" style="background:rgba(212,168,32,.08);border-color:rgba(212,168,32,.3)"><span class="ri-ic">🔎</span><div>
+    : `<div class="rp-impact" style="background:rgba(212,168,32,.08);border-color:rgba(212,168,32,.3)"><span class="ri-ic">${icon('search',26)}</span><div>
          <b>${LANG==='en'?'Resolve markings to lower the risk':'マーキングを対処すると警戒度が下がります'}</b>
          <span>${LANG==='en'?`Current area level: ${t('fc_'+fc.k)} ${fc.score}/100`:`現在のエリア警戒度: ${t('fc_'+fc.k)} ${fc.score}/100`}</span>
        </div></div>`;
   sheet.innerHTML = `
     <div class="grab"></div>
-    <div class="rp-hd"><b>📰 ${LANG==='en'?'Weekly Investigation Report':'週刊 捜査報告書'}</b><button class="rp-close" onclick="document.getElementById('report-sheet').classList.remove('open')">×</button></div>
+    <div class="rp-hd"><b>${icon('clipboard',16)} ${LANG==='en'?'Weekly Investigation Report':'週刊 捜査報告書'}</b><button class="rp-close" onclick="document.getElementById('report-sheet').classList.remove('open')">×</button></div>
     <div class="rp-body">
       <div class="rp-doc">
         <div class="rp-meta"><span class="rp-av">${PROFILE.avatar}</span><span>${txName(PROFILE.name)}${t('name_suffix')} ・ ${range}</span><span class="hq-badge" style="margin-left:auto">${LANG==='en'?'CONFIDENTIAL':'機密情報'}</span></div>
@@ -3071,7 +3134,7 @@ function renderInfoView(cat){
       : '';
     return `<div class="iv-alert">
       <div class="iv-alert-top">
-        <div class="iv-alert-src ${a.cat}">${a.src}</div>
+        <div class="iv-alert-src ${a.cat}">${icon(a.src,18)}</div>
         <div class="iv-alert-info">
           <b>${titleTx}${newPill}</b>
           <div class="iv-alert-meta">
@@ -3106,7 +3169,7 @@ function renderInfoView(cat){
         const userTx = LANG==='en' ? (a.user_en||a.user) : a.user;
         const descTx = LANG==='en' ? (a.desc_en||a.desc) : a.desc;
         return `<div class="iv-act-item">
-          <div class="iv-act-ic ${a.type}">${a.icon}</div>
+          <div class="iv-act-ic ${a.type}">${icon(a.icon,18)}</div>
           <div class="iv-act-tx"><b>${userTx}</b><span>${descTx} · ${txAgo(a.ago)}</span></div>
           <div class="iv-act-pts">+${a.pts}pt</div>
         </div>`;
@@ -3142,8 +3205,8 @@ function updateInfoBadge(){
 function openMissionSheet(){
   const sheet = document.getElementById('mission-sheet');
   if(!sheet) return;
-  const dailySec = LANG==='en' ? "📋 Today's Missions" : '📋 今日のミッション';
-  const weeklySec = LANG==='en' ? '🗓 Weekly Challenges' : '🗓 今週のチャレンジ';
+  const dailySec = LANG==='en' ? "Today's Missions" : '今日のミッション';
+  const weeklySec = LANG==='en' ? 'Weekly Challenges' : '今週のチャレンジ';
   sheet.innerHTML = `
     <div class="grab"></div>
     <div class="ms-hd">
@@ -3167,7 +3230,7 @@ function rewardGaugeHtml(){
   const nodes = REWARD_TIERS.map((tr,i)=>{
     const reached = earned >= tr.at, isClaimed = claimed.includes(i);
     const cls = isClaimed ? 'claimed' : (reached ? 'reached' : '');
-    const dot = isClaimed ? '✓' : (reached ? '🎁' : '');
+    const dot = isClaimed ? '✓' : '';
     const left = Math.min(100, tr.at / maxAt * 100);
     return `<div class="rg-node ${cls}" style="left:${left}%">
       <div class="rg-dot">${dot}</div>
@@ -3178,12 +3241,12 @@ function rewardGaugeHtml(){
   let claimBtn = '';
   const nextClaim = REWARD_TIERS.findIndex((tr,i)=> earned >= tr.at && !claimed.includes(i));
   if(nextClaim >= 0){
-    claimBtn = `<button class="rg-claim" onclick="claimRewardTier(${nextClaim})">🎁 ${t('reward_claim')} +${REWARD_TIERS[nextClaim].bonus}${t('pt')}</button>`;
+    claimBtn = `<button class="rg-claim" onclick="claimRewardTier(${nextClaim})">${icon('gift',14)} ${t('reward_claim')} +${REWARD_TIERS[nextClaim].bonus}${t('pt')}</button>`;
   } else if(claimed.length === REWARD_TIERS.length){
     claimBtn = `<div class="rg-allclaimed">✓ ${t('reward_allclaimed')}</div>`;
   }
   return `<div class="rg-card">
-    <div class="rg-top"><b>🎁 ${t('reward_gauge_title')}</b><span class="rg-earned">${fmt(earned)} ${t('pt')}</span></div>
+    <div class="rg-top"><b>${icon('gift',15)} ${t('reward_gauge_title')}</b><span class="rg-earned">${fmt(earned)} ${t('pt')}</span></div>
     <div class="rg-track">
       <div class="rg-fill" style="width:${pct}%"></div>
       ${nodes}
@@ -3225,7 +3288,7 @@ function showLevelUp(lvObj){
   const body = LANG==='en'
     ? `Lv.${lvObj.lv}<br>Promoted to <b>${tx(lvObj,'title')}</b>`
     : `Lv.${lvObj.lv}<br><b>${tx(lvObj,'title')}</b> に昇進しました`;
-  el.innerHTML = `<div class="lv-big">⭐</div><h3>${t('lvup_title')}</h3><div class="lv-sub">${body}</div>`;
+  el.innerHTML = `<div class="lv-big">${icon('star',60)}</div><h3>${t('lvup_title')}</h3><div class="lv-sub">${body}</div>`;
   document.querySelector('.phone').appendChild(el);
   launchConfetti();
   setTimeout(()=>el.remove(), 3300);
@@ -3315,9 +3378,9 @@ function renderHome(){
       const postsToGo = Math.ceil(info.rem / avgPts);
       const q = LANG==='en'?['"','"']:['「','」'];
       nudgeEl.style.display = 'flex';
-      nudgeEl.innerHTML = `<span class="nudge-ic">🚀</span><span>${LANG==='en'
+      nudgeEl.innerHTML = `<span class="nudge-ic">${icon('trendUp',16)}</span><span>${LANG==='en'
         ? `${postsToGo} more post${postsToGo!==1?'s':''} to ${q[0]}${tx(info.next,'title')}${q[1]}!`
-        : `あと${postsToGo}投稿で${q[0]}${tx(info.next,'title')}${q[1]}に昇格！`}</span>`;
+        : `あと${postsToGo}投稿で${q[0]}${tx(info.next,'title')}${q[1]}に昇格`}</span>`;
     } else {
       nudgeEl.style.display = 'none';
     }
@@ -3375,13 +3438,13 @@ function openLevelSheet(){
   const nextBlock = next ? `
     <div class="ls-next">
       <div class="lsn-top">
-        <div class="lsn-ic">${next.icon}</div>
+        <div class="lsn-ic">${icon(next.icon,22)}</div>
         <div class="lsn-tt"><b>${t('next_is')} Lv.${next.lv}${q[0]}${tx(next,'title')}${q[1]}</b><span>${t('st_left')} ${fmt(info.rem)} ${t('pt')} ${t('promote_in')}</span></div>
       </div>
-      <div class="lsn-perk">🎁 ${tx(next,'perk')}</div>
+      <div class="lsn-perk">${icon('gift',13)} ${tx(next,'perk')}</div>
       <div class="lsn-bar"><i style="width:${info.pct}%"></i></div>
     </div>`
-    : `<div class="ls-next"><div class="lsn-top"><div class="lsn-ic">🏆</div>
+    : `<div class="ls-next"><div class="lsn-top"><div class="lsn-ic">${icon('trophy',22)}</div>
         <div class="lsn-tt"><b>${t('reach_max')}</b><span>${t('all_unlocked')}</span></div></div></div>`;
 
   const rows = LEVELS.map(l=>{
@@ -3389,7 +3452,7 @@ function openLevelSheet(){
     const stLabel = status==='done' ? t('st_done') : status==='cur' ? t('st_cur') : `${t('st_left')} ${fmt(Math.max(0, l.min - STATE.points))} ${t('pt')}`;
     const stCls = status==='done' ? 's-done' : status==='cur' ? 's-cur' : 's-lock';
     return `<div class="ls-row ${status}">
-      <div class="lr-ic">${l.icon}</div>
+      <div class="lr-ic">${icon(l.icon,20)}</div>
       <div class="lr-tx"><b>Lv.${l.lv} ${tx(l,'title')}</b><span class="lr-perk">${tx(l,'perk')}</span></div>
       <div class="lr-st ${stCls}">${stLabel}</div>
     </div>`;
@@ -3417,7 +3480,7 @@ function openMyPage(){
   const achHtml = ACHIEVEMENTS.map(a=>{
     const got = ACH_UNLOCKED.includes(a.id);
     return `<div class="mp-ach ${got?'':'locked'}">
-      <div class="ach-ic">${got?a.icon:'🔒'}</div>
+      <div class="ach-ic">${got?icon(a.icon,22):icon('lock',20)}</div>
       <div class="ach-tx"><b>${tx(a,'title')}</b><span>${tx(a,'desc')}</span></div>
     </div>`;
   }).join('');
@@ -3450,8 +3513,8 @@ function openMyPage(){
         const lockTip = !unlocked ? t('frame_lv_need').replace('{0}',f.unlockLv) : '';
         return `<div class="frame-cell${!unlocked?' locked':''}${sel?' sel':''}" data-fid="${f.id}" title="${lockTip||tx(f,'name')}">
           ${sel?`<span class="frame-equipped">${t('frame_equipped')}</span>`:''}
-          ${!unlocked?`<span class="frame-lock">🔒</span>`:''}
-          <span class="frame-ic">${f.icon}</span>
+          ${!unlocked?`<span class="frame-lock">${icon('lock',14)}</span>`:''}
+          <span class="frame-ic">${icon(f.icon,20)}</span>
           <span class="frame-lbl">${tx(f,'name')}</span>
         </div>`;
       }).join('')}</div>
@@ -3471,7 +3534,7 @@ function openMyPage(){
       <div class="mp-achgrid">${achHtml}</div>
       <button class="panel-btn" id="mp-stats" style="margin-bottom:10px">${t('stats_btn')}</button>
       <button class="panel-btn accent" id="mp-card" style="margin-bottom:10px">${t('card_btn')}</button>
-      <button class="panel-btn" id="mp-demo" style="margin-bottom:10px">🎬 ${LANG==='en'?'Demo mode (auto-play)':'デモモード（自動再生）'}</button>
+      <button class="panel-btn" id="mp-demo" style="margin-bottom:10px">${icon('film',14)} ${LANG==='en'?'Demo mode (auto-play)':'デモモード（自動再生）'}</button>
       <button class="mp-reset" id="mp-reset">${t('mp_reset')}</button>
     </div>`;
 
@@ -3562,7 +3625,7 @@ function openQuiz(){
     });
     document.getElementById('qz-result').innerHTML = `
       <div class="qz-expl"><b>${correct?t('quiz_correct'):t('quiz_wrong')}</b> — ${tx(cat,'name')}<br>${tx(cat,'meaning')}</div>
-      <button class="ms-book-link" onclick="document.getElementById('quiz-sheet').classList.remove('open');switchView('book');openBookSheet(${QUIZ.markIdx})">📖 ${LANG==='en'?'See in handbook':'手帳でくわしく見る'}</button>`;
+      <button class="ms-book-link" onclick="document.getElementById('quiz-sheet').classList.remove('open');switchView('book');openBookSheet(${QUIZ.markIdx})">${icon('book',14)} ${LANG==='en'?'See in handbook':'手帳でくわしく見る'}</button>`;
   };
 
   if(QUIZ.answered){
@@ -3668,7 +3731,7 @@ function drawStatsCard(canvas){
   });
   // フッター
   x.fillStyle = '#5a6478'; x.font = '600 28px sans-serif'; x.textAlign='center';
-  x.fillText('🔍 ' + t('card_made'), W/2, 1010);
+  x.fillText(t('card_made'), W/2, 1010);
 }
 function roundRect(x, X, Y, w, h, r){
   x.beginPath();
@@ -3777,7 +3840,7 @@ function openSafety(){
     <div class="sf-hd"><b>${t('safety_title')}</b><button class="sf-close" id="sf-close">×</button></div>
     <div class="sf-body">
       <div class="sf-sec">${t('tips_sec')}</div>
-      <div class="sf-tip">💡 ${tx(tip,'text')}</div>
+      <div class="sf-tip">${icon('bulb',15)} ${tx(tip,'text')}</div>
       <div class="sf-sec">${t('checklist_sec')}</div>
       <div id="sf-checks">${checkHtml}</div>
       <div class="sf-sec">${t('emergency_sec')}</div>
@@ -3823,14 +3886,14 @@ function openDetail(idx){
         <div class="conf-bar"><i style="width:${f.conf}%;background:${color}"></i></div>
         <span class="conf-val" style="color:${color}">${f.conf}%</span>
       </div>
-      <div class="ai-comment">🤖 ${tx(f,'aiComment')}</div>
+      <div class="ai-comment">${icon('cpu',14)} ${tx(f,'aiComment')}</div>
       <div class="react-row" id="react-row">${reactionBtns(f)}</div>
       ${cat ? `<div class="catalog-link" onclick="document.getElementById('detail-modal').classList.remove('open');switchView('book');openBookSheet(${catIdx})">
         <div class="cl-icon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(230,57,70,.15)">${cat.mark}</div>
         <div class="cl-info"><b>${tx(cat,'name')}</b><span>${t('dm_catalog')}</span></div>
       </div>` : ''}
       ${f.resolved
-        ? `<div class="resolve-badge"><div class="rb-ic">🔵</div><div class="rb-tx"><b>${t('resolve_badge_title')}</b><span>${t('resolve_badge_sub')}</span></div></div>`
+        ? `<div class="resolve-badge"><div class="rb-ic">${icon('checkCircle',20)}</div><div class="rb-tx"><b>${t('resolve_badge_title')}</b><span>${t('resolve_badge_sub')}</span></div></div>`
         : `<button class="resolve-btn" onclick="resolveMarking(${idx})">${t('resolve_btn')}</button>`
       }
     </div>`;
@@ -3869,12 +3932,12 @@ function resolveMarking(idx){
   saveState();
 }
 
-const REACTIONS = [ {k:'up',emoji:'👍',key:'react_up'}, {k:'warn',emoji:'⚠️',key:'react_warn'}, {k:'check',emoji:'✅',key:'react_check'} ];
+const REACTIONS = [ {k:'up',ic:'check',key:'react_up'}, {k:'warn',ic:'alert',key:'react_warn'}, {k:'check',ic:'checkCircle',key:'react_check'} ];
 function reactionBtns(f){
   if(!f.reactions) f.reactions = {up:0,warn:0,check:0};
   return REACTIONS.map(r=>`
     <button class="react-btn ${f.myReaction===r.k?'on':''}" data-react="${r.k}">
-      <span class="re-emoji">${r.emoji}</span><span class="re-lbl">${t(r.key)}</span><span class="re-cnt">${f.reactions[r.k]||0}</span>
+      <span class="re-emoji">${icon(r.ic,15)}</span><span class="re-lbl">${t(r.key)}</span><span class="re-cnt">${f.reactions[r.k]||0}</span>
     </button>`).join('');
 }
 function bindReactions(idx){
@@ -3909,7 +3972,7 @@ function renderBook(){
   const foundCount = MARK_CATALOG.filter(m => STATE.found[m.mark]).length;
   const progressHtml = `
     <div class="book-progress">
-      <span>📖 ${LANG==='en'?'Found':'発見済み'} <b>${foundCount}</b>/${MARK_CATALOG.length}</span>
+      <span>${icon('book',13)} ${LANG==='en'?'Found':'発見済み'} <b>${foundCount}</b>/${MARK_CATALOG.length}</span>
       <div class="bp-bar"><i style="width:${Math.round(foundCount/MARK_CATALOG.length*100)}%"></i></div>
     </div>`;
   document.getElementById('book-list').innerHTML = progressHtml + (list.length ? list.map(({m,i})=>{
@@ -3957,7 +4020,7 @@ function openBookSheet(idx){
         <div class="bs-label">${LANG==='en'?'WHERE IT APPEARS':'よく見られる場所'}</div>
         <div class="bs-examples">${m.examples.map(e=>`<span class="bs-ex-chip">${txLabel(e)}</span>`).join('')}</div>
       </div>
-      <button class="bs-cam-btn" onclick="closeBookSheet(); switchView('cam')">📸 ${LANG==='en'?'Shoot this mark':'このマークを撮影する'}</button>
+      <button class="bs-cam-btn" onclick="closeBookSheet(); switchView('cam')">${icon('camera',14)} ${LANG==='en'?'Shoot this mark':'このマークを撮影する'}</button>
     </div>`;
   document.getElementById('book-sheet').classList.add('open');
 }
@@ -3972,7 +4035,7 @@ function renderRank(seg){
   renderMyContrib();
   document.getElementById('rank-list').innerHTML = list.map((r,i)=>{
     const cls = i===0?'g':i===1?'s':i===2?'b':'';
-    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    const medal = i<3 ? icon('award',20,`color:${['#D4A820','#B8BEC8','#C08552'][i]}`) : (i+1);
     return `<div class="rank-row ${r.me?'me':''}" onclick="openRankSheet(${i})" style="cursor:pointer">
       <div class="pos ${cls}">${medal}</div>
       <div class="av" style="background:${r.bg}">${r.av}</div>
@@ -4009,7 +4072,7 @@ function renderTeam(){
   const battleHtml = `
     <div class="battle-card">
       <div class="bc-head">
-        <b>⚔️ ${LANG==='en'?'Weekly Squad Battle':'今週の対抗戦'}</b>
+        <b>${icon('shield',15)} ${LANG==='en'?'Weekly Squad Battle':'今週の対抗戦'}</b>
         <span class="bc-days">${LANG==='en'?`${b.daysLeft}d left`:`残り${b.daysLeft}日`}</span>
       </div>
       <div class="bc-sides">
@@ -4029,7 +4092,7 @@ function renderTeam(){
       </div>
       <div class="bc-foot">
         <span>${leading
-          ? (LANG==='en'?`Leading by ${fmt(b.minePt-b.rivalPt)}pt!`:`${fmt(b.minePt-b.rivalPt)}pt リード中！`)
+          ? (LANG==='en'?`Leading by ${fmt(b.minePt-b.rivalPt)}pt`:`${fmt(b.minePt-b.rivalPt)}pt リード中`)
           : (LANG==='en'?`${fmt(b.rivalPt-b.minePt)}pt behind`:`あと ${fmt(b.rivalPt-b.minePt)}pt で逆転`)}</span>
         <button class="bc-cta" onclick="openMissionSheet()">${LANG==='en'?'Contribute →':'ミッションで貢献 →'}</button>
       </div>
@@ -4049,7 +4112,7 @@ function renderTeam(){
     </div>` + battleHtml;
   document.getElementById('team-list').innerHTML = sorted.map((tm,i)=>{
     const cls = i===0?'g':i===1?'s':i===2?'b':'';
-    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    const medal = i<3 ? icon('award',20,`color:${['#D4A820','#B8BEC8','#C08552'][i]}`) : (i+1);
     const memLabel = LANG==='en' ? `${tm.members} members` : `${tm.members}名`;
     return `<div class="team-row ${tm.id===mine.id?'mine':''}">
       <div class="tr-pos ${cls}">${medal}</div>
@@ -4125,9 +4188,9 @@ function initMap(){
       mapFailed = true;
       const el = document.getElementById('map');
       if (el) el.innerHTML = `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:30px;text-align:center;color:var(--gray)">
-        <div style="font-size:42px">🗺️</div>
+        <div style="color:var(--gray)">${icon('map',40)}</div>
         <div style="font-size:13px;line-height:1.7">${t('map_fail')}</div>
-        <button class="btn primary" style="width:auto;padding:11px 26px;margin-top:6px" onclick="retryMap()">🔄 ${LANG==='en'?'Retry':'再読み込み'}</button></div>`;
+        <button class="btn primary" style="width:auto;padding:11px 26px;margin-top:6px" onclick="retryMap()">${LANG==='en'?'Retry':'再読み込み'}</button></div>`;
     }
     return;
   }
@@ -4173,11 +4236,11 @@ function openMarkingSheet(m){
   const aiComment = feedEntry ? tx(feedEntry,'aiComment') : null;
   const feedIdx = feedEntry ? FEED.indexOf(feedEntry) : -1;
   const resolvedSection = m.resolved
-    ? `<div class="ms-resolved-badge"><span style="font-size:22px">🔵</span><div><b style="font-size:13px">${LANG==='en'?'Resolved':'対処済み'}</b><div style="font-size:11px;color:var(--gray)">${LANG==='en'?'This marking has been addressed.':'このマーキングは対処済みです。'}</div></div></div>`
-    : `<button class="ms-resolve-btn" id="ms-resolve-btn">✅ ${LANG==='en'?'Mark as resolved':'対処済みにする'}</button>`;
+    ? `<div class="ms-resolved-badge"><span>${icon('checkCircle',20)}</span><div><b style="font-size:13px">${LANG==='en'?'Resolved':'対処済み'}</b><div style="font-size:11px;color:var(--gray)">${LANG==='en'?'This marking has been addressed.':'このマーキングは対処済みです。'}</div></div></div>`
+    : `<button class="ms-resolve-btn" id="ms-resolve-btn">${icon('check',14)} ${LANG==='en'?'Mark as resolved':'対処済みにする'}</button>`;
   const catIdx = MARK_CATALOG.findIndex(c => c.mark === m.mark);
   const bookLink = catIdx >= 0
-    ? `<button class="ms-book-link" onclick="closeMarkingSheet();switchView('book');openBookSheet(${catIdx})">📖 ${LANG==='en'?'What this mark means':'この記号の意味を手帳で見る'}</button>`
+    ? `<button class="ms-book-link" onclick="closeMarkingSheet();switchView('book');openBookSheet(${catIdx})">${icon('book',14)} ${LANG==='en'?'What this mark means':'この記号の意味を手帳で見る'}</button>`
     : '';
   document.getElementById('mark-sheet').innerHTML = `
     <div class="grab"></div>
@@ -4192,9 +4255,9 @@ function openMarkingSheet(m){
       <button class="ms-close" onclick="closeMarkingSheet()">×</button>
     </div>
     <div class="ms-body">
-      <div class="ms-who">📍 ${txName(m.user)} · ${txAgo(m.ago)}</div>
+      <div class="ms-who">${txName(m.user)} · ${txAgo(m.ago)}</div>
       ${conf !== null ? `<div class="conf-row"><span class="conf-lbl">${t('cam_conf')}</span><div class="conf-bar"><i style="width:${conf}%;background:${color}"></i></div><span class="conf-val" style="color:${color}">${conf}%</span></div>` : ''}
-      ${aiComment ? `<div class="ai-comment">🤖 ${aiComment}</div>` : ''}
+      ${aiComment ? `<div class="ai-comment">${icon('cpu',14)} ${aiComment}</div>` : ''}
       ${resolvedSection}
       ${bookLink}
     </div>`;
@@ -4254,7 +4317,7 @@ function startPatrol(){
   if(!map || mapFailed){ showToast(t('patrol_need_map')); return; }
   map.setView(PATROL_ROUTE[0], 16);
   const line = L.polyline([PATROL_ROUTE[0]], { color:'#E63946', weight:5, opacity:.85 }).addTo(map);
-  const wIcon = L.divIcon({ className:'', html:'<div class="patrol-walker">🚶</div>', iconSize:[24,24], iconAnchor:[12,12] });
+  const wIcon = L.divIcon({ className:'', html:`<div class="patrol-walker">${icon('route',15)}</div>`, iconSize:[24,24], iconAnchor:[12,12] });
   const walker = L.marker(PATROL_ROUTE[0], { icon:wIcon, zIndexOffset:1000 }).addTo(map);
   patrolState = { i:0, km:0, sec:0, line, walker, timer:null };
   document.getElementById('patrol-hud').classList.add('show');
@@ -4314,7 +4377,7 @@ function showPatrolDone(km, sec, gained){
   const el = document.getElementById('patrol-done');
   if(!el) return;
   el.innerHTML = `
-    <div class="pd-ic">🎉</div>
+    <div class="pd-ic">${icon('award',46)}</div>
     <h3>${t('patrol_done_title')}</h3>
     <div class="pd-stats">
       <div class="pd-stat"><b>${km.toFixed(2)}</b><span>km</span></div>
@@ -4372,8 +4435,8 @@ function camIdle(){
       <div class="scan"></div>
       <div class="target" id="vtarget">${s.target}</div>
     </div>
-    <div class="cam-hint">📍 ${tx(s,'place')}<br>${t('cam_hint')}</div>
-    <div class="shutter" id="shutter" role="button" aria-label="${LANG==='en'?'Take photo':'撮影する'}">📸</div>`;
+    <div class="cam-hint">${tx(s,'place')}<br>${t('cam_hint')}</div>
+    <div class="shutter" id="shutter" role="button" aria-label="${LANG==='en'?'Take photo':'撮影する'}">${icon('camera',26)}</div>`;
   document.getElementById('shutter').onclick = () => {
     camShot = captureShot();
     stopCamPreview();
@@ -4389,7 +4452,7 @@ function camAnalyze(){
       ${camShot ? `<img src="${camShot}" class="cam-shot" alt="">` : ''}
       <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
       <div class="scan" style="display:block"></div>
-      ${camShot ? '' : '<div class="target">🔍</div>'}
+      ${camShot ? '' : `<div class="target">${icon('search',54)}</div>`}
     </div>
     <div class="ai-box">
       <div class="ai-row" id="r1"><div class="spin"></div><span>${t('cam_r1')}</span></div>
@@ -4429,7 +4492,7 @@ function camResult(){
   const comboBonus = isCombo ? Math.min(30, prevCombo * 10) : 0;
   const totalGained = gained + comboBonus;
   const comboBadge = isCombo
-    ? `<div class="combo-badge">🔥 ${LANG==='en'?'COMBO':'コンボ'} ×${comboCount}  +${comboBonus}pt!</div>` : '';
+    ? `<div class="combo-badge">${icon('flame',13)} ${LANG==='en'?'COMBO':'コンボ'} ×${comboCount}  +${comboBonus}pt</div>` : '';
   const tileBg = { danger:'rgba(230,57,70,.18)', warn:'rgba(244,162,97,.18)', safe:'rgba(100,116,139,.18)' }[o.type];
   const markVisual = camShot
     ? `<div class="rc-photo"><img src="${camShot}" alt=""><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>`
@@ -4502,8 +4565,8 @@ function camResult(){
   document.getElementById('cam-again').onclick = camIdle;
   document.getElementById('cam-share').onclick = () => {
     const text = LANG==='en'
-      ? `🔍 GO-TO Detectives\n${tx(o,'title')} (AI confidence ${conf}%)\nMy post was added to the crime-prevention map!\nhttps://b-w-hiroki.github.io/goto-tanteidan/`
-      : `🔍 GO-TO探偵団\n${tx(o,'title')}（AI信頼度 ${conf}%）\n投稿が防犯マップに追加されました！\nhttps://b-w-hiroki.github.io/goto-tanteidan/`;
+      ? `GO-TO Detectives\n${tx(o,'title')} (AI confidence ${conf}%)\nMy post was added to the crime-prevention map\nhttps://b-w-hiroki.github.io/goto-tanteidan/`
+      : `GO-TO探偵団\n${tx(o,'title')}（AI信頼度 ${conf}%）\n投稿が防犯マップに追加されました\nhttps://b-w-hiroki.github.io/goto-tanteidan/`;
     if (navigator.share) { navigator.share({ title: 'GO-TO探偵団', text }).catch(()=>{}); }
     else { navigator.clipboard?.writeText(text).then(() => showToast(t('toast_copy'))); }
     STATE.shares += 1; bumpDaily('share'); checkAchievements(); saveState();
@@ -4616,7 +4679,7 @@ function renderSetupStep(step){
       </div>
       <div class="setup-body">${teamHtml}</div>
       <div class="setup-foot">
-        <button class="btn primary" onclick="finishSetup()">${LANG==='en'?'Start! 🔍':'はじめる 🔍'}</button>
+        <button class="btn primary" onclick="finishSetup()">${LANG==='en'?'Start':'はじめる'}</button>
         <button class="setup-skip" onclick="finishSetup()">${LANG==='en'?'Skip for now':'あとで設定する'}</button>
       </div>`;
   }
@@ -4652,8 +4715,8 @@ function finishSetup(){
   if(ob){ ob.classList.add('gone'); setTimeout(()=>ob.remove(), 450); }
   setTimeout(()=>sv.remove(), 450);
   const welcome = LANG==='en'
-    ? `🔍 Welcome, ${PROFILE.name}!`
-    : `🔍 ようこそ、${PROFILE.name}${t('name_suffix')}`;
+    ? `Welcome, ${PROFILE.name}`
+    : `ようこそ、${PROFILE.name}${t('name_suffix')}`;
   setTimeout(()=>showToast(welcome), 700);
 }
 
@@ -4731,12 +4794,12 @@ document.getElementById('view-map').innerHTML = `
   <div id="map"></div>
   <div class="patrol-hud" id="patrol-hud">
     <div class="ph-cell"><span class="ph-ic">⏱</span><b id="ph-time">0:00</b></div>
-    <div class="ph-cell"><span class="ph-ic">📏</span><b id="ph-dist">0.00</b></div>
-    <div class="ph-cell pts"><span class="ph-ic">⭐</span><b id="ph-pts">0</b></div>
+    <div class="ph-cell"><span class="ph-ic">${icon('map',13)}</span><b id="ph-dist">0.00</b></div>
+    <div class="ph-cell pts"><span class="ph-ic">${icon('star',13)}</span><b id="ph-pts">0</b></div>
   </div>
   <div class="map-overlay" id="map-overlay"></div>
   <button class="patrol-fab" id="patrol-fab" onclick="togglePatrol()" aria-label="パトロールを開始">
-    <span class="pf-ic">🚶</span><span class="pf-lbl" id="pf-lbl">START</span>
+    <span class="pf-ic">${icon('route',18)}</span><span class="pf-lbl" id="pf-lbl">START</span>
   </button>
   <div class="map-tools" id="map-tools"></div>
   <div class="patrol-done" id="patrol-done"></div>
@@ -4792,7 +4855,7 @@ function toggleTimelapse(){
     if(hud){
       hud.classList.add('on');
       hud.innerHTML = `
-        <b>🎬 ${dateLbl}</b>
+        <b>${icon('film',13)} ${dateLbl}</b>
         <div class="tl-meta">${LANG==='en'
           ? `${st.shown.length} markings · ${st.resolvedCount} resolved · risk ${st.score}`
           : `マーキング ${st.shown.length}件 ・ 対処 ${st.resolvedCount}件 ・ 警戒度 ${st.score}`}</div>
@@ -4801,7 +4864,7 @@ function toggleTimelapse(){
     renderTimelapsePins(st);
     step++;
     if(step >= 30){
-      if(hud) hud.innerHTML = `<b>📍 ${LANG==='en'?'Today':'現在'}</b><div class="tl-meta">${LANG==='en'?'Back to live map':'現在のマップに戻ります'}</div><div class="tl-track"><i style="width:100%"></i></div>`;
+      if(hud) hud.innerHTML = `<b>${LANG==='en'?'Today':'現在'}</b><div class="tl-meta">${LANG==='en'?'Back to live map':'現在のマップに戻ります'}</div><div class="tl-track"><i style="width:100%"></i></div>`;
       tlTimer = setTimeout(stopTimelapse, 1400);
     } else {
       tlTimer = setTimeout(tick, 190);
@@ -4846,7 +4909,7 @@ function startDemo(){
   const ind = document.createElement('div');
   ind.className = 'demo-ind';
   ind.id = 'demo-ind';
-  ind.textContent = LANG==='en' ? '🎬 Demo — tap anywhere to exit' : '🎬 デモ再生中 ・ タップで終了';
+  ind.textContent = LANG==='en' ? 'Demo — tap anywhere to exit' : 'デモ再生中 ・ タップで終了';
   document.querySelector('.phone').appendChild(ind);
   setTimeout(() => document.addEventListener('pointerdown', stopDemo, true), 400);
   demoTick(0);
@@ -4880,10 +4943,10 @@ function renderMapOverlay(){
     const restTx = ALERTS.length>1 ? (LANG==='en' ? ` +${ALERTS.length-1} more` : ` ほか${ALERTS.length-1}件`) : '';
     ov.innerHTML = `
       <div class="map-brief" id="map-brief" role="button" aria-label="地域アラート一覧を開く">
-        <span class="mb-ic">${lvl.ic}</span>
+        <span class="mb-ic" style="color:${lvl.c}">${icon(lvl.ic,26)}</span>
         <div class="mb-tx">
           <b>${t('fc_label')}${LANG==='en'?': ':'：'}<span style="color:${lvl.c}">${t('fc_'+lvl.k)}</span> <span style="color:var(--gray);font-weight:600">${lvl.score}/100</span></b>
-          <span>📢 ${topTitle}${restTx}</span>
+          <span>${icon('megaphone',13)} ${topTitle}${restTx}</span>
         </div>
         <div class="row-arr">›</div>
       </div>
@@ -4899,9 +4962,9 @@ function renderMapOverlay(){
   const tools = document.getElementById('map-tools');
   if(tools){
     tools.innerHTML = `
-      <button class="map-tool${heatOn?' on':''}" id="pill-heat">${t('ov_heat')}</button>
-      <button class="map-tool" id="pill-stats">${t('ov_stats')}</button>
-      <button class="map-tool${tlPlaying?' on':''}" id="pill-timelapse">🎬 ${LANG==='en'?'Timeline':'推移'}</button>`;
+      <button class="map-tool${heatOn?' on':''}" id="pill-heat">${icon('flame',13)} ${t('ov_heat')}</button>
+      <button class="map-tool" id="pill-stats">${icon('chart',13)} ${t('ov_stats')}</button>
+      <button class="map-tool${tlPlaying?' on':''}" id="pill-timelapse">${icon('film',13)} ${LANG==='en'?'Timeline':'推移'}</button>`;
     document.getElementById('pill-heat').onclick = toggleHeat;
     document.getElementById('pill-stats').onclick = openAreaSheet;
     document.getElementById('pill-timelapse').onclick = toggleTimelapse;
