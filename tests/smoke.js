@@ -78,6 +78,18 @@ function check(name, ok, detail) {
   await page.evaluate(() => document.querySelector('.tab[data-view="home"]').click());
   await page.waitForTimeout(300);
 
+  // 1c. 端末フレームがスクロールでずれない（入力欄フォーカスで画面全体が上にずれる退行の検知）
+  await page.evaluate(() => { document.querySelector('.phone').scrollTop = 400; });  // ブラウザの自動スクロールを模す
+  await page.waitForTimeout(200);                                                    // scroll ハンドラは非同期に走る
+  const frame = await page.evaluate(() => {
+    const ph = document.querySelector('.phone');
+    const screenTop = Math.round(document.getElementById('screen').getBoundingClientRect().top);
+    const tabTop = Math.round(document.querySelector('.tabbar').getBoundingClientRect().top);
+    return { scrollTop: ph.scrollTop, screenTop, tabTop, phoneH: Math.round(ph.getBoundingClientRect().height) };
+  });
+  check('端末フレームがずれない', frame.scrollTop === 0 && frame.screenTop >= 0 && frame.tabTop < frame.phoneH,
+    `scrollTop:${frame.scrollTop} screen@${frame.screenTop} tabbar@${frame.tabTop}`);
+
   // 2. 警戒度スケールの全画面一致（home badge / map brief / HQ / area sheet）
   const scale = await page.evaluate(() => {
     const s = forecastLevel().score;
