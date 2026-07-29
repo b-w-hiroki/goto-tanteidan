@@ -332,7 +332,7 @@
     animation: lvshow 3.2s forwards; pointer-events: none;
   }
   @keyframes lvshow { 0%{opacity:0} 8%{opacity:1} 75%{opacity:1} 100%{opacity:0} }
-  .levelup .lv-big { font-size: 80px; animation: lvbounce .5s .25s ease-out both; margin-bottom: 8px; }
+  .levelup .lv-big { color: var(--gold); animation: lvbounce .5s .25s ease-out both; margin-bottom: 12px; line-height: 0; }
   @keyframes lvbounce { from{transform:scale(0)} 80%{transform:scale(1.15)} to{transform:scale(1)} }
   .levelup h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: var(--gold); }
   .levelup .lv-sub { font-size: 14px; color: #C8B898; line-height: 1.7; }
@@ -360,7 +360,7 @@
     align-items: center; justify-content: center; padding: 40px 28px;
     text-align: center; transition: transform .35s ease;
   }
-  .ob-icon { font-size: 80px; margin-bottom: 22px; line-height: 1; }
+  .ob-icon { color: var(--red); margin-bottom: 26px; line-height: 0; }
   .ob-title { font-size: 22px; font-weight: 800; line-height: 1.35; margin-bottom: 14px; }
   .ob-desc { font-size: 14px; color: #C8B898; line-height: 1.75; }
   .ob-feats { display: flex; gap: 10px; margin-top: 26px; }
@@ -571,7 +571,7 @@
     text-align: center; padding: 28px; gap: 6px;
   }
   .patrol-done.show { display: flex; animation: fade .3s; }
-  .patrol-done .pd-ic { font-size: 60px; animation: pop .5s; }
+  .patrol-done .pd-ic { color: var(--gold); animation: pop .5s; line-height: 0; margin-bottom: 4px; }
   .patrol-done h3 { font-size: 22px; font-weight: 800; }
   .patrol-done .pd-stats { display: flex; gap: 22px; margin: 14px 0 6px; }
   .patrol-done .pd-stat b { display: block; font-size: 26px; font-weight: 800; color: var(--ink); }
@@ -1343,7 +1343,7 @@
     animation: ciShow 3.2s forwards; pointer-events: none;
   }
   @keyframes ciShow { 0%{opacity:0} 8%{opacity:1} 72%{opacity:1} 100%{opacity:0} }
-  .ci-flame { font-size: 70px; animation: pop .5s .25s ease-out both; margin-bottom: 4px; line-height: 1; }
+  .ci-flame { color: var(--gold); animation: pop .5s .25s ease-out both; margin-bottom: 6px; line-height: 0; }
   .ci-streak { font-size: 54px; font-weight: 800; color: var(--gold); line-height: 1.05; margin-bottom: 2px; }
   .ci-streak-lbl { font-size: 13px; color: #C8B898; margin-bottom: 14px; }
   .ci-pts {
@@ -1744,7 +1744,7 @@
             <div class="name" id="home-name">ユウキ さん</div>
           </div>
           <div class="hero-right">
-            <div class="ptrow"><span class="pt" id="home-pt">2,690</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
+            <div class="ptrow"><span class="pt" id="home-pt">2,687</span><span class="ptlbl" data-i18n="pts_label">捜査ポイント</span></div>
             <div class="fc-badge" id="fc-badge" role="button" aria-label="警戒度とアラートをマップで確認" onclick="event.stopPropagation();switchView('map')"></div>
           </div>
         </div>
@@ -2164,7 +2164,9 @@ const LABELS = {
   '経年劣化の汚れ':'Age-related stains', 'チョークの落書き':'Chalk graffiti', '落書き・自然な汚れ':'Graffiti / natural stains',
   'メーターの矢印':'Meter arrow', 'ガスメーターの数字':'Number on the gas meter', '玄関枠の小さな点':'Small dot on the door frame',
 };
-const NAMES = { 'タカシ':'Takashi','ミク':'Miku','ソウタ':'Sota','ケン':'Ken','アヤ':'Aya','リナ':'Rina','ハナ':'Hana','ユウキ':'Yuki' };
+// 実際の名簿は表記の形がばらける（ひらがな・カタカナ・漢字・英数字・通り名）。
+// 全員がカタカナ2〜3文字だと、それだけで自動生成された一覧に見える。
+const NAMES = { 'はるき':'Haruki','ミク':'Miku','山下':'Yamashita','あや':'Aya','夜回り':'Yomawari','ユウキ':'Yuki' };
 function txLabel(s){ return LANG==='en' ? (LABELS[s]||s) : s; }
 function txName(s){ if(LANG!=='en') return s; for(const k in NAMES) s = s.split(k).join(NAMES[k]); return s.replace('（あなた）',' (You)'); }
 function txVerdict(v){ if(LANG!=='en') return v; return v==='マーキング濃厚'?'Marking likely':v==='要確認'?'Needs check':v==='偶然と判定'?'Coincidence':v; }
@@ -2181,7 +2183,7 @@ function freqDotsHtml(f){
 }
 
 // ───────────────────────────── DUMMY DATA ─────────────────────────────
-const STATE = { points: 2690, posts: 38, unread: 0, streak: 5,
+const STATE = { points: 2687, posts: 38, unread: 0, streak: 5,
   myPosts: 0, dangerFound: 0, shares: 0, earned: 0, resolved: 0, patrols: 0, patrolKm: 0, lastCheckin: '', history: {}, checklist: { date:'', done:{} }, camCombo: 0,
   // 手帳コレクション: 自分が投稿した記号（mark文字 → true）。
   // 初期プロフィール（38投稿のベテラン）と辻褄が合うよう、主要4種は発見済みで開始
@@ -2220,11 +2222,11 @@ const AVATARS = ['🕵️','🦊','🐱','🐼','🐰','🐻','🦉','🐯','�
 
 // 探偵団（チーム）。pt は基礎値で、自分の所属チームには自分の貢献(STATE.earned)を加算して表示
 const TEAMS = [
-  { id:'shinjuku', name:'新宿パトロール隊',   name_en:'Shinjuku Patrol',     emoji:'🦉', members:156, pt:52100 },
-  { id:'shibuya',  name:'渋谷探偵団',         name_en:'Shibuya Detectives',  emoji:'🦊', members:128, pt:46200 },
-  { id:'setagaya', name:'世田谷見守り隊',     name_en:'Setagaya Watch',      emoji:'🐻', members:142, pt:45300 },
-  { id:'minato',   name:'港区ガーディアン',   name_en:'Minato Guardians',    emoji:'🐯', members:87,  pt:41900 },
-  { id:'meguro',   name:'目黒セーフティ',     name_en:'Meguro Safety',       emoji:'🐱', members:98,  pt:38400 },
+  { id:'shinjuku', name:'新宿パトロール隊',   name_en:'Shinjuku Patrol',     emoji:'🦉', members:156, pt:52184 },
+  { id:'shibuya',  name:'渋谷探偵団',         name_en:'Shibuya Detectives',  emoji:'🦊', members:128, pt:46037 },
+  { id:'setagaya', name:'世田谷見守り隊',     name_en:'Setagaya Watch',      emoji:'🐻', members:142, pt:45412 },
+  { id:'minato',   name:'港区ガーディアン',   name_en:'Minato Guardians',    emoji:'🐯', members:87,  pt:41776 },
+  { id:'meguro',   name:'目黒セーフティ',     name_en:'Meguro Safety',       emoji:'🐱', members:98,  pt:38509 },
 ];
 function teamDisplayPt(t){ return t.pt + (t.id===PROFILE.team ? STATE.earned : 0); }
 function myTeam(){ return TEAMS.find(t=>t.id===PROFILE.team) || TEAMS[1]; }
@@ -2284,30 +2286,30 @@ const QUIZ = { date:'', answered:false, correct:false, markIdx:0 };
 let ONBOARDED = false;
 
 const MARKINGS = [
-  { lat: 35.6595, lng: 139.7005, type: 'danger', label: 'インターホン側面の傷', mark: '⚡', user: 'タカシ', ago: '12分前', verdict: 'マーキング濃厚' },
-  { lat: 35.6580, lng: 139.7020, type: 'danger', label: '郵便受け裏の記号', mark: '✕', user: 'ミク', ago: '40分前', verdict: 'マーキング濃厚' },
-  { lat: 35.6610, lng: 139.6985, type: 'warn', label: '表札周りのシール', mark: '●', user: 'ケン', ago: '1時間前', verdict: '要確認' },
-  { lat: 35.6570, lng: 139.7040, type: 'danger', label: 'メーターボックスの矢印', mark: '→', user: 'アヤ', ago: '2時間前', verdict: 'マーキング濃厚' },
-  { lat: 35.6625, lng: 139.7015, type: 'warn', label: '玄関枠の小さな点', mark: '∴', user: 'ユウキ', ago: '3時間前', verdict: '要確認' },
-  { lat: 35.6555, lng: 139.6995, type: 'safe', label: '誤検知（落書き）', mark: '○', user: 'リナ', ago: '昨日', verdict: '偶然と判定' },
-  { lat: 35.6600, lng: 139.7055, type: 'danger', label: 'ベランダ柵のテープ', mark: 'M', user: 'ソウタ', ago: '昨日', verdict: 'マーキング濃厚' },
-  { lat: 35.6635, lng: 139.6970, type: 'warn', label: 'ガスメーターの数字', mark: '7', user: 'ハナ', ago: '昨日', verdict: '要確認' },
+  { lat: 35.6595, lng: 139.7005, type: 'danger', label: 'インターホン側面の傷', mark: '⚡', user: 'はるき', ago: '7分前', verdict: 'マーキング濃厚' },
+  { lat: 35.6580, lng: 139.7020, type: 'danger', label: '郵便受け裏の記号', mark: '✕', user: 'ミク', ago: '23分前', verdict: 'マーキング濃厚' },
+  { lat: 35.6610, lng: 139.6985, type: 'warn', label: '表札周りのシール', mark: '●', user: 'ken_1984', ago: '1時間前', verdict: '要確認' },
+  { lat: 35.6570, lng: 139.7040, type: 'danger', label: 'メーターボックスの矢印', mark: '→', user: 'あや', ago: '2時間前', verdict: 'マーキング濃厚' },
+  { lat: 35.6625, lng: 139.7015, type: 'warn', label: '玄関枠の小さな点', mark: '∴', user: 'ユウキ', ago: '4時間前', verdict: '要確認' },
+  { lat: 35.6555, lng: 139.6995, type: 'safe', label: '誤検知（落書き）', mark: '○', user: '夜回り', ago: '昨日', verdict: '偶然と判定' },
+  { lat: 35.6600, lng: 139.7055, type: 'danger', label: 'ベランダ柵のテープ', mark: 'M', user: '山下', ago: '昨日', verdict: 'マーキング濃厚' },
+  { lat: 35.6635, lng: 139.6970, type: 'warn', label: 'ガスメーターの数字', mark: '7', user: 'hana', ago: '昨日', verdict: '要確認' },
 ];
 
 const FEED = [
-  { mark:'⚡', bg:'rgba(230,57,70,.2)', who:'タカシ', act:'インターホン側面を投稿', act_en:'posted a scratch on intercom side', ago:'12分前', chip:['ok','濃厚'],
+  { mark:'⚡', bg:'rgba(230,57,70,.2)', who:'はるき', act:'インターホン側面を投稿', act_en:'posted a scratch on intercom side', ago:'7分前', chip:['ok','濃厚'],
     label:'インターホン側面の傷', verdict:'マーキング濃厚', conf:92,
     aiComment:'表面の細い線刻は空き巣グループが住居の特徴を記録する「ターゲットマーク」と判定。電源系への干渉を示唆する可能性があります。',
     aiComment_en:'The thin scoring is judged a "target mark" used by burglary groups to record a home\'s features. It may suggest tampering with the power system.' },
-  { mark:'→', bg:'rgba(230,57,70,.2)', who:'アヤ', act:'メーターの矢印を投稿', act_en:'posted an arrow on the meter', ago:'2時間前', chip:['ok','濃厚'],
+  { mark:'→', bg:'rgba(230,57,70,.2)', who:'あや', act:'メーターの矢印を投稿', act_en:'posted an arrow on the meter', ago:'2時間前', chip:['ok','濃厚'],
     label:'メーターボックスの矢印', verdict:'マーキング濃厚', conf:89,
     aiComment:'侵入経路または逃走ルートを示す矢印と判定。近隣に類似記号がないか広域調査を推奨します。',
     aiComment_en:'Judged an arrow indicating an entry or escape route. A wider survey for similar nearby symbols is recommended.' },
-  { mark:'●', bg:'rgba(244,162,97,.2)', who:'ケン', act:'表札のシールを投稿', act_en:'posted a sticker by the nameplate', ago:'1時間前', chip:['warn','要確認'],
+  { mark:'●', bg:'rgba(244,162,97,.2)', who:'ken_1984', act:'表札のシールを投稿', act_en:'posted a sticker by the nameplate', ago:'1時間前', chip:['warn','要確認'],
     label:'表札周りのシール', verdict:'要確認', conf:64,
     aiComment:'ターゲットを示すドット状記号の可能性があります。単体では確定できないため経過観察を推奨。',
     aiComment_en:'Possibly a dot-style symbol marking a target. It cannot be confirmed alone, so monitoring is advised.' },
-  { mark:'○', bg:'rgba(100,116,139,.2)', who:'リナ', act:'落書きを投稿', act_en:'posted graffiti', ago:'昨日', chip:['ng','偶然'],
+  { mark:'○', bg:'rgba(100,116,139,.2)', who:'夜回り', act:'落書きを投稿', act_en:'posted graffiti', ago:'昨日', chip:['ng','偶然'],
     label:'誤検知（落書き）', verdict:'偶然と判定', conf:83,
     aiComment:'経年劣化によるシミまたはチョークの落書きと判定。マーキングの特徴的なパターンは検出されませんでした。',
     aiComment_en:'Judged as age-related stains or chalk graffiti. No characteristic marking pattern was detected.' },
@@ -2353,26 +2355,26 @@ const MARK_CATALOG = [
 
 const RANKS = {
   week: [
-    { av:'🦊', bg:'rgba(244,162,97,.25)', name:'タカシ', area:'渋谷・34件', pt:1820 },
-    { av:'🐱', bg:'rgba(69,123,157,.25)', name:'ミク', area:'渋谷・29件', pt:1640 },
-    { av:'🐼', bg:'rgba(45,106,79,.25)', name:'ソウタ', area:'渋谷・25件', pt:1390 },
-    { av:'🕵️', bg:'rgba(230,57,70,.25)', name:'ユウキ（あなた）', area:'渋谷・21件', pt:1180, me:true },
-    { av:'🐰', bg:'rgba(69,123,157,.25)', name:'アヤ', area:'渋谷・18件', pt:990 },
-    { av:'🐻', bg:'rgba(244,162,97,.25)', name:'ケン', area:'渋谷・15件', pt:870 },
+    { av:'🦊', bg:'rgba(244,162,97,.25)', name:'はるき', area:'渋谷・34件', pt:1847 },
+    { av:'🐱', bg:'rgba(69,123,157,.25)', name:'ミク', area:'渋谷・29件', pt:1663 },
+    { av:'🐼', bg:'rgba(45,106,79,.25)', name:'山下', area:'渋谷・25件', pt:1392 },
+    { av:'🕵️', bg:'rgba(230,57,70,.25)', name:'ユウキ（あなた）', area:'渋谷・21件', pt:1213, me:true },
+    { av:'🐰', bg:'rgba(69,123,157,.25)', name:'あや', area:'渋谷・18件', pt:986 },
+    { av:'🐻', bg:'rgba(244,162,97,.25)', name:'ken_1984', area:'渋谷・15件', pt:874 },
   ],
   month: [
-    { av:'🐱', bg:'rgba(69,123,157,.25)', name:'ミク', area:'渋谷・98件', pt:5420 },
-    { av:'🦊', bg:'rgba(244,162,97,.25)', name:'タカシ', area:'渋谷・91件', pt:5110 },
-    { av:'🕵️', bg:'rgba(230,57,70,.25)', name:'ユウキ（あなた）', area:'渋谷・76件', pt:4280, me:true },
-    { av:'🐼', bg:'rgba(45,106,79,.25)', name:'ソウタ', area:'渋谷・70件', pt:3960 },
-    { av:'🐻', bg:'rgba(244,162,97,.25)', name:'ケン', area:'渋谷・55件', pt:3010 },
+    { av:'🐱', bg:'rgba(69,123,157,.25)', name:'ミク', area:'渋谷・98件', pt:5463 },
+    { av:'🦊', bg:'rgba(244,162,97,.25)', name:'はるき', area:'渋谷・91件', pt:5128 },
+    { av:'🕵️', bg:'rgba(230,57,70,.25)', name:'ユウキ（あなた）', area:'渋谷・76件', pt:4291, me:true },
+    { av:'🐼', bg:'rgba(45,106,79,.25)', name:'山下', area:'渋谷・70件', pt:3947 },
+    { av:'🐻', bg:'rgba(244,162,97,.25)', name:'ken_1984', area:'渋谷・55件', pt:3024 },
   ],
   all: [
-    { av:'🦊', bg:'rgba(244,162,97,.25)', name:'タカシ', area:'渋谷・412件', pt:24800 },
-    { av:'🐱', bg:'rgba(69,123,157,.25)', name:'ミク', area:'渋谷・389件', pt:23150 },
-    { av:'🐼', bg:'rgba(45,106,79,.25)', name:'ソウタ', area:'渋谷・340件', pt:19900 },
-    { av:'🐻', bg:'rgba(244,162,97,.25)', name:'ケン', area:'渋谷・301件', pt:17600 },
-    { av:'🕵️', bg:'rgba(230,57,70,.25)', name:'ユウキ（あなた）', area:'渋谷・38件', pt:2690, me:true },
+    { av:'🦊', bg:'rgba(244,162,97,.25)', name:'はるき', area:'渋谷・412件', pt:24863 },
+    { av:'🐱', bg:'rgba(69,123,157,.25)', name:'ミク', area:'渋谷・389件', pt:23178 },
+    { av:'🐼', bg:'rgba(45,106,79,.25)', name:'山下', area:'渋谷・340件', pt:19942 },
+    { av:'🐻', bg:'rgba(244,162,97,.25)', name:'ken_1984', area:'渋谷・301件', pt:17615 },
+    { av:'🕵️', bg:'rgba(230,57,70,.25)', name:'ユウキ（あなた）', area:'渋谷・38件', pt:2687, me:true },
   ],
 };
 
@@ -2403,12 +2405,12 @@ const EMERGENCY = [
 
 // コミュニティ活動フィード（他の探偵団メンバーの最近の活動）
 const COMMUNITY_ACTIVITY = [
-  { type:'patrol',  user:'タカシ',  user_en:'Takashi', icon:'route', desc:'代々木公園周辺パトロール完了',     desc_en:'Completed patrol around Yoyogi Park',        pts:173, ago:'8分前'  },
-  { type:'resolve', user:'ミク',    user_en:'Miku',    icon:'checkCircle', desc:'マーキングの対処済み報告',          desc_en:'Reported a marking as resolved',              pts:20,  ago:'15分前' },
-  { type:'post',    user:'ソウタ',  user_en:'Sota',    icon:'camera', desc:'南平台で要確認の記号を投稿',        desc_en:'Posted a check-needed marking in Minamidai',  pts:30,  ago:'22分前' },
-  { type:'patrol',  user:'アヤ',    user_en:'Aya',     icon:'route', desc:'松濤エリアパトロール完了',           desc_en:'Completed patrol in Shouto area',             pts:128, ago:'1時間前' },
-  { type:'post',    user:'ケン',    user_en:'Ken',     icon:'camera', desc:'渋谷駅付近で濃厚マーキング検出',    desc_en:'Detected strong marking near Shibuya Sta.',   pts:50,  ago:'2時間前' },
-  { type:'resolve', user:'ハナ',    user_en:'Hana',    icon:'checkCircle', desc:'対処済み報告が確認された',          desc_en:'Resolve report confirmed',                    pts:20,  ago:'3時間前' },
+  { type:'patrol',  user:'はるき',  user_en:'Haruki', icon:'route', desc:'代々木公園周辺パトロール完了',     desc_en:'Completed patrol around Yoyogi Park',        pts:173, ago:'6分前'  },
+  { type:'resolve', user:'ミク',    user_en:'Miku',    icon:'checkCircle', desc:'マーキングの対処済み報告',          desc_en:'Reported a marking as resolved',              pts:20,  ago:'19分前' },
+  { type:'post',    user:'山下',  user_en:'Yamashita',    icon:'camera', desc:'南平台で要確認の記号を投稿',        desc_en:'Posted a check-needed marking in Minamidai',  pts:30,  ago:'34分前' },
+  { type:'patrol',  user:'あや',    user_en:'Aya',     icon:'route', desc:'松濤エリアパトロール完了',           desc_en:'Completed patrol in Shouto area',             pts:128, ago:'1時間前' },
+  { type:'post',    user:'ken_1984',    user_en:'ken_1984',     icon:'camera', desc:'渋谷駅付近で濃厚マーキング検出',    desc_en:'Detected strong marking near Shibuya Sta.',   pts:50,  ago:'2時間前' },
+  { type:'resolve', user:'hana',    user_en:'hana',    icon:'checkCircle', desc:'対処済み報告が確認された',          desc_en:'Resolve report confirmed',                    pts:20,  ago:'5時間前' },
 ];
 
 // 地域アラート（自治体・警察・自警団からのお知らせ）
@@ -4640,7 +4642,7 @@ function renderSetupStep(step){
       <div class="setup-body" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:56px">
         <span class="setup-av-ic">${_setupAv}</span>
         <input class="setup-name-inp" id="su-name" type="text" maxlength="12"
-          placeholder="${LANG==='en'?'e.g. Takashi':'例：タカシ'}" value="${_setupName}"
+          placeholder="${LANG==='en'?'e.g. Haruki':'例：はるき'}" value="${_setupName}"
           autocomplete="off" inputmode="text" />
         <div class="setup-name-hint">${LANG==='en'?'Up to 12 characters':'最大12文字'}</div>
       </div>
