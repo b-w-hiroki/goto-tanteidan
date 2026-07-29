@@ -1727,7 +1727,7 @@
     <!-- HOME -->
     <section class="view active" id="view-home">
       <div class="hdr">
-        <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
+        <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">昼間は記号がいちばん見つけやすい</div></div>
         <div style="display:flex;gap:4px;align-items:center">
           <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く"><svg class="ic" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></button>
           <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く"><svg class="ic" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="info-badge" id="info-badge"></span></button>
@@ -1844,12 +1844,12 @@
       </div>
       <div class="ob-slide" style="transform:translateX(100%)">
         <div class="ob-icon"><svg class="ic" viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-        <div class="ob-title" data-i18n="ob2t">撮影して投稿しよう</div>
+        <div class="ob-title" data-i18n="ob2t">見つけたら、その場で撮る</div>
         <div class="ob-desc" data-i18n="ob2d">中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。</div>
       </div>
       <div class="ob-slide" style="transform:translateX(200%)">
         <div class="ob-icon"><svg class="ic" viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M1.5 6.2v15.3l7-3.7 7 3.7 7-3.7V2.5l-7 3.7-7-3.7-7 3.7z"/><path d="M8.5 2.5v15.3M15.5 6.2v15.3"/></svg></div>
-        <div class="ob-title" data-i18n="ob3t">地図で街を守ろう</div>
+        <div class="ob-title" data-i18n="ob3t">投稿が地図を育てる</div>
         <div class="ob-desc" data-i18n="ob3d">投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。</div>
       </div>
     </div>
@@ -1967,9 +1967,9 @@ const I18N = {
     pitch_f2t:'AIが自動判定', pitch_f2d:'マーキングか偶然かをAIが判別しマップへ反映',
     pitch_f3t:'ポイント＆ランキング', pitch_f3d:'貢献に応じて捜査ポイント・特典・地域ランク',
     pitch_note:'※ これは概念実証用のプロトタイプです。地図・投稿・AI判定・ポイントはすべてダミーデータで動作します。実際のタブを操作してみてください →',
-    home_greet:'こんにちは、探偵', home_sub:'今日も街の安全を守ろう',
-    greet_morning:'おはよう、探偵', sub_morning:'今日も街の安全を守ろう',
-    greet_day:'こんにちは、探偵', sub_day:'今日も街の安全を守ろう',
+    home_greet:'こんにちは、探偵', home_sub:'昼間は記号がいちばん見つけやすい',
+    greet_morning:'おはよう、探偵', sub_morning:'出かける前に、玄関まわりの確認を',
+    greet_day:'こんにちは、探偵', sub_day:'昼間は記号がいちばん見つけやすい',
     greet_evening:'お疲れ様、探偵', sub_evening:'今日も一日お疲れ様でした',
     greet_night:'夜もパトロール中', sub_night:'深夜もパトロールありがとう',
     pts_label:'捜査ポイント', perk_hint:'特典を見る ›', name_suffix:' さん',
@@ -1991,8 +1991,8 @@ const I18N = {
     book_freq:'出現頻度', book_ex:'例',
     tab_home:'ホーム', tab_map:'マップ', tab_rank:'ランク', tab_book:'手帳',
     ob1t:'GO-TO 探偵団へ<br>ようこそ', ob1d:'市民が「探偵」となり、街の不審なマーキングを発見・投稿。AIが判定し、防犯マップをリアルタイムに育てるアプリです。',
-    ob2t:'撮影して投稿しよう', ob2d:'中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。',
-    ob3t:'地図で街を守ろう', ob3d:'投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。',
+    ob2t:'見つけたら、その場で撮る', ob2d:'中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。',
+    ob3t:'投稿が地図を育てる', ob3d:'投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。',
     ob_next:'次へ', ob_start:'はじめる',
     ob_f1:'見つけて撮影', ob_f2:'AIが自動判定', ob_f3:'マップが育つ',
     next_rank:'次のランク', to_next:'まで あと', pt:'pt', max_rank:'最高ランク',
@@ -2060,9 +2060,9 @@ const I18N = {
     pitch_f2t:'AI Auto-Judges', pitch_f2d:'AI tells markings from coincidence and reflects them on the map',
     pitch_f3t:'Points & Ranking', pitch_f3d:'Earn investigation points, perks and area ranks for contributing',
     pitch_note:'* This is a proof-of-concept prototype. The map, posts, AI judgments and points all run on dummy data. Try operating the tabs →',
-    home_greet:'Hello, Detective', home_sub:"Let's keep the town safe today",
-    greet_morning:'Good morning, Detective', sub_morning:"Let's keep the town safe today",
-    greet_day:'Hello, Detective', sub_day:"Let's keep the town safe today",
+    home_greet:'Hello, Detective', home_sub:'Daylight is when markings show up best',
+    greet_morning:'Good morning, Detective', sub_morning:'Check around your entrance before you head out',
+    greet_day:'Hello, Detective', sub_day:'Daylight is when markings show up best',
     greet_evening:'Good evening, Detective', sub_evening:'Good work today',
     greet_night:'Night patrol active', sub_night:'Thanks for patrolling tonight',
     pts_label:'investigation pts', perk_hint:'See perks ›', name_suffix:'',
@@ -2084,8 +2084,8 @@ const I18N = {
     book_freq:'Frequency', book_ex:'e.g.',
     tab_home:'Home', tab_map:'Map', tab_rank:'Rank', tab_book:'Book',
     ob1t:'Welcome to<br>GO-TO Detectives', ob1d:'Citizens become "detectives" who find and post suspicious street markings. AI judges them and grows the crime-prevention map in real time.',
-    ob2t:'Shoot and Post', ob2d:'Tap the center camera button to shoot. AI auto-judges the marking and you earn investigation points.',
-    ob3t:'Protect the Town on the Map', ob3d:'The more posts, the richer the map. Grasp danger spots via the heatmap and stats.',
+    ob2t:'Shoot it where you find it', ob2d:'Tap the center camera button to shoot. AI auto-judges the marking and you earn investigation points.',
+    ob3t:'Your posts grow the map', ob3d:'The more posts, the richer the map. Grasp danger spots via the heatmap and stats.',
     ob_next:'Next', ob_start:'Start',
     ob_f1:'Spot & shoot', ob_f2:'AI verdict', ob_f3:'Map grows',
     next_rank:'Next rank', to_next:'— left:', pt:'pt', max_rank:'Max rank',
@@ -2838,7 +2838,7 @@ function renderHQBriefing(){
       desc:LANG==='en'?'3 markings confirmed — early patrol recommended':'マーキング3件確認済み・早期パトロール推奨',
       fn:`switchView('map')` },
     { ic:'camera', title:LANG==='en'?'Post a marking':'マーキングを投稿',
-      desc:LANG==='en'?'Help keep the map up to date':'今日の情報でマップを更新しよう',
+      desc:LANG==='en'?"Today's find stays on the map":'今日の一件が地図に残ります',
       fn:`switchView('cam')` },
     { ic:'clipboard', title:LANG==='en'?'Daily missions':'デイリーミッション',
       desc:LANG==='en'?`${mDone}/${mTotal} done`:`${mDone}/${mTotal}件完了`,
