@@ -1334,6 +1334,67 @@
   .hero.frame-violet  { border-color: #8B5CF6; box-shadow: 0 2px 14px rgba(139,92,246,.26); }
   .hero.frame-legend  { border-color: #FFD700; box-shadow: 0 2px 16px rgba(255,215,0,.34); }
 
+  .mp-route { display: flex; gap: 8px; margin-bottom: 14px; }
+  .mp-route .panel-btn { margin: 0; }
+  .panel-btn.danger { color: #f19aa2; border-color: rgba(230,57,70,.35); flex-shrink: 0; }
+
+  /* ── 投稿のライフサイクル ── */
+  .lifecycle { margin: 14px 0 4px; }
+  .lc-step { display: flex; gap: 11px; position: relative; padding-bottom: 14px; }
+  .lc-step.last { padding-bottom: 2px; }
+  .lc-step::before {
+    content: ''; position: absolute; left: 8px; top: 19px; bottom: 0;
+    width: 2px; background: var(--line);
+  }
+  .lc-step.last::before { display: none; }
+  .lc-step.done::before { background: rgba(110,231,168,.4); }
+  .lc-dot {
+    width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    border: 2px solid var(--line); background: var(--night);
+    display: flex; align-items: center; justify-content: center; color: #6ee7a8;
+  }
+  .lc-step.done .lc-dot { border-color: #6ee7a8; background: rgba(45,106,79,.35); }
+  .lc-tx b { display: block; font-size: 12.5px; font-weight: 700; }
+  .lc-step:not(.done) .lc-tx b { color: var(--gray); font-weight: 600; }
+  .lc-tx span { display: block; font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+  /* ── 通学路（マイルート）── */
+  .route-card {
+    background: var(--night2); border: 1px solid var(--line); border-radius: 14px;
+    padding: 12px 14px; margin-bottom: 12px; cursor: pointer;
+  }
+  .route-card.empty { border-style: dashed; }
+  .route-card .rc-top { display: flex; align-items: center; gap: 8px; }
+  .route-card .rc-top b { font-size: 13px; flex: 1; }
+  .route-card .rc-top .rc-ic { color: #7DD3FC; display: flex; }
+  .route-card .rc-arr { color: var(--gray); font-size: 16px; }
+  .route-card .rc-body { font-size: 12px; color: var(--gray); line-height: 1.6; margin-top: 5px; }
+  .route-card .rc-counts { display: flex; gap: 14px; margin-top: 9px; }
+  .route-card .rc-count { display: flex; align-items: baseline; gap: 5px; font-size: 12px; color: var(--gray); }
+  .route-card .rc-count b { font-size: 19px; font-weight: 800; }
+  .route-card .rc-count .dot { width: 8px; height: 8px; border-radius: 50%; align-self: center; }
+  .route-card .rc-ok { font-size: 12px; color: #6ee7a8; margin-top: 8px; display: flex; align-items: center; gap: 6px; }
+  .route-pin {
+    width: 26px; height: 26px; border-radius: 50%; background: #0E7490;
+    border: 2px solid #7DD3FC; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.5);
+  }
+  .route-pin.school { background: #7DD3FC; color: #06283a; }
+  .route-pick-bar {
+    position: absolute; left: 12px; right: 12px; bottom: 136px; z-index: 1050;
+    background: rgba(13,58,74,.96); border: 1px solid #7DD3FC; border-radius: 12px;
+    padding: 10px 12px; display: none; align-items: center; gap: 10px;
+    font-size: 12px; font-weight: 700; color: #DFF3FB;
+  }
+  .route-pick-bar.show { display: flex; }
+  .route-pick-bar span { flex: 1; display: flex; align-items: center; gap: 7px; }
+  .route-pick-bar .rpb-cancel {
+    background: none; border: 1px solid rgba(125,211,252,.5); color: #DFF3FB;
+    border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+  }
+
   /* ── デイリーチェックイン ── */
   .ci-overlay {
     position: absolute; inset: 0; z-index: 250;
@@ -1727,7 +1788,7 @@
     <!-- HOME -->
     <section class="view active" id="view-home">
       <div class="hdr">
-        <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">今日も街の安全を守ろう</div></div>
+        <div><h2 data-i18n="home_greet">こんにちは、探偵</h2><div class="sub" data-i18n="home_sub">昼間は記号がいちばん見つけやすい</div></div>
         <div style="display:flex;gap:4px;align-items:center">
           <button class="hq-btn" onclick="openHQBriefing()" aria-label="捜査本部を開く"><svg class="ic" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></button>
           <button class="info-btn" id="info-btn" onclick="openInfoView()" aria-label="最新情報を開く"><svg class="ic" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="info-badge" id="info-badge"></span></button>
@@ -1760,6 +1821,8 @@
       </div>
 
       <div class="lv-nudge" id="lv-nudge" style="display:none" onclick="openLevelSheet()" tabindex="0" role="button" aria-label="レベルアップ詳細"></div>
+
+      <div class="route-card" id="route-card"></div>
 
       <div class="sec-title" data-i18n="sec_feed">みんなの捜査ログ</div>
       <div class="feed-filter" id="feed-filter">
@@ -1844,12 +1907,12 @@
       </div>
       <div class="ob-slide" style="transform:translateX(100%)">
         <div class="ob-icon"><svg class="ic" viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-        <div class="ob-title" data-i18n="ob2t">撮影して投稿しよう</div>
+        <div class="ob-title" data-i18n="ob2t">見つけたら、その場で撮る</div>
         <div class="ob-desc" data-i18n="ob2d">中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。</div>
       </div>
       <div class="ob-slide" style="transform:translateX(200%)">
         <div class="ob-icon"><svg class="ic" viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M1.5 6.2v15.3l7-3.7 7 3.7 7-3.7V2.5l-7 3.7-7-3.7-7 3.7z"/><path d="M8.5 2.5v15.3M15.5 6.2v15.3"/></svg></div>
-        <div class="ob-title" data-i18n="ob3t">地図で街を守ろう</div>
+        <div class="ob-title" data-i18n="ob3t">投稿が地図を育てる</div>
         <div class="ob-desc" data-i18n="ob3d">投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。</div>
       </div>
     </div>
@@ -1951,11 +2014,36 @@ const ICONS = {
   battery:  '<rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11.5v2"/><path d="M5 11.5h8" stroke-width="3"/>',
   arrowRight:'<path d="M4.5 12h15M13 5.5l6.5 6.5-6.5 6.5"/>',
   lock:     '<rect x="4" y="11" width="16" height="10.5" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  home:     '<path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.6V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.6"/>',
+  flag:     '<path d="M5.5 21.5V3M5.5 3.5h11l-2.2 4 2.2 4h-11"/>',
 };
 function icon(name, size = 16, extra = ''){
   const body = ICONS[name];
   if(!body) return '';
   return `<svg class="ic" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true"${extra?` style="${extra}"`:''}>${body}</svg>`;
+}
+
+// ── ホーム画面への追加（PWA）──
+// Service Worker は前からあるのに、入れてもらう導線がなかった。
+// ブラウザがインストール可能と判断したときだけボタンを出す。
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  installPrompt = e;
+  const btn = document.getElementById('mp-install');
+  if(btn) btn.style.display = '';
+});
+window.addEventListener('appinstalled', () => { installPrompt = null; });
+function isStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+}
+async function promptInstall(){
+  if(!installPrompt) return;
+  installPrompt.prompt();
+  const { outcome } = await installPrompt.userChoice;
+  if(outcome === 'accepted') installPrompt = null;
+  const btn = document.getElementById('mp-install');
+  if(btn && !installPrompt) btn.style.display = 'none';
 }
 
 // ───────────────────────────── i18n ─────────────────────────────
@@ -1967,9 +2055,9 @@ const I18N = {
     pitch_f2t:'AIが自動判定', pitch_f2d:'マーキングか偶然かをAIが判別しマップへ反映',
     pitch_f3t:'ポイント＆ランキング', pitch_f3d:'貢献に応じて捜査ポイント・特典・地域ランク',
     pitch_note:'※ これは概念実証用のプロトタイプです。地図・投稿・AI判定・ポイントはすべてダミーデータで動作します。実際のタブを操作してみてください →',
-    home_greet:'こんにちは、探偵', home_sub:'今日も街の安全を守ろう',
-    greet_morning:'おはよう、探偵', sub_morning:'今日も街の安全を守ろう',
-    greet_day:'こんにちは、探偵', sub_day:'今日も街の安全を守ろう',
+    home_greet:'こんにちは、探偵', home_sub:'昼間は記号がいちばん見つけやすい',
+    greet_morning:'おはよう、探偵', sub_morning:'出かける前に、玄関まわりの確認を',
+    greet_day:'こんにちは、探偵', sub_day:'昼間は記号がいちばん見つけやすい',
     greet_evening:'お疲れ様、探偵', sub_evening:'今日も一日お疲れ様でした',
     greet_night:'夜もパトロール中', sub_night:'深夜もパトロールありがとう',
     pts_label:'捜査ポイント', perk_hint:'特典を見る ›', name_suffix:' さん',
@@ -1991,8 +2079,8 @@ const I18N = {
     book_freq:'出現頻度', book_ex:'例',
     tab_home:'ホーム', tab_map:'マップ', tab_rank:'ランク', tab_book:'手帳',
     ob1t:'GO-TO 探偵団へ<br>ようこそ', ob1d:'市民が「探偵」となり、街の不審なマーキングを発見・投稿。AIが判定し、防犯マップをリアルタイムに育てるアプリです。',
-    ob2t:'撮影して投稿しよう', ob2d:'中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。',
-    ob3t:'地図で街を守ろう', ob3d:'投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。',
+    ob2t:'見つけたら、その場で撮る', ob2d:'中央のカメラボタンをタップして撮影。AIが自動でマーキングを判定し、捜査ポイントを獲得できます。',
+    ob3t:'投稿が地図を育てる', ob3d:'投稿が増えるほど防犯マップが充実。ヒートマップや統計で危険スポットを把握できます。',
     ob_next:'次へ', ob_start:'はじめる',
     ob_f1:'見つけて撮影', ob_f2:'AIが自動判定', ob_f3:'マップが育つ',
     next_rank:'次のランク', to_next:'まで あと', pt:'pt', max_rank:'最高ランク',
@@ -2024,6 +2112,12 @@ const I18N = {
     lvup_title:'レベルアップ', lvup_to:'に昇進しました',
     just_now:'たった今', posted_suffix:'を投稿', your_new_post:'あなたの新規投稿',
     map_fail:'地図の読み込みに失敗しました。<br>通信環境を確認して再読み込みしてください。',
+    mp_install:'ホーム画面に追加',
+    route_short:'通学路', route_title:'通学路の状況', route_set:'通学路を登録',
+    route_empty:'自宅と学校・職場を登録すると、その道沿いだけを表示します',
+    route_pick1:'地図で自宅の位置をタップ', route_pick2:'次に学校・職場の位置をタップ',
+    route_cancel:'やめる', route_clean:'この道沿いに未対処はありません',
+    route_danger:'濃厚', route_warn:'要確認', route_edit:'設定しなおす', route_clear:'登録を削除',
     fc_label:'今日の地域の警戒度', fc_safe:'落ち着いています', fc_caution:'やや注意', fc_alert:'警戒',
     fc_safe_msg:'目立った不審情報は少なめ。油断せずパトロールを。', fc_caution_msg:'要確認の投稿が増加中。周辺に注意を。', fc_alert_msg:'濃厚なマーキングが多発。戸締まりを厳重に。',
     quiz_btn:'今日の防犯クイズ', quiz_title:'防犯クイズ', quiz_q:'この記号の意味は？', quiz_done_today:'本日のクイズは回答済み',
@@ -2060,9 +2154,9 @@ const I18N = {
     pitch_f2t:'AI Auto-Judges', pitch_f2d:'AI tells markings from coincidence and reflects them on the map',
     pitch_f3t:'Points & Ranking', pitch_f3d:'Earn investigation points, perks and area ranks for contributing',
     pitch_note:'* This is a proof-of-concept prototype. The map, posts, AI judgments and points all run on dummy data. Try operating the tabs →',
-    home_greet:'Hello, Detective', home_sub:"Let's keep the town safe today",
-    greet_morning:'Good morning, Detective', sub_morning:"Let's keep the town safe today",
-    greet_day:'Hello, Detective', sub_day:"Let's keep the town safe today",
+    home_greet:'Hello, Detective', home_sub:'Daylight is when markings show up best',
+    greet_morning:'Good morning, Detective', sub_morning:'Check around your entrance before you head out',
+    greet_day:'Hello, Detective', sub_day:'Daylight is when markings show up best',
     greet_evening:'Good evening, Detective', sub_evening:'Good work today',
     greet_night:'Night patrol active', sub_night:'Thanks for patrolling tonight',
     pts_label:'investigation pts', perk_hint:'See perks ›', name_suffix:'',
@@ -2084,8 +2178,8 @@ const I18N = {
     book_freq:'Frequency', book_ex:'e.g.',
     tab_home:'Home', tab_map:'Map', tab_rank:'Rank', tab_book:'Book',
     ob1t:'Welcome to<br>GO-TO Detectives', ob1d:'Citizens become "detectives" who find and post suspicious street markings. AI judges them and grows the crime-prevention map in real time.',
-    ob2t:'Shoot and Post', ob2d:'Tap the center camera button to shoot. AI auto-judges the marking and you earn investigation points.',
-    ob3t:'Protect the Town on the Map', ob3d:'The more posts, the richer the map. Grasp danger spots via the heatmap and stats.',
+    ob2t:'Shoot it where you find it', ob2d:'Tap the center camera button to shoot. AI auto-judges the marking and you earn investigation points.',
+    ob3t:'Your posts grow the map', ob3d:'The more posts, the richer the map. Grasp danger spots via the heatmap and stats.',
     ob_next:'Next', ob_start:'Start',
     ob_f1:'Spot & shoot', ob_f2:'AI verdict', ob_f3:'Map grows',
     next_rank:'Next rank', to_next:'— left:', pt:'pt', max_rank:'Max rank',
@@ -2117,6 +2211,12 @@ const I18N = {
     lvup_title:'Level up', lvup_to:'',
     just_now:'just now', posted_suffix:'', your_new_post:'Your new post',
     map_fail:'Failed to load the map.<br>Check your connection and reload.',
+    mp_install:'Add to home screen',
+    route_short:'My route', route_title:'On your route', route_set:'Set your route',
+    route_empty:'Register home and school to see only what sits along that walk',
+    route_pick1:'Tap your home on the map', route_pick2:'Now tap the school or workplace',
+    route_cancel:'Cancel', route_clean:'Nothing unresolved along this route',
+    route_danger:'likely', route_warn:'to check', route_edit:'Set again', route_clear:'Remove',
     fc_label:"Today's area alert level", fc_safe:'Calm', fc_caution:'Some caution', fc_alert:'Alert',
     fc_safe_msg:'Few notable reports. Stay vigilant on patrol.', fc_caution_msg:'"Needs-check" posts are rising. Watch your surroundings.', fc_alert_msg:'Many strong markings reported. Lock up carefully.',
     quiz_btn:"Today's crime-prevention quiz", quiz_title:'Crime-Prevention Quiz', quiz_q:'What does this symbol mean?', quiz_done_today:"Today's quiz is answered",
@@ -2838,7 +2938,7 @@ function renderHQBriefing(){
       desc:LANG==='en'?'3 markings confirmed — early patrol recommended':'マーキング3件確認済み・早期パトロール推奨',
       fn:`switchView('map')` },
     { ic:'camera', title:LANG==='en'?'Post a marking':'マーキングを投稿',
-      desc:LANG==='en'?'Help keep the map up to date':'今日の情報でマップを更新しよう',
+      desc:LANG==='en'?"Today's find stays on the map":'今日の一件が地図に残ります',
       fn:`switchView('cam')` },
     { ic:'clipboard', title:LANG==='en'?'Daily missions':'デイリーミッション',
       desc:LANG==='en'?`${mDone}/${mTotal} done`:`${mDone}/${mTotal}件完了`,
@@ -3274,6 +3374,34 @@ function showStatTip(el, key){
   el._tipTimer = setTimeout(()=>tip.classList.remove('show'), 1600);
 }
 
+// 通学路カード（未登録なら誘導、登録済みならその道沿いの未対処だけを出す）
+function renderRouteCard(){
+  const el = document.getElementById('route-card');
+  if(!el) return;
+  if(!hasRoute()){
+    el.className = 'route-card empty';
+    el.innerHTML = `
+      <div class="rc-top"><span class="rc-ic">${icon('route',16)}</span><b>${t('route_set')}</b><span class="rc-arr">›</span></div>
+      <div class="rc-body">${t('route_empty')}</div>`;
+    el.onclick = startRoutePick;
+    return;
+  }
+  const st = routeStats();
+  const km = (routeLengthM()/1000).toFixed(1);
+  const body = st.total === 0
+    ? `<div class="rc-ok">${icon('checkCircle',14)} ${t('route_clean')}</div>`
+    : `<div class="rc-counts">
+         ${st.danger ? `<span class="rc-count"><span class="dot" style="background:#E63946"></span><b style="color:#E63946">${st.danger}</b>${t('route_danger')}</span>` : ''}
+         ${st.warn   ? `<span class="rc-count"><span class="dot" style="background:#F4A261"></span><b style="color:#F4A261">${st.warn}</b>${t('route_warn')}</span>` : ''}
+       </div>`;
+  el.className = 'route-card';
+  el.innerHTML = `
+    <div class="rc-top"><span class="rc-ic">${icon('route',16)}</span><b>${t('route_title')}</b>
+      <span style="font-size:11px;color:var(--gray)">${km}km</span><span class="rc-arr">›</span></div>
+    ${body}`;
+  el.onclick = () => { routeFocus = true; switchView('map'); refreshMapPins(); renderMapOverlay(); };
+}
+
 // ── 実績バッジ ──
 function checkAchievements(){
   ACHIEVEMENTS.forEach(a=>{
@@ -3372,6 +3500,7 @@ function renderHome(){
   if(greetEl) greetEl.textContent = t('greet_'+tod);
   const subEl = document.querySelector('[data-i18n="home_sub"]');
   if(subEl) subEl.textContent = t('sub_'+tod);
+  renderRouteCard();
   // レベルアップナッジ
   const nudgeEl = document.getElementById('lv-nudge');
   if(nudgeEl){
@@ -3536,6 +3665,12 @@ function openMyPage(){
       <div class="mp-achgrid">${achHtml}</div>
       <button class="panel-btn" id="mp-stats" style="margin-bottom:10px">${t('stats_btn')}</button>
       <button class="panel-btn accent" id="mp-card" style="margin-bottom:10px">${t('card_btn')}</button>
+      <div class="mp-sec">${t('route_title')}</div>
+      <div class="mp-route">
+        <button class="panel-btn" id="mp-route-edit">${icon('route',14)} ${hasRoute()?t('route_edit'):t('route_set')}</button>
+        ${hasRoute()?`<button class="panel-btn danger" id="mp-route-clear">${t('route_clear')}</button>`:''}
+      </div>
+      <button class="panel-btn" id="mp-install" style="margin-bottom:10px;display:${installPrompt&&!isStandalone()?'':'none'}">${icon('trendUp',14)} ${t('mp_install')}</button>
       <button class="panel-btn" id="mp-demo" style="margin-bottom:10px">${icon('film',14)} ${LANG==='en'?'Demo mode (auto-play)':'デモモード（自動再生）'}</button>
       <button class="mp-reset" id="mp-reset">${t('mp_reset')}</button>
     </div>`;
@@ -3591,6 +3726,10 @@ function openMyPage(){
   });
   document.getElementById('mp-stats').onclick = () => { sheet.classList.remove('open'); openStats(); };
   document.getElementById('mp-card').onclick = () => { sheet.classList.remove('open'); openStatsCard(); };
+  document.getElementById('mp-route-edit').onclick = () => { sheet.classList.remove('open'); startRoutePick(); };
+  const rc = document.getElementById('mp-route-clear');
+  if(rc) rc.onclick = () => { clearRoute(); openMyPage(); };
+  document.getElementById('mp-install').onclick = promptInstall;
   document.getElementById('mp-demo').onclick = () => { sheet.classList.remove('open'); startDemo(); };
   document.getElementById('mp-reset').onclick = () => {
     if (confirm(t('mp_reset_confirm'))) resetAll();
@@ -4197,13 +4336,14 @@ function initMap(){
     return;
   }
   map = L.map('map', { zoomControl:false, attributionControl:false }).setView([35.6595, 139.7010], 16);
-  map.on('click', () => closeMarkingSheet());
+  map.on('click', (e) => { if(routePick){ handleRoutePickTap(e.latlng); return; } closeMarkingSheet(); });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
   const useCluster = typeof L.markerClusterGroup === 'function';
   markerLayer = useCluster ? L.markerClusterGroup({ maxClusterRadius:50, disableClusteringAtZoom:17 }) : L.layerGroup();
   addMarkingsToLayer(markerLayer);
   markerLayer.addTo(map);
   setTimeout(()=>map.invalidateSize(), 200);
+  drawRouteOnMap();
 }
 // Leaflet読込失敗時の再試行：スクリプトを再挿入してから initMap をやり直す
 function retryMap(){
@@ -4221,6 +4361,7 @@ let mapTypeFilter = 'all';
 function addMarkingsToLayer(layer){
   MARKINGS.forEach(m => {
     if(mapTypeFilter !== 'all' && m.type !== mapTypeFilter) return;
+    if(routeFocus && hasRoute() && !onRoute(m)) return;   // 通学路沿いだけに絞る
     const color = m.resolved ? '#3B82F6' : TYPE_COLOR[m.type];
     const opacity = m.resolved ? 'opacity:.55;filter:grayscale(.4)' : '';
     const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};${opacity}"><span>${m.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
@@ -4228,6 +4369,27 @@ function addMarkingsToLayer(layer){
       .on('click', () => openMarkingSheet(m));
   });
 }
+// 投稿されたあと、その記号がどうなったのか。トグル1つでは因果が見えないので、
+// 投稿 → 住民の確認 → 対処 の3段を並べて、いまどこにいるかを示す。
+function lifecycleHtml(m, feedEntry){
+  const checks = feedEntry ? (feedEntry.reactions?.check || 0) : 0;
+  const steps = [
+    { done:true, label: LANG==='en'?'Reported':'投稿された',
+      sub: `${txName(m.user)} · ${txAgo(m.ago)}` },
+    { done: checks>0, label: LANG==='en'?'Confirmed by neighbours':'近隣の探偵が確認',
+      sub: checks>0 ? (LANG==='en'?`${checks} confirmations`:`${checks}人が現地を確認`)
+                    : (LANG==='en'?'Awaiting confirmation':'確認待ち') },
+    { done: !!m.resolved, label: LANG==='en'?'Addressed':'対処された',
+      sub: m.resolved ? (LANG==='en'?'Removed and reported back':'消去・報告まで完了')
+                      : (LANG==='en'?'Not yet addressed':'まだ対処されていません') },
+  ];
+  return `<div class="lifecycle">${steps.map((st,i)=>`
+    <div class="lc-step${st.done?' done':''}${i===steps.length-1?' last':''}">
+      <div class="lc-dot">${st.done?icon('check',11):''}</div>
+      <div class="lc-tx"><b>${st.label}</b><span>${st.sub}</span></div>
+    </div>`).join('')}</div>`;
+}
+
 function openMarkingSheet(m){
   const color = m.resolved ? '#3B82F6' : (m.type==='danger'?'#E63946':m.type==='warn'?'#F4A261':'#64748B');
   const badgeBg = m.resolved ? 'rgba(59,130,246,.2)' : (m.type==='danger'?'rgba(230,57,70,.2)':m.type==='warn'?'rgba(244,162,97,.2)':'rgba(100,116,139,.2)');
@@ -4240,6 +4402,7 @@ function openMarkingSheet(m){
   const resolvedSection = m.resolved
     ? `<div class="ms-resolved-badge"><span>${icon('checkCircle',20)}</span><div><b style="font-size:13px">${LANG==='en'?'Resolved':'対処済み'}</b><div style="font-size:11px;color:var(--gray)">${LANG==='en'?'This marking has been addressed.':'このマーキングは対処済みです。'}</div></div></div>`
     : `<button class="ms-resolve-btn" id="ms-resolve-btn">${icon('check',14)} ${LANG==='en'?'Mark as resolved':'対処済みにする'}</button>`;
+  const lifecycle = lifecycleHtml(m, feedEntry);
   const catIdx = MARK_CATALOG.findIndex(c => c.mark === m.mark);
   const bookLink = catIdx >= 0
     ? `<button class="ms-book-link" onclick="closeMarkingSheet();switchView('book');openBookSheet(${catIdx})">${icon('book',14)} ${LANG==='en'?'What this mark means':'この記号の意味を手帳で見る'}</button>`
@@ -4257,9 +4420,9 @@ function openMarkingSheet(m){
       <button class="ms-close" onclick="closeMarkingSheet()">×</button>
     </div>
     <div class="ms-body">
-      <div class="ms-who">${txName(m.user)} · ${txAgo(m.ago)}</div>
       ${conf !== null ? `<div class="conf-row"><span class="conf-lbl">${t('cam_conf')}</span><div class="conf-bar"><i style="width:${conf}%;background:${color}"></i></div><span class="conf-val" style="color:${color}">${conf}%</span></div>` : ''}
       ${aiComment ? `<div class="ai-comment">${icon('cpu',14)} ${aiComment}</div>` : ''}
+      ${lifecycle}
       ${resolvedSection}
       ${bookLink}
     </div>`;
@@ -4285,6 +4448,104 @@ function refreshMapPins(){
   if(!map || !markerLayer) return;
   markerLayer.clearLayers();
   addMarkingsToLayer(markerLayer);
+}
+
+// ── 通学路（マイルート）──
+// このアプリは「渋谷区全体」の話をしていて、使う人自身の道の話をしていなかった。
+// 自宅と目的地の2点を登録すると、その線から一定距離内のマーキングだけを切り出す。
+const ROUTE_RADIUS_M = 160;   // 「その道沿い」とみなす距離
+let routeFocus = false;       // マップをルート沿いだけに絞っているか
+let routePick = null;         // 登録中: {step:0|1, from:{lat,lng}}
+let routeLayer = null;
+
+function hasRoute(){ const r = STATE.route; return !!(r && r.from && r.to); }
+// 緯度経度をメートルの平面に落とす（数百m規模なら等距円筒近似で十分）
+function toXY(p, originLat){
+  const R = 6371000, rad = Math.PI/180;
+  return { x: p.lng*rad*R*Math.cos(originLat*rad), y: p.lat*rad*R };
+}
+// 点と線分の距離（メートル）
+function distToRouteM(p){
+  const r = STATE.route;
+  if(!hasRoute()) return Infinity;
+  const o = r.from.lat;
+  const a = toXY(r.from,o), b = toXY(r.to,o), c = toXY(p,o);
+  const dx = b.x-a.x, dy = b.y-a.y;
+  const len2 = dx*dx + dy*dy;
+  let t = len2 ? ((c.x-a.x)*dx + (c.y-a.y)*dy) / len2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(c.x-(a.x+t*dx), c.y-(a.y+t*dy));
+}
+function onRoute(m){ return distToRouteM(m) <= ROUTE_RADIUS_M; }
+// ルート沿いの未対処件数
+function routeStats(){
+  const near = MARKINGS.filter(m=>!m.resolved && onRoute(m));
+  return {
+    danger: near.filter(m=>m.type==='danger').length,
+    warn:   near.filter(m=>m.type==='warn').length,
+    total:  near.length,
+  };
+}
+function routeLengthM(){
+  if(!hasRoute()) return 0;
+  const o = STATE.route.from.lat;
+  const a = toXY(STATE.route.from,o), b = toXY(STATE.route.to,o);
+  return Math.hypot(b.x-a.x, b.y-a.y);
+}
+
+function drawRouteOnMap(){
+  if(!map) return;
+  if(routeLayer){ map.removeLayer(routeLayer); routeLayer = null; }
+  if(!hasRoute()) return;
+  const r = STATE.route;
+  routeLayer = L.layerGroup();
+  L.polyline([[r.from.lat,r.from.lng],[r.to.lat,r.to.lng]],
+    { color:'#7DD3FC', weight:5, opacity:.85, dashArray:'1 9', lineCap:'round' }).addTo(routeLayer);
+  [[r.from,'home'],[r.to,'school']].forEach(([pt,kind])=>{
+    L.marker([pt.lat,pt.lng], { icon: L.divIcon({ className:'',
+      html:`<div class="route-pin ${kind}">${icon(kind==='home'?'home':'flag',13)}</div>`,
+      iconSize:[26,26], iconAnchor:[13,13] }) }).addTo(routeLayer);
+  });
+  routeLayer.addTo(map);
+}
+
+function startRoutePick(){
+  switchView('map');
+  routeFocus = false;
+  routePick = { step:0, from:null };
+  renderMapOverlay();
+  showToast(LANG==='en' ? 'Tap your home on the map' : '地図で自宅の位置をタップ');
+}
+function cancelRoutePick(){ routePick = null; renderMapOverlay(); }
+function handleRoutePickTap(latlng){
+  if(!routePick) return;
+  if(routePick.step === 0){
+    routePick.from = { lat:latlng.lat, lng:latlng.lng };
+    routePick.step = 1;
+    renderMapOverlay();
+    showToast(LANG==='en' ? 'Now tap the school or workplace' : '次に学校・職場の位置をタップ');
+    return;
+  }
+  STATE.route = { from: routePick.from, to: { lat:latlng.lat, lng:latlng.lng } };
+  routePick = null;
+  routeFocus = true;
+  saveState();
+  drawRouteOnMap();
+  refreshMapPins();
+  renderMapOverlay();
+  renderHome();
+  showToast(LANG==='en' ? 'Route saved' : '通学路を登録しました');
+}
+function toggleRouteFocus(){
+  if(!hasRoute()){ startRoutePick(); return; }
+  routeFocus = !routeFocus;
+  refreshMapPins();
+  renderMapOverlay();
+}
+function clearRoute(){
+  STATE.route = null; routeFocus = false; routePick = null;
+  if(routeLayer && map){ map.removeLayer(routeLayer); routeLayer = null; }
+  saveState(); refreshMapPins(); renderMapOverlay(); renderHome();
 }
 
 // ── パトロール記録 ──
@@ -4553,7 +4814,7 @@ function camResult(){
     const m = { lat:35.6595+(Math.random()-.5)*.004, lng:139.7010+(Math.random()-.5)*.004,
       type:o.type, mark:o.mark, verdict:o.verdict, user:PROFILE.name, label:compLabel, ago:'たった今' };
     MARKINGS.push(m);
-    if (map && markerLayer){
+    if (map && markerLayer && !(routeFocus && hasRoute() && !onRoute(m))){
       const icon = L.divIcon({ className:'', html:`<div class="pin" style="background:${color};animation:none"><span>${o.mark}</span></div>`, iconSize:[26,26], iconAnchor:[13,26] });
       L.marker([m.lat,m.lng],{icon}).addTo(markerLayer).on('click', ()=>openMarkingSheet(m));
     }
@@ -4804,6 +5065,7 @@ document.getElementById('view-map').innerHTML = `
     <span class="pf-ic">${icon('route',18)}</span><span class="pf-lbl" id="pf-lbl">START</span>
   </button>
   <div class="map-tools" id="map-tools"></div>
+  <div class="route-pick-bar" id="route-pick-bar"></div>
   <div class="patrol-done" id="patrol-done"></div>
   <div class="area-sheet" id="area-sheet"></div>
   <div class="tl-hud" id="tl-hud"></div>`;
@@ -4966,10 +5228,21 @@ function renderMapOverlay(){
     tools.innerHTML = `
       <button class="map-tool${heatOn?' on':''}" id="pill-heat">${icon('flame',13)} ${t('ov_heat')}</button>
       <button class="map-tool" id="pill-stats">${icon('chart',13)} ${t('ov_stats')}</button>
-      <button class="map-tool${tlPlaying?' on':''}" id="pill-timelapse">${icon('film',13)} ${LANG==='en'?'Timeline':'推移'}</button>`;
+      <button class="map-tool${tlPlaying?' on':''}" id="pill-timelapse">${icon('film',13)} ${LANG==='en'?'Timeline':'推移'}</button>
+      <button class="map-tool${routeFocus?' on':''}" id="pill-route">${icon('route',13)} ${t('route_short')}</button>`;
     document.getElementById('pill-heat').onclick = toggleHeat;
     document.getElementById('pill-stats').onclick = openAreaSheet;
     document.getElementById('pill-timelapse').onclick = toggleTimelapse;
+    document.getElementById('pill-route').onclick = toggleRouteFocus;
+  }
+  // 通学路の登録ガイド（地図をタップさせる短い案内）
+  const rp = document.getElementById('route-pick-bar');
+  if(rp){
+    if(routePick){
+      rp.innerHTML = `<span>${icon('route',14)} ${routePick.step===0?t('route_pick1'):t('route_pick2')}</span>
+        <button class="rpb-cancel" onclick="cancelRoutePick()">${t('route_cancel')}</button>`;
+      rp.classList.add('show');
+    } else rp.classList.remove('show');
   }
 }
 
@@ -5126,7 +5399,10 @@ function openModalSheets(){
     .filter(s => s.classList.contains('open') && !NONMODAL_SHEETS.includes(s.id));
 }
 function syncSheetBackdrop(){
-  document.getElementById('sheet-backdrop').classList.toggle('show', openModalSheets().length > 0);
+  const modal = openModalSheets().length > 0;
+  document.getElementById('sheet-backdrop').classList.toggle('show', modal);
+  const screenEl = document.getElementById('screen');
+  if(screenEl) screenEl.setAttribute('aria-hidden', modal ? 'true' : 'false');
 }
 // 端末フレーム（.phone）は overflow:hidden でも「プログラム的スクロール」は可能で、
 // 入力欄フォーカス時にブラウザが自動スクロールさせると画面全体がずれたまま戻らない。
@@ -5141,9 +5417,37 @@ function lockPhoneFrame(){
 }
 lockPhoneFrame();
 
+// 開いたシートへフォーカスを移し、閉じたら元の場所へ返す。
+// これがないと、キーボードだけで開いたときに背後の画面をたどることになる。
+let _focusBeforeSheet = null;
+function focusFirstIn(el){
+  const f = el.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  (f || el).focus({ preventScroll: true });
+}
+function syncSheetFocus(){
+  const open = [...document.querySelectorAll(SHEET_SELECTOR)].filter(s => s.classList.contains('open'));
+  const top = open[open.length - 1];
+  if(top){
+    if(!top.contains(document.activeElement)){
+      if(!_focusBeforeSheet) _focusBeforeSheet = document.activeElement;
+      focusFirstIn(top);
+    }
+  } else if(_focusBeforeSheet){
+    if(document.body.contains(_focusBeforeSheet)) _focusBeforeSheet.focus({ preventScroll: true });
+    _focusBeforeSheet = null;
+  }
+}
+
 function initSheetUX(){
   const sheets = document.querySelectorAll(SHEET_SELECTOR);
-  const mo = new MutationObserver(syncSheetBackdrop);
+  // 支援技術にモーダルとして伝える
+  sheets.forEach(s => {
+    s.setAttribute('role', 'dialog');
+    s.setAttribute('aria-modal', 'true');
+    if(!s.hasAttribute('tabindex')) s.setAttribute('tabindex', '-1');
+  });
+  const onChange = () => { syncSheetBackdrop(); syncSheetFocus(); };
+  const mo = new MutationObserver(onChange);
   sheets.forEach(s => mo.observe(s, { attributes: true, attributeFilter: ['class'] }));
   document.getElementById('sheet-backdrop').onclick = () => {
     openModalSheets().forEach(s => s.classList.remove('open'));

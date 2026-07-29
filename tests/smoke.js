@@ -90,6 +90,36 @@ function check(name, ok, detail) {
   check('端末フレームがずれない', frame.scrollTop === 0 && frame.screenTop >= 0 && frame.tabTop < frame.phoneH,
     `scrollTop:${frame.scrollTop} screen@${frame.screenTop} tabbar@${frame.tabTop}`);
 
+  // 1d. 通学路: 登録すると沿線だけに絞られ、リロードしても残る
+  await page.evaluate(() => {
+    STATE.route = { from:{lat:35.6625,lng:139.6985}, to:{lat:35.6570,lng:139.7040} };
+    routeFocus = true; saveState(); refreshMapPins();
+  });
+  await page.waitForTimeout(400);
+  const route = await page.evaluate(() => ({
+    st: routeStats(),
+    shown: document.querySelectorAll('.leaflet-marker-icon').length,
+    total: MARKINGS.length,
+  }));
+  check('通学路で沿線だけに絞られる', route.st.total > 0 && route.shown < route.total,
+    `沿線${route.st.total}件 / 表示${route.shown}件 (全${route.total}件)`);
+
+  // 1e. シートがダイアログとして扱われ、フォーカスが移り、閉じたら戻る
+  await page.evaluate(() => { document.querySelector('.tab[data-view="home"]').click(); openMyPage(); });
+  await page.waitForTimeout(500);
+  const a11y = await page.evaluate(() => {
+    const sh = document.getElementById('mypage-sheet');
+    return { role: sh.getAttribute('role'), modal: sh.getAttribute('aria-modal'),
+      inside: sh.contains(document.activeElement),
+      hidden: document.getElementById('screen').getAttribute('aria-hidden') };
+  });
+  check('シートが dialog でフォーカスを受け取る',
+    a11y.role === 'dialog' && a11y.modal === 'true' && a11y.inside && a11y.hidden === 'true');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(400);
+  check('シートを閉じると背後が復帰',
+    (await page.evaluate(() => document.getElementById('screen').getAttribute('aria-hidden'))) === 'false');
+
   // 2. 警戒度スケールの全画面一致（home badge / map brief / HQ / area sheet）
   const scale = await page.evaluate(() => {
     const s = forecastLevel().score;
