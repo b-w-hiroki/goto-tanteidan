@@ -214,6 +214,33 @@ function check(name, ok, detail) {
   const demoStopped = await page.evaluate(() => !demoOn && !document.getElementById('demo-ind'));
   check('デモモードの開始/停止', demoStarted && demoStopped);
 
+  // Local profile text must stay literal wherever it is reused.
+  const profileText = await page.evaluate(() => {
+    const original = PROFILE.name;
+    const originalWho = FEED[0].who;
+    const payload = '<img src=x onerror=alert(1)>';
+    PROFILE.name = payload;
+    FEED[0].who = payload;
+    syncProfileToRanks();
+    renderHome();
+    const feed = document.querySelector('#feed .ft b');
+    openDetail(0);
+    const detail = document.querySelector('#detail-modal .dm-meta');
+    openNotifSheet();
+    const notification = document.querySelector('#notif-sheet .ni-tx b');
+    renderRank('week');
+    const rank = document.querySelector('#rank-list .rank-row.me .rn b');
+    const literal = [feed, detail, notification, rank].every(el => el && el.textContent.includes(payload));
+    const injected = document.querySelector('img[src="x"]');
+    PROFILE.name = original;
+    FEED[0].who = originalWho;
+    syncProfileToRanks();
+    renderHome();
+    return { literal, injected: !!injected };
+  });
+  check('プロフィール名をフィード・詳細・通知・ランキングで文字として表示',
+    profileText.literal && !profileText.injected);
+
   // 11. 全体を通してJSエラーゼロ
   check('全フロー実行後もJSエラーなし', pageErrors.length === 0, pageErrors[0]);
 
