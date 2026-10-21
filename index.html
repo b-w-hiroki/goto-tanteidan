@@ -2269,6 +2269,9 @@ const LABELS = {
 const NAMES = { 'はるき':'Haruki','ミク':'Miku','山下':'Yamashita','あや':'Aya','夜回り':'Yomawari','ユウキ':'Yuki' };
 function txLabel(s){ return LANG==='en' ? (LABELS[s]||s) : s; }
 function txName(s){ if(LANG!=='en') return s; for(const k in NAMES) s = s.split(k).join(NAMES[k]); return s.replace('（あなた）',' (You)'); }
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 function txVerdict(v){ if(LANG!=='en') return v; return v==='マーキング濃厚'?'Marking likely':v==='要確認'?'Needs check':v==='偶然と判定'?'Coincidence':v; }
 function txAgo(a){ if(LANG!=='en') return a; if(a==='たった今') return 'just now'; if(a==='昨日') return 'yesterday';
   let m=a.match(/^(\d+)分前$/); if(m) return m[1]+' min ago'; m=a.match(/^(\d+)時間前$/); if(m) return m[1]+' hr ago'; return a; }
@@ -3156,7 +3159,7 @@ function openWeeklyReport(){
     <div class="rp-hd"><b>${icon('clipboard',16)} ${LANG==='en'?'Weekly Investigation Report':'週刊 捜査報告書'}</b><button class="rp-close" onclick="document.getElementById('report-sheet').classList.remove('open')">×</button></div>
     <div class="rp-body">
       <div class="rp-doc">
-        <div class="rp-meta"><span class="rp-av">${PROFILE.avatar}</span><span>${txName(PROFILE.name)}${t('name_suffix')} ・ ${range}</span><span class="hq-badge" style="margin-left:auto">${LANG==='en'?'CONFIDENTIAL':'機密情報'}</span></div>
+         <div class="rp-meta"><span class="rp-av">${PROFILE.avatar}</span><span>${escapeHTML(txName(PROFILE.name))}${t('name_suffix')} ・ ${range}</span><span class="hq-badge" style="margin-left:auto">${LANG==='en'?'CONFIDENTIAL':'機密情報'}</span></div>
         <div class="rp-sec">${LANG==='en'?'THIS WEEK':'今週の活動'}</div>
         <div class="rp-grid">
           <div class="rp-cell"><b>${STATE.myPosts||0}</b><span>${LANG==='en'?'Posts':'投稿'}</span></div>
@@ -3483,7 +3486,7 @@ function renderHome(){
     ? shown.map(({f,i}) => `
       <div class="feed-item${f.resolved?' resolved':''}" onclick="openDetail(${i})">
         <div class="thumb" style="background:${f.bg}">${f.mark}</div>
-        <div class="ft"><b>${txName(f.who)}</b> <span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
+         <div class="ft"><b>${escapeHTML(txName(f.who))}</b> <span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
         <span class="chip ${f.resolved?'resolved':f.chip[0]}">${f.resolved?t('chip_resolved'):txChip(f.chip[0])}</span>
         <div class="row-arr">›</div>
       </div>`).join('') + moreBtn
@@ -3650,7 +3653,7 @@ function openMyPage(){
         </div>`;
       }).join('')}</div>
       <div class="mp-sec">${t('mp_name')}</div>
-      <input class="mp-name" id="mp-name" type="text" maxlength="12" value="${PROFILE.name.replace(/"/g,'&quot;')}" />
+       <input class="mp-name" id="mp-name" type="text" maxlength="12" value="${escapeHTML(PROFILE.name)}" />
       <div class="mp-sec">${t('mp_team')}</div>
       <div class="team-switch" id="mp-teams">${teamHtml}</div>
       <div style="height:14px"></div>
@@ -4020,7 +4023,7 @@ function openDetail(idx){
       <div class="dm-label">${txLabel(f.label)||tx(f,'act')}</div>
       <div class="dm-meta">
         <span class="dm-badge" style="background:${f.resolved?'rgba(59,130,246,.2)':badgeBg};color:${f.resolved?'#7dd3fc':color}">${f.resolved?t('chip_resolved'):(txVerdict(f.verdict)||txChip(f.chip[0]))}</span>
-        <span style="font-size:11px;color:var(--gray);margin-left:8px">${t('dm_posted_by')} ${txName(f.who)} · ${txAgo(f.ago)}</span>
+         <span style="font-size:11px;color:var(--gray);margin-left:8px">${t('dm_posted_by')} ${escapeHTML(txName(f.who))} · ${txAgo(f.ago)}</span>
       </div>
       <div class="conf-row">
         <span class="conf-lbl">${t('cam_conf')}</span>
@@ -4180,7 +4183,7 @@ function renderRank(seg){
     return `<div class="rank-row ${r.me?'me':''}" onclick="openRankSheet(${i})" style="cursor:pointer">
       <div class="pos ${cls}">${medal}</div>
       <div class="av" style="background:${r.bg}">${r.av}</div>
-      <div class="rn"><b>${txName(r.name)}</b><span>${txArea(r.area)}</span></div>
+       <div class="rn"><b>${escapeHTML(txName(r.name))}</b><span>${txArea(r.area)}</span></div>
       <div class="rp">${fmt(r.pt)}</div>
       <div class="row-arr">›</div>
     </div>`;
@@ -4306,7 +4309,7 @@ function openRankSheet(idx){
     <div class="grab"></div>
     <div class="rs-prof">
       <div class="rs-av" style="background:${r.bg}">${r.av}</div>
-      <div class="rs-name"><b>${txName(r.name)}</b><span>${txArea(r.area)}</span></div>
+       <div class="rs-name"><b>${escapeHTML(txName(r.name))}</b><span>${txArea(r.area)}</span></div>
       <button class="rs-close" id="rs-close">×</button>
     </div>
     <div class="rs-stats">
@@ -4375,7 +4378,7 @@ function lifecycleHtml(m, feedEntry){
   const checks = feedEntry ? (feedEntry.reactions?.check || 0) : 0;
   const steps = [
     { done:true, label: LANG==='en'?'Reported':'投稿された',
-      sub: `${txName(m.user)} · ${txAgo(m.ago)}` },
+       sub: `${escapeHTML(txName(m.user))} · ${txAgo(m.ago)}` },
     { done: checks>0, label: LANG==='en'?'Confirmed by neighbours':'近隣の探偵が確認',
       sub: checks>0 ? (LANG==='en'?`${checks} confirmations`:`${checks}人が現地を確認`)
                     : (LANG==='en'?'Awaiting confirmation':'確認待ち') },
@@ -4864,7 +4867,7 @@ function openNotifSheet(){
       ${items.map((f,i)=>`
         <div class="notif-item" onclick="closeNotifSheet();openDetail(${i})">
           <div class="ni-icon" style="background:${f.bg}">${f.mark}</div>
-          <div class="ni-tx"><b>${txName(f.who)}</b><span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
+           <div class="ni-tx"><b>${escapeHTML(txName(f.who))}</b><span>${tx(f,'act')} · ${txAgo(f.ago)}</span></div>
           <span class="chip ${f.chip[0]}">${txChip(f.chip[0])}</span>
           <div class="row-arr">›</div>
         </div>`).join('')}
