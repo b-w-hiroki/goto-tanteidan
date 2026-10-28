@@ -1,7 +1,9 @@
 // GO-TO 探偵団 — minimal offline cache
-const CACHE = 'goto-tanteidan-v4';
+const CACHE = 'goto-tanteidan-v5';
 const ASSETS = [
   './', './index.html', './styles.css', './manifest.json', './icon.svg', './ogp.png',
+  './js/core-data.js', './js/state-missions.js', './js/home-sheets.js',
+  './js/map-ranking.js', './js/camera-setup.js', './js/layers-init.js',
   './vendor/leaflet/leaflet.js', './vendor/leaflet/leaflet.css',
   './vendor/leaflet/leaflet-heat.js', './vendor/leaflet/leaflet.markercluster.js',
   './vendor/leaflet/MarkerCluster.css', './vendor/leaflet/MarkerCluster.Default.css',
