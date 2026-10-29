@@ -75,6 +75,11 @@ async function update(page) {
       await page.evaluate(() => { ONBOARDED = true; saveState(); });
       await ctx.setOffline(true); await page.reload();
       await page.waitForFunction(() => typeof switchView === 'function');
+      // Reproduce leaving an enabled heatmap before the delayed resize fires.
+      await page.locator('.tab[data-view="map"]').click();
+      await page.locator('#pill-heat').click();
+      await page.locator('.tab[data-view="rank"]').click();
+      await page.waitForTimeout(300);
       for (const tab of ['map', 'rank', 'book', 'cam', 'home']) {
         await page.locator(`.tab[data-view="${tab}"]`).click();
         assert(await page.locator(`#view-${tab}`).evaluate(el => el.classList.contains('active')));
@@ -84,7 +89,7 @@ async function update(page) {
           await page.locator('#pill-heat').click();
         }
         assert(await page.locator('.tabbar').evaluate(el => { const r = el.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight; }));
-        if (process.env.SCREENSHOT_DIR) { fs.mkdirSync(process.env.SCREENSHOT_DIR, { recursive: true }); await page.screenshot({ path: path.join(process.env.SCREENSHOT_DIR, `${scenario}-${tab}.png`) }); }
+        if (process.env.SCREENSHOT_DIR) { await page.waitForTimeout(800); fs.mkdirSync(process.env.SCREENSHOT_DIR, { recursive: true }); await page.screenshot({ path: path.join(process.env.SCREENSHOT_DIR, `${scenario}-${tab}.png`) }); }
       }
       assert(await page.locator('link[href="styles.css"]').evaluate(el => !!el.sheet));
       assert.deepEqual(errors, []);
