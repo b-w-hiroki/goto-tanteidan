@@ -7,14 +7,19 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const current = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
-const old = execFileSync('git', ['show', '9500387:sw.js'], { cwd: root, encoding: 'utf8' });
+// Immutable pre-JS-split revision: exercise the actual v4 application shell.
+const oldFiles = new Map();
+function oldFile(file) {
+  if (!oldFiles.has(file)) oldFiles.set(file, execFileSync('git', ['show', `9500387:${file}`], { cwd: root, stdio: ['ignore', 'pipe', 'ignore'] }));
+  return oldFiles.get(file);
+}
 const mime = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png' };
 let version = 'current', fail = false;
 const server = http.createServer((req, res) => {
   const file = new URL(req.url, 'http://localhost').pathname.replace(/^\/app\//, '') || 'index.html';
   if (fail && file === 'js/core-data.js') { res.writeHead(503); res.end('injected failure'); return; }
   let body;
-  try { body = file === 'sw.js' ? (version === 'old' ? old : current) : fs.readFileSync(path.join(root, file)); }
+  try { body = version === 'old' ? oldFile(file) : file === 'sw.js' ? current : fs.readFileSync(path.join(root, file)); }
   catch { res.writeHead(404); res.end(); return; }
   res.writeHead(200, { 'Content-Type': mime[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
   res.end(body);
