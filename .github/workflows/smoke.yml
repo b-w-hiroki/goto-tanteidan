@@ -12,6 +12,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -21,3 +23,13 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Run smoke tests
         run: node tests/smoke.js
+      - name: Offline lifecycle regression
+        run: node tests/offline.js
+        env:
+          SCREENSHOT_DIR: test-results/offline
+      - name: Upload offline screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: offline-390x844
+          path: test-results/offline
