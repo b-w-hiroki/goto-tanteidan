@@ -13,7 +13,12 @@ const ASSETS = [
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE)
-      .then(c => c.addAll(ASSETS).catch(() => {}))
+      .then(c => c.addAll(ASSETS))
+      .catch(error => {
+        // Reject installation: the previous worker/cache must remain usable.
+        console.error('[GO-TO] Required offline assets could not be cached', error);
+        throw error;
+      })
       .then(() => self.skipWaiting())
   );
 });
@@ -21,7 +26,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k.startsWith('goto-tanteidan-') && k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });

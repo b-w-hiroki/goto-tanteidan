@@ -133,8 +133,13 @@ function openRankSheet(idx){
 
 // ── Map ──
 let map = null, markerLayer = null, mapFailed = false;
+function resizeVisibleMap(){
+  // A delayed resize may run after the user has already left the map tab.
+  const el = document.getElementById('map');
+  if (map && el && el.clientWidth > 0 && el.clientHeight > 0) map.invalidateSize();
+}
 function initMap(){
-  if (map) { setTimeout(()=>map.invalidateSize(), 100); return; }
+  if (map) { setTimeout(resizeVisibleMap, 100); return; }
   if (typeof L === 'undefined' || typeof L.map !== 'function'){
     if (!mapFailed){
       mapFailed = true;
@@ -153,7 +158,7 @@ function initMap(){
   markerLayer = useCluster ? L.markerClusterGroup({ maxClusterRadius:50, disableClusteringAtZoom:17 }) : L.layerGroup();
   addMarkingsToLayer(markerLayer);
   markerLayer.addTo(map);
-  setTimeout(()=>map.invalidateSize(), 200);
+  setTimeout(resizeVisibleMap, 200);
   drawRouteOnMap();
 }
 // Leaflet読込失敗時の再試行：スクリプトを再挿入してから initMap をやり直す
