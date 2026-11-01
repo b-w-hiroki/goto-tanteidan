@@ -1,0 +1,22 @@
+{
+  "app": "goto-tanteidan",
+  "worker": "sw.js",
+  "oldRef": "95003876d860344e5d5eb68808ebd6fbd948591a",
+  "oldCache": "goto-tanteidan-v4",
+  "newCache": "goto-tanteidan-v5",
+  "failureAsset": "js/core-data.js",
+  "activation": "automatic",
+  "offlinePages": [
+    "index.html"
+  ],
+  "htmlMarker": "GO-TO",
+  "requiredAssets": [
+    "styles.css",
+    "js/core-data.js",
+    "js/state-missions.js",
+    "js/home-sheets.js",
+    "js/map-ranking.js",
+    "js/camera-setup.js",
+    "js/layers-init.js"
+  ]
+}
