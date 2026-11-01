@@ -10,8 +10,10 @@ const current = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 // Immutable pre-JS-split revision: exercise the actual v4 application shell.
 const oldFiles = new Map();
 function oldFile(file) {
-  if (!oldFiles.has(file)) oldFiles.set(file, execFileSync('git', ['show', `9500387:${file}`], { cwd: root, stdio: ['ignore', 'pipe', 'ignore'] }));
-  return oldFiles.get(file);
+  const ref = version === 'main' ? 'ece41767e8ab6fe624d05c71ccd5441361ab96c2' : '9500387';
+  const key = `${ref}:${file}`;
+  if (!oldFiles.has(key)) oldFiles.set(key, execFileSync('git', ['show', key], { cwd: root, stdio: ['ignore', 'pipe', 'ignore'] }));
+  return oldFiles.get(key);
 }
 const mime = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png' };
 let version = 'current', fail = false;
@@ -19,7 +21,7 @@ const server = http.createServer((req, res) => {
   const file = new URL(req.url, 'http://localhost').pathname.replace(/^\/app\//, '') || 'index.html';
   if (fail && file === 'js/core-data.js') { res.writeHead(503); res.end('injected failure'); return; }
   let body;
-  try { body = version === 'old' ? oldFile(file) : file === 'sw.js' ? current : fs.readFileSync(path.join(root, file)); }
+  try { body = version !== 'current' ? oldFile(file) : file === 'sw.js' ? current : fs.readFileSync(path.join(root, file)); }
   catch { res.writeHead(404); res.end(); return; }
   res.writeHead(200, { 'Content-Type': mime[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
   res.end(body);
@@ -46,20 +48,49 @@ async function update(page) {
   const browser = await chromium.launch(process.env.PW_EXECUTABLE ? { executablePath: process.env.PW_EXECUTABLE } : {});
   try {
     const base = `http://127.0.0.1:${server.address().port}/app/`;
-    for (const scenario of ['fresh', 'upgrade', 'failed-upgrade']) {
-      version = scenario === 'fresh' ? 'current' : 'old'; fail = false;
+    // Negative control: use the actual main map code; the same rapid exit must fail.
+    const negative = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+    const np = await negative.newPage();
+    const negativeErrors = [];
+    np.on('pageerror', e => negativeErrors.push(e.message));
+    await np.route('**/js/map-ranking.js', route => route.fulfill({
+      contentType: 'text/javascript',
+      body: execFileSync('git', ['show', 'ece41767e8ab6fe624d05c71ccd5441361ab96c2:js/map-ranking.js'], { cwd: root, encoding: 'utf8' }),
+    }));
+    await np.goto(base);
+    await np.evaluate(() => { switchView('map'); toggleHeat(); switchView('rank'); });
+    await np.waitForTimeout(350);
+    assert(negativeErrors.some(e => /source width|canvas/i.test(e)), `main must reproduce hidden Canvas error: ${negativeErrors}`);
+    await negative.close();
+    console.log('PASS negative control: main reproduces hidden Canvas error');
+    for (const scenario of ['fresh', 'upgrade', 'failed-upgrade', 'main-upgrade', 'main-failed-upgrade']) {
+      version = scenario === 'fresh' ? 'current' : scenario.startsWith('main-') ? 'main' : 'old';
+      const oldCache = version === 'main' ? 'goto-tanteidan-v5' : 'goto-tanteidan-v4'; fail = false;
       const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true });
       const page = await ctx.newPage(); page.setDefaultTimeout(15000);
       const errors = []; page.on('pageerror', e => errors.push(e.message));
       await page.goto(base); await controlled(page);
-      await page.evaluate(async () => { await caches.open('unrelated-cache'); });
+      await page.evaluate(async () => { ONBOARDED = true; saveState(); const c = await caches.open('unrelated-cache'); await c.put('/other-app/sentinel', new Response('keep-me')); });
       if (scenario !== 'fresh') {
-        version = 'current'; fail = scenario === 'failed-upgrade';
+        const before = await page.evaluate(async name => {
+          const c = await caches.open(name);
+          return { script: await (await c.match('./index.html')).text() };
+        }, oldCache);
+        await page.evaluate(() => { window.previousController = navigator.serviceWorker.controller; });
+        version = 'current'; fail = scenario.endsWith('failed-upgrade');
         const outcome = await update(page);
         assert.equal(outcome, fail ? 'redundant' : 'activated', scenario);
         if (fail) {
           const keys = await page.evaluate(() => caches.keys());
-          assert(keys.includes('goto-tanteidan-v4'), 'failed update must retain v4');
+          assert(keys.includes(oldCache), 'failed update must retain old cache');
+          assert(await page.evaluate(() => navigator.serviceWorker.controller === window.previousController), 'old controller remains active');
+          assert.equal(await page.evaluate(async name => (await (await caches.open(name)).match('./index.html')).text(), oldCache), before.script, 'old shell unchanged');
+          await ctx.setOffline(true);
+          await page.reload();
+          await page.waitForFunction(() => typeof switchView === 'function');
+          await page.evaluate(() => { switchView('book'); switchView('home'); });
+          assert.equal(await page.evaluate(async () => (await caches.match('/other-app/sentinel')).text()), 'keep-me');
+          await ctx.setOffline(false);
           assert(keys.includes('unrelated-cache'), 'unrelated cache must survive');
           console.log('PASS failed precache rejects installation and preserves old worker/cache');
           fail = false;
@@ -75,10 +106,8 @@ async function update(page) {
       await page.evaluate(() => { ONBOARDED = true; saveState(); });
       await ctx.setOffline(true); await page.reload();
       await page.waitForFunction(() => typeof switchView === 'function');
-      // Reproduce leaving an enabled heatmap before the delayed resize fires.
-      await page.locator('.tab[data-view="map"]').click();
-      await page.locator('#pill-heat').click();
-      await page.locator('.tab[data-view="rank"]').click();
+      // All three actions run in one task, before either delayed resize can fire.
+      await page.evaluate(() => { switchView('map'); toggleHeat(); switchView('rank'); });
       await page.waitForTimeout(300);
       for (const tab of ['map', 'rank', 'book', 'cam', 'home']) {
         await page.locator(`.tab[data-view="${tab}"]`).click();
@@ -94,6 +123,7 @@ async function update(page) {
       assert(await page.locator('link[href="styles.css"]').evaluate(el => !!el.sheet));
       assert.deepEqual(errors, []);
       assert((await page.evaluate(() => caches.keys())).includes('unrelated-cache'));
+      assert.equal(await page.evaluate(async () => (await caches.match('/other-app/sentinel')).text()), 'keep-me');
       console.log(`PASS ${scenario}: offline reload, 6 scripts/CSS, five tabs, map pins/heat, 390x844 bounds`);
       await ctx.close();
     }
