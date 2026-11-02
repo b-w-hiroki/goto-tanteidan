@@ -79,7 +79,7 @@ async function main() {
   }
   async function update() {
     await page.evaluate(async () => {
-      const r = await navigator.serviceWorker.getRegistration();
+      const r = window.registration;
       window.candidate = r.installing || r.waiting;
       r.addEventListener('updatefound', () => { window.candidate = r.installing; }, { once: true });
       await r.update();
@@ -89,7 +89,7 @@ async function main() {
   try {
     await page.goto(base + '__qa');
     await page.evaluate(async worker => {
-      await navigator.serviceWorker.register(worker);
+      window.registration = await navigator.serviceWorker.register(worker);
       await navigator.serviceWorker.ready;
     }, config.worker);
     await page.waitForFunction(() => !!navigator.serviceWorker.controller);
@@ -105,7 +105,7 @@ async function main() {
     await page.waitForFunction(() => window.candidate?.state === 'redundant');
     assert(injected > 0, '503 must actually be requested by the worker');
     assert(await page.evaluate(async () => {
-      const r = await navigator.serviceWorker.getRegistration();
+      const r = window.registration;
       return !r.waiting && navigator.serviceWorker.controller === window.previousController && r.active.state === 'activated';
     }), 'failed candidate must leave the old controller active');
     assert.deepEqual(await snapshot(config.oldCache), before, 'old cached response bytes preserved');
@@ -116,14 +116,14 @@ async function main() {
     await update();
     if (config.activation === 'manual') {
       await page.waitForFunction(async () => {
-        const r = await navigator.serviceWorker.getRegistration();
+        const r = window.registration;
         if (r.waiting) window.candidate = r.waiting;
         return window.candidate?.state === 'installed' && !!r.waiting;
       });
       assert(await page.evaluate(() => navigator.serviceWorker.controller === window.previousController));
       assert.deepEqual(await snapshot(config.oldCache), before, 'cache retained until approval');
       await page.evaluate(message => {
-        if (window.candidate?.state !== 'installed') throw new Error('manual candidate must remain installed until approval');
+        if (window.candidate?.state !== 'installed') throw new Error('manual candidate must remain installed until approval: ' + JSON.stringify({ candidate: window.candidate?.state, waiting: window.registration.waiting?.state, active: window.registration.active?.state }));
         window.candidate.postMessage(message);
       }, config.approvalMessage);
     }
