@@ -80,9 +80,10 @@ async function main() {
   async function update() {
     await page.evaluate(async () => {
       const r = await navigator.serviceWorker.getRegistration();
-      window.candidate = null;
+      window.candidate = r.installing || r.waiting;
       r.addEventListener('updatefound', () => { window.candidate = r.installing; }, { once: true });
       await r.update();
+      window.candidate = r.installing || r.waiting || window.candidate;
     });
   }
   try {
@@ -114,7 +115,11 @@ async function main() {
     state.offline = false; state.fail = false;
     await update();
     if (config.activation === 'manual') {
-      await page.waitForFunction(async () => !!(await navigator.serviceWorker.getRegistration()).waiting);
+      await page.waitForFunction(async () => {
+        const r = await navigator.serviceWorker.getRegistration();
+        if (r.waiting) window.candidate = r.waiting;
+        return window.candidate?.state === 'installed' && !!r.waiting;
+      });
       assert(await page.evaluate(() => navigator.serviceWorker.controller === window.previousController));
       assert.deepEqual(await snapshot(config.oldCache), before, 'cache retained until approval');
       await page.evaluate(message => {
