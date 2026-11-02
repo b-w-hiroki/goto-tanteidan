@@ -122,12 +122,16 @@ async function main() {
       });
       assert(await page.evaluate(() => navigator.serviceWorker.controller === window.previousController));
       assert.deepEqual(await snapshot(config.oldCache), before, 'cache retained until approval');
-      await page.evaluate(message => {
-        if (window.candidate?.state !== 'installed') throw new Error('manual candidate must remain installed until approval: ' + JSON.stringify({ candidate: window.candidate?.state, waiting: window.registration.waiting?.state, active: window.registration.active?.state }));
-        window.candidate.postMessage(message);
+      await page.waitForFunction(message => {
+        const worker = window.registration.waiting;
+        if (!worker || worker.state !== 'installed') return false;
+        if (navigator.serviceWorker.controller !== window.previousController) throw new Error('activated before user approval');
+        window.approvedCandidate = worker;
+        worker.postMessage(message);
+        return true;
       }, config.approvalMessage);
     }
-    await page.waitForFunction(() => window.candidate?.state === 'activated' && navigator.serviceWorker.controller !== window.previousController);
+    await page.waitForFunction(() => window.registration.active?.state === 'activated' && navigator.serviceWorker.controller !== window.previousController);
     const keys = await page.evaluate(() => caches.keys());
     assert(!keys.includes(config.oldCache), 'obsolete own cache removed');
     assert(keys.includes(config.newCache), 'new cache exists');
