@@ -117,7 +117,10 @@ async function main() {
       await page.waitForFunction(async () => !!(await navigator.serviceWorker.getRegistration()).waiting);
       assert(await page.evaluate(() => navigator.serviceWorker.controller === window.previousController));
       assert.deepEqual(await snapshot(config.oldCache), before, 'cache retained until approval');
-      await page.evaluate(async message => (await navigator.serviceWorker.getRegistration()).waiting.postMessage(message), config.approvalMessage);
+      await page.evaluate(message => {
+        if (window.candidate?.state !== 'installed') throw new Error('manual candidate must remain installed until approval');
+        window.candidate.postMessage(message);
+      }, config.approvalMessage);
     }
     await page.waitForFunction(() => window.candidate?.state === 'activated' && navigator.serviceWorker.controller !== window.previousController);
     const keys = await page.evaluate(() => caches.keys());
