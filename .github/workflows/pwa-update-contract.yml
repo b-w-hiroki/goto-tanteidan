@@ -1,0 +1,31 @@
+name: PWA update contract
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install isolated browser test dependencies
+        run: |
+          npm install --prefix "$RUNNER_TEMP/pwa-qa" --no-audit --no-fund playwright@1.56.1
+          "$RUNNER_TEMP/pwa-qa/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Run shared update contract in a fresh Chromium context
+        shell: bash
+        run: |
+          set -o pipefail
+          NODE_PATH="$RUNNER_TEMP/pwa-qa/node_modules" node tests/pwa-update-contract.cjs tests/pwa-update.json 2>&1 | tee pwa-update-contract.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pwa-update-contract
+          path: pwa-update-contract.log
