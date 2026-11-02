@@ -68,7 +68,7 @@ async function main() {
   async function offlineNavigation() {
     for (const file of config.offlinePages) {
       const frame = await page.evaluateHandle(file => {
-        const frame = document.createElement('iframe'); frame.src = file + '?contract';
+        const frame = document.createElement('iframe'); frame.src = file;
         document.body.append(frame); return frame;
       }, file);
       await page.waitForFunction(({ frame, marker }) => frame.contentDocument?.documentElement?.outerHTML.includes(marker), { frame, marker: config.htmlMarker });
