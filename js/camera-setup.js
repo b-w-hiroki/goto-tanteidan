@@ -164,8 +164,8 @@ function camResult(){
   document.getElementById('cam-again').onclick = camIdle;
   document.getElementById('cam-share').onclick = () => {
     const text = LANG==='en'
-      ? `GO-TO Detectives\n${tx(o,'title')} (AI confidence ${conf}%)\nMy post was added to the crime-prevention map\nhttps://b-w-hiroki.github.io/goto-tanteidan/`
-      : `GO-TO探偵団\n${tx(o,'title')}（AI信頼度 ${conf}%）\n投稿が防犯マップに追加されました\nhttps://b-w-hiroki.github.io/goto-tanteidan/`;
+      ? `GO-TO Detectives demo\n${tx(o,'title')} (fictional example ${conf}%)\nNot a real crime report\nhttps://b-w-hiroki.github.io/goto-tanteidan/`
+      : `GO-TO探偵団 体験デモ\n${tx(o,'title')}（架空の判定例 ${conf}%）\n実際の犯罪情報ではありません\nhttps://b-w-hiroki.github.io/goto-tanteidan/`;
     if (navigator.share) { navigator.share({ title: 'GO-TO探偵団', text }).catch(()=>{}); }
     else { navigator.clipboard?.writeText(text).then(() => showToast(t('toast_copy'))); }
     STATE.shares += 1; bumpDaily('share'); checkAchievements(); saveState();

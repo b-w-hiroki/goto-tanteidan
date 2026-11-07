@@ -91,7 +91,7 @@
     color: #fff;
   }
   .screen {
-    position: absolute; top: 44px; bottom: 78px; left: 0; right: 0;
+    position: absolute; top: 88px; bottom: 78px; left: 0; right: 0;
     overflow-y: auto; overflow-x: hidden;
   }
   .screen::-webkit-scrollbar { width: 0; }
@@ -395,9 +395,9 @@
   .bs-cam-btn { width:100%; margin-top:16px; background:var(--gold); color:#12122a; font-weight:800; font-size:14px; border:none; border-radius:14px; padding:14px; cursor:pointer; }
 
   /* ── Map ── */
-  #map { position: absolute; top: 44px; bottom: 78px; left: 0; right: 0; }
+  #map { position: absolute; top: 88px; bottom: 78px; left: 0; right: 0; }
   .map-overlay {
-    position: absolute; top: 54px; left: 12px; right: 12px; z-index: 1000;
+    position: absolute; top: 98px; left: 12px; right: 12px; z-index: 1000;
     display: flex; gap: 8px; flex-wrap: wrap;
   }
   .map-pill {
@@ -510,7 +510,7 @@
   .tl-hud .tl-track i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), var(--red)); border-radius: 3px; }
 
   .patrol-hud {
-    position: absolute; top: 54px; left: 12px; right: 12px; z-index: 1002;
+    position: absolute; top: 98px; left: 12px; right: 12px; z-index: 1002;
     background: rgba(14,12,24,.94); backdrop-filter: blur(10px);
     border: 1.5px solid var(--red); border-radius: 16px;
     padding: 12px 10px; display: none; gap: 4px;
@@ -943,14 +943,14 @@
     }
     .notch, .statusbar { display: none; }
     .screen {
-      top: env(safe-area-inset-top, 0px);
+      top: calc(44px + env(safe-area-inset-top, 0px));
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
     #map {
-      top: env(safe-area-inset-top, 0px);
+      top: calc(44px + env(safe-area-inset-top, 0px));
       bottom: calc(78px + env(safe-area-inset-bottom, 0px));
     }
-    .map-overlay { top: calc(12px + env(safe-area-inset-top, 0px)); }
+    .map-overlay { top: calc(56px + env(safe-area-inset-top, 0px)); }
     .map-tools { bottom: calc(90px + env(safe-area-inset-bottom, 0px)); }
     .tl-hud { bottom: calc(134px + env(safe-area-inset-bottom, 0px)); }
     .tabbar {
@@ -1714,3 +1714,15 @@
       max-height: calc(100% - 104px);
     }
   }
+
+/* Demo context stays visible above every tab, without covering content. */
+.prototype-notice {
+  position: absolute; top: 44px; left: 0; right: 0; height: 44px;
+  z-index: 1080; display: flex; align-items: center;
+  pointer-events: none;
+  padding: 5px 14px; font-size: 11px; line-height: 1.4;
+  background: var(--navy); color: var(--light); border-bottom: 1px solid var(--line);
+}
+@media (max-width: 480px) {
+  .prototype-notice { top: env(safe-area-inset-top, 0px); }
+}
