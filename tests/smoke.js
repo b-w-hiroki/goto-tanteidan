@@ -60,6 +60,13 @@ function check(name, ok, detail) {
   await page.reload();
   await page.waitForTimeout(1500);
 
+  const notice = page.locator('.prototype-notice');
+  check('架空の体験デモであることが常時表示される', await notice.isVisible() && (await notice.textContent()).includes('実際の犯罪情報ではありません'));
+  const noticeLayout = await page.evaluate(() => ({ bottom: document.querySelector('.prototype-notice').getBoundingClientRect().bottom, top: document.querySelector('#screen').getBoundingClientRect().top }));
+  check('デモ注意書きがコンテンツを隠さない', noticeLayout.bottom <= noticeLayout.top);
+
+  if (process.env.QA_SCREENSHOT) await page.screenshot({ path: process.env.QA_SCREENSHOT });
+
   // 1. 起動とタブ巡回
   for (const tab of ['map', 'rank', 'book', 'home']) {
     await page.evaluate(t => document.querySelector(`.tab[data-view="${t}"]`).click(), tab);

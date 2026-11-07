@@ -3,7 +3,7 @@
   "worker": "sw.js",
   "oldRef": "95003876d860344e5d5eb68808ebd6fbd948591a",
   "oldCache": "goto-tanteidan-v4",
-  "newCache": "goto-tanteidan-v5",
+  "newCache": "goto-tanteidan-v6",
   "failureAsset": "js/core-data.js",
   "activation": "automatic",
   "offlinePages": [
