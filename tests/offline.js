@@ -99,7 +99,7 @@ async function update(page) {
       }
       await page.waitForFunction(async () => !(await caches.keys()).includes('goto-tanteidan-v4'));
       const assets = await page.evaluate(async () => {
-        const c = await caches.open('goto-tanteidan-v6');
+        const c = await caches.open('goto-tanteidan-v7');
         return (await c.keys()).map(r => new URL(r.url).pathname);
       });
       for (const file of ['styles.css', ...['core-data','state-missions','home-sheets','map-ranking','camera-setup','layers-init'].map(x => `js/${x}.js`)]) assert(assets.includes(`/app/${file}`), file);
