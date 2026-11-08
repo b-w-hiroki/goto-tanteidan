@@ -23,6 +23,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Run smoke tests
         run: node tests/smoke.js
+      - name: Short-screen onboarding regression
+        run: node tests/onboarding-layout.cjs
       - name: Offline lifecycle regression
         run: node tests/offline.js
         env:

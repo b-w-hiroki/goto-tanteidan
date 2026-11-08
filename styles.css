@@ -311,17 +311,21 @@
 
   /* ── Onboarding ── */
   .onboard {
-    position: absolute; inset: 0; z-index: 300;
+    position: absolute; inset: 88px 0 0; z-index: 300;
     background: var(--night); display: flex; flex-direction: column;
     transition: opacity .4s;
   }
   .onboard.gone { opacity: 0; pointer-events: none; }
-  .ob-wrap { flex: 1; position: relative; overflow: hidden; }
+  .ob-wrap { flex: 1; min-height: 0; position: relative; overflow: hidden; }
   .ob-slide {
     position: absolute; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; padding: 40px 28px;
+    align-items: center; justify-content: flex-start; padding: 24px 28px;
+    overflow-y: auto; overscroll-behavior: contain;
     text-align: center; transition: transform .35s ease;
   }
+  .ob-slide > * { flex-shrink: 0; }
+  .ob-slide > :first-child { margin-top: auto; }
+  .ob-slide > :last-child { margin-bottom: auto; }
   .ob-icon { color: var(--red); margin-bottom: 26px; line-height: 0; }
   .ob-title { font-size: 22px; font-weight: 800; line-height: 1.35; margin-bottom: 14px; }
   .ob-desc { font-size: 14px; color: #C8B898; line-height: 1.75; }
@@ -332,7 +336,7 @@
   .ob-dots { display: flex; gap: 8px; justify-content: center; padding: 18px 0 4px; }
   .ob-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: all .25s; }
   .ob-dot.on { background: var(--red); width: 22px; border-radius: 4px; }
-  .ob-foot { padding: 12px 24px 36px; }
+  .ob-foot { flex-shrink: 0; padding: 12px 24px 36px; }
 
   /* ── Detail modal ── */
   .detail-modal {
@@ -1725,4 +1729,5 @@
 }
 @media (max-width: 480px) {
   .prototype-notice { top: env(safe-area-inset-top, 0px); }
+  .onboard { top: calc(44px + env(safe-area-inset-top, 0px)); }
 }
