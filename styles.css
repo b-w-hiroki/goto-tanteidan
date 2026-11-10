@@ -1737,3 +1737,7 @@
 .camera-demo-note { font-size: 12px; line-height: 1.6; color: #e8dfcc; max-width: 32em; margin: 8px 0; }
 #cam-status { font-size: 12px; line-height: 1.5; color: #e8dfcc; }
 .cam-stage { overflow-y: auto; min-height: 0; }
+
+.cam-stage { justify-content: flex-start; padding: 16px 24px; }
+.cam-stage > .viewfinder { max-height: 32vh; flex-shrink: 0; }
+.cam-stage > .shutter { flex-shrink: 0; }

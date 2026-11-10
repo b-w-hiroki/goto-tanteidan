@@ -45,6 +45,8 @@ function camIdle(){
   stopCamPreview();
   const s = CAM_SUBJECTS[Math.floor(Math.random()*CAM_SUBJECTS.length)];
   camShot = null;
+  document.getElementById('screen').scrollTop = 0;
+  document.getElementById('cam-stage').scrollTop = 0;
   document.getElementById('cam-stage').innerHTML = `
     <div class="viewfinder">
       <video id="cam-video" class="cam-video" autoplay playsinline muted></video>
@@ -122,6 +124,8 @@ function camResult(){
   const markVisual = camShot
     ? `<div class="rc-photo"><img src="${camShot}" alt=""><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>`
     : `<div><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>`;
+  document.getElementById('screen').scrollTop = 0;
+  document.getElementById('cam-stage').scrollTop = 0;
   document.getElementById('cam-stage').innerHTML = `
     <div class="result-card">
       ${cameraDemoNotice()}

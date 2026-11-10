@@ -75,6 +75,7 @@ function check(name, ok, detail) {
     await page.evaluate(()=>switchView('cam'));
     await page.waitForFunction(()=>document.getElementById('cam-status').textContent.includes('写真なし'));
     assert.match(await page.locator('.camera-demo-note').innerText(),/架空/);
+    await page.waitForTimeout(400);
     await page.screenshot({path:`test-results/camera/idle-${width}.png`,fullPage:true});
     await page.locator('#shutter').click();
     await page.locator('#cam-cancel').click();
@@ -90,7 +91,7 @@ function check(name, ok, detail) {
     await page.screenshot({path:`test-results/camera/result-${width}.png`,fullPage:true});
     const before = await page.evaluate(()=>({posts:STATE.posts,requests:window.__cameraRequests}));
     await page.locator('#cam-done').click();
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(2400);
     assert.equal(await page.evaluate(()=>STATE.posts),before.posts+1);
     assert.equal(await page.evaluate(()=>window.__cameraRequests),before.requests,'map must not restart camera');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth),false);
