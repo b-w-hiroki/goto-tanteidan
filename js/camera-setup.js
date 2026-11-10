@@ -1,20 +1,42 @@
 // ── 実カメラ（getUserMedia）: 許可されればライブプレビュー、不可なら絵文字モードのまま ──
-let camStream = null, camShot = null;
+let camStream = null, camShot = null, camSession = 0;
+function cameraDemoNotice(){
+  return `<p class="camera-demo-note">${LANG==='en' ? 'Fictional demo: no photo analysis or real crime/safety assessment. Photos stay in this screen.' : '架空の体験デモです。写真の解析や実際の犯罪・安全性の判定は行いません。写真はこの画面内だけで使用します。'}</p>`;
+}
 async function startCamPreview(){
   const vid = document.getElementById('cam-video');
-  if(!vid || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+  if(!vid) return;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    const status = document.getElementById('cam-status');
+    if(status) status.textContent = LANG==='en' ? 'Camera unavailable. Continue with the photo-free sample.' : 'カメラ非対応のため、写真なしのサンプルで続けられます。';
+    return;
+  }
+  const session = camSession;
   try {
-    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-    vid.srcObject = camStream;
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    if(session !== camSession || document.getElementById('cam-video') !== vid){
+      stream.getTracks().forEach(tr=>tr.stop()); return;
+    }
+    camStream = stream;
+    vid.srcObject = stream;
     await vid.play();
+    if(session !== camSession) return;
     const stage = document.getElementById('cam-stage');
     if(stage) stage.classList.add('live');
-  } catch(e){ /* 権限拒否・非対応 → 絵文字モードのまま */ }
+  } catch(e){
+    if(session !== camSession) return;
+    stopCamPreview();
+    const status = document.getElementById('cam-status');
+    if(status) status.textContent = LANG==='en' ? 'Camera unavailable. You can continue with the sample without a photo.' : 'カメラを利用できません。写真なしのサンプルで続けられます。';
+  }
 }
 function stopCamPreview(){
+  camSession++;
   if(camStream){ camStream.getTracks().forEach(tr=>tr.stop()); camStream = null; }
   const stage = document.getElementById('cam-stage');
   if(stage) stage.classList.remove('live');
+  const vid = document.getElementById('cam-video');
+  if(vid) vid.srcObject = null;
 }
 function captureShot(){
   const vid = document.getElementById('cam-video');
@@ -25,8 +47,11 @@ function captureShot(){
   try { return c.toDataURL('image/jpeg', .8); } catch(e){ return null; }
 }
 function camIdle(){
+  stopCamPreview();
   const s = CAM_SUBJECTS[Math.floor(Math.random()*CAM_SUBJECTS.length)];
   camShot = null;
+  document.getElementById('screen').scrollTop = 0;
+  document.getElementById('cam-stage').scrollTop = 0;
   document.getElementById('cam-stage').innerHTML = `
     <div class="viewfinder">
       <video id="cam-video" class="cam-video" autoplay playsinline muted></video>
@@ -34,6 +59,8 @@ function camIdle(){
       <div class="scan"></div>
       <div class="target" id="vtarget">${s.target}</div>
     </div>
+    ${cameraDemoNotice()}
+    <div id="cam-status" role="status"></div>
     <div class="cam-hint">${tx(s,'place')}<br>${t('cam_hint')}</div>
     <div class="shutter" id="shutter" role="button" aria-label="${LANG==='en'?'Take photo':'撮影する'}">${icon('camera',26)}</div>`;
   document.getElementById('shutter').onclick = () => {
@@ -45,6 +72,7 @@ function camIdle(){
 }
 
 function camAnalyze(){
+  const session = camSession;
   const stage = document.getElementById('cam-stage');
   stage.innerHTML = `
     <div class="viewfinder">
@@ -53,26 +81,31 @@ function camAnalyze(){
       <div class="scan" style="display:block"></div>
       ${camShot ? '' : `<div class="target">${icon('search',54)}</div>`}
     </div>
+    ${cameraDemoNotice()}
+    <button class="btn ghost" id="cam-cancel">${LANG==='en'?'Cancel':'キャンセル'}</button>
     <div class="ai-box">
       <div class="ai-row" id="r1"><div class="spin"></div><span>${t('cam_r1')}</span></div>
       <div class="ai-row" id="r2"><div class="spin"></div><span>${t('cam_r2')}</span></div>
       <div class="ai-row" id="r3"><div class="spin"></div><span>${t('cam_r3')}</span></div>
     </div>`;
+  document.getElementById('cam-cancel').onclick = camIdle;
   const steps = ['r1','r2','r3'];
   let i = 0;
   document.getElementById('r1').classList.add('on');
   const tick = () => {
+    if(session !== camSession) return;
     if (i < steps.length){
       const el = document.getElementById(steps[i]);
       el.classList.add('on');
       setTimeout(()=>{
+        if(session !== camSession) return;
         el.classList.add('done');
         i++;
         if (i < steps.length) document.getElementById(steps[i]).classList.add('on');
         tick();
       }, 850);
     } else {
-      setTimeout(camResult, 500);
+      setTimeout(()=>{ if(session === camSession) camResult(); }, 500);
     }
   };
   tick();
@@ -96,8 +129,11 @@ function camResult(){
   const markVisual = camShot
     ? `<div class="rc-photo"><img src="${camShot}" alt=""><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>`
     : `<div><span class="rc-mark" style="background:${tileBg};border:2px solid ${color}">${o.mark}</span></div>`;
+  document.getElementById('screen').scrollTop = 0;
+  document.getElementById('cam-stage').scrollTop = 0;
   document.getElementById('cam-stage').innerHTML = `
     <div class="result-card">
+      ${cameraDemoNotice()}
       ${comboBadge}
       ${markVisual}
       <h3 style="color:${color}">${tx(o,'title')}</h3>
@@ -109,7 +145,10 @@ function camResult(){
         <button class="btn ghost" id="cam-share">${t('cam_share')}</button>
       </div>
     </div>`;
+  let committed = false;
   document.getElementById('cam-done').onclick = () => {
+    if(committed) return;
+    committed = true;
     STATE.camCombo = comboCount;
     const oldLv = getLevelInfo(STATE.points).cur.lv;
     gainPoints(totalGained);
@@ -159,7 +198,7 @@ function camResult(){
     saveState();
     switchView('map');
     showToast(t('toast_posted')+totalGained+t('toast_pt_got'));
-    setTimeout(camIdle, 400);
+    camShot = null;
   };
   document.getElementById('cam-again').onclick = camIdle;
   document.getElementById('cam-share').onclick = () => {
@@ -318,4 +357,5 @@ function finishSetup(){
     : `ようこそ、${PROFILE.name}${t('name_suffix')}`;
   setTimeout(()=>showToast(welcome), 700);
 }
+
 
