@@ -1731,3 +1731,9 @@
   .prototype-notice { top: env(safe-area-inset-top, 0px); }
   .onboard { top: calc(44px + env(safe-area-inset-top, 0px)); }
 }
+
+
+/* Camera boundary stays readable on short screens, without changing artwork. */
+.camera-demo-note { font-size: 12px; line-height: 1.6; color: #e8dfcc; max-width: 32em; margin: 8px 0; }
+#cam-status { font-size: 12px; line-height: 1.5; color: #e8dfcc; }
+.cam-stage { overflow-y: auto; min-height: 0; }
