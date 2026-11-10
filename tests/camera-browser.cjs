@@ -90,7 +90,9 @@ function check(name, ok, detail) {
     await page.locator('#cam-done').waitFor();
     await page.screenshot({path:`test-results/camera/result-${width}.png`,fullPage:true});
     const before = await page.evaluate(()=>({posts:STATE.posts,requests:window.__cameraRequests}));
+    await page.evaluate(()=>{ window.__confirmCamera = document.getElementById('cam-done').onclick; });
     await page.locator('#cam-done').click();
+    await page.evaluate(()=>window.__confirmCamera());
     await page.waitForTimeout(2400);
     assert.equal(await page.evaluate(()=>STATE.posts),before.posts+1);
     assert.equal(await page.evaluate(()=>window.__cameraRequests),before.requests,'map must not restart camera');

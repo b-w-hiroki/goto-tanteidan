@@ -5,7 +5,12 @@ function cameraDemoNotice(){
 }
 async function startCamPreview(){
   const vid = document.getElementById('cam-video');
-  if(!vid || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+  if(!vid) return;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    const status = document.getElementById('cam-status');
+    if(status) status.textContent = LANG==='en' ? 'Camera unavailable. Continue with the photo-free sample.' : 'カメラ非対応のため、写真なしのサンプルで続けられます。';
+    return;
+  }
   const session = camSession;
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });

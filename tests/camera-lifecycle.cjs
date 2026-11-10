@@ -37,3 +37,18 @@ test('restarting idle invalidates older session',()=>{
   const f=fixture(()=>new Promise(()=>{})); f.run('camIdle()'); const before=f.run('camSession');
   f.run('camIdle()'); assert.equal(f.run('camSession'),before+1);
 });
+test('older permission response cannot replace newer live stream',async()=>{
+  const pending=[]; let oldStops=0,newStops=0;
+  const f=fixture(()=>new Promise(r=>pending.push(r)));
+  const old=f.run('startCamPreview()'); f.run('stopCamPreview()');
+  const newer=f.run('startCamPreview()');
+  const stream={getTracks:()=>[{stop:()=>newStops++}]};
+  pending[1](stream); await newer;
+  pending[0]({getTracks:()=>[{stop:()=>oldStops++}]}); await old;
+  assert.equal(oldStops,1); assert.equal(newStops,0);
+  assert.equal(f.element('cam-video').srcObject,stream);
+});
+test('unsupported camera explains photo-free sample',async()=>{
+  const f=fixture(undefined); await f.run('startCamPreview()');
+  assert.match(f.element('cam-status').textContent,/写真なし/);
+});
